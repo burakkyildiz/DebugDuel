@@ -24,7 +24,11 @@
 
 ## CI
 
-Başlangıç kodu GitHub'a push edildi; uzak CI sonucu bu fazda okunmadı ve başarılı varsayılmaz. Kullanıcı güncel Faz 2 değişikliklerinin de commit/push edilmesini istedi. Workflow yalnızca varsayılan GitHub runner'larını kullanır; ücretsiz Actions kotası ve hesap harcama ayarları kontrol edilir, ücretli runner veya production secret kullanılmaz. Quality job lint/types/unit/build ve başlangıç E2E; database job Docker üstünde sıfırdan Supabase/migration/pgTAP ve gerçek yerel Auth E2E çalıştıracak şekilde güncellendi. Fork koduna üretim sırları verilmez.
+Faz 2'nin `a7f46a4` commit'ine ait [CI çalışmasında](https://github.com/burakkyildiz/DebugDuel/actions/runs/41446149331) quality geçti. Database job'ında pgTAP geçti; gerçek Auth E2E'si ikinci çıkıştan sonra `/profile` üzerinde kalıp ana sayfa beklentisinin süresini doldurdu. Bu nedenle önceki yerel başarı, o commit'in uzak CI başarısı sayılmaz.
+
+Dar düzeltme: çıkış düğmesi hydration tamamlanana kadar devre dışıdır; başarılı logout yanıtından sonra aynı origin'deki ana sayfaya tam belge geçişi yapar. Eşzamanlı `router.replace` / `router.refresh` kaldırıldı. E2E artık iki çıkışta da POST 200 yanıtını, gerçek document navigation'ı, girişsiz menüyü ve profile yeniden erişimde login yönlendirmesini kontrol eder. Güncellenen gerçek yerel Auth zinciri geçti; lint ve 46 birim testi geçti. Düzeltmenin uzak CI sonucu ilgili yeni commit'in Actions kaydından doğrulanmalıdır.
+
+Workflow yalnızca varsayılan GitHub runner'larını kullanır; ücretsiz Actions kotası ve hesap harcama ayarları kontrol edilir, ücretli runner veya production secret kullanılmaz. Quality job lint/types/unit/build ve başlangıç E2E; database job Docker üstünde sıfırdan Supabase/migration/pgTAP ve gerçek yerel Auth E2E çalıştırır. Fork koduna üretim sırları verilmez.
 
 ## Sonraki fazlarda zorunlu
 

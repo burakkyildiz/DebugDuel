@@ -29,6 +29,22 @@ async function login(page: Page, email: string, password: string) {
   await page.getByRole("button", { name: "Sign in", exact: true }).click();
 }
 
+async function logout(page: Page) {
+  const origin = new URL(page.url()).origin;
+  const [response] = await Promise.all([
+    page.waitForResponse(response => response.request().method() === "POST" && new URL(response.url()).pathname === "/api/auth/logout"),
+    page.waitForRequest(request => request.isNavigationRequest() && request.resourceType() === "document" && request.url() === origin + "/"),
+    page.getByRole("button", { name: "Sign out", exact: true }).click(),
+  ]);
+  expect(response.status()).toBe(200);
+  await expect(page).toHaveURL(origin + "/");
+  await expect(page.getByRole("link", { name: "Log in", exact: true })).toBeVisible();
+  // A fresh request, including after the second login/logout, must be unauthenticated.
+  await page.goto("/profile");
+  await expect(page).toHaveURL(/\/login\?next=/);
+  await expect(page.getByRole("heading", { name: "Your next rival awaits." })).toBeVisible();
+}
+
 test("real local signup, confirmation, profile, refresh, logout and password recovery", async ({ page, request }) => {
   test.setTimeout(90000);
   const suffix = randomUUID().replaceAll("-", "").slice(0, 12);
@@ -50,14 +66,10 @@ test("real local signup, confirmation, profile, refresh, logout and password rec
   await expect(page.getByRole("status").filter({ hasText: "Profile updated." })).toBeVisible();
   await page.reload();
   await expect(page.getByLabel("Username", { exact: true })).toHaveValue(username);
-  await page.getByRole("button", { name: "Sign out", exact: true }).click();
-  await expect(page).toHaveURL(/\/$/);
-  await page.goto("/profile");
-  await expect(page.getByRole("heading", { name: "Your next rival awaits." })).toBeVisible();
+  await logout(page);
   await login(page, email, password);
   await expect(page.getByLabel("Username", { exact: true })).toHaveValue(username);
-  await page.getByRole("button", { name: "Sign out", exact: true }).click();
-  await expect(page).toHaveURL(/\/$/);
+  await logout(page);
   await page.goto("/forgot-password");
   await page.getByLabel("Email address").fill(email);
   await page.getByRole("button", { name: "Send reset link" }).click();

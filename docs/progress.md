@@ -43,6 +43,8 @@ Henüz hiçbir AC maddesi tamamlandı olarak işaretlenmedi.
 
 **Beklemede:** Kullanıcı kullanım kotasını bekliyor. Mevcut Faz 2 commit/push işleminden sonra geliştirme durur. Faz 3 yalnızca kullanıcının açık “Faz 3'e geçelim” talebiyle başlatılır.
 
+**Onaylanan dar istisna:** `a7f46a4` için uzak CI'da ikinci logout yönlendirmesi başarısız oldu. Kullanıcı bu Faz 2 hatasının düzeltilip test/commit/push ve CI kontrolünün yapılmasını istedi. Çıkışta tam belge geçişi ve hydration öncesi tıklama koruması eklendi; daha güçlü gerçek yerel Auth testi, lint ve 46 birim testi geçti. Bu iş Faz 3'ü başlatmaz.
+
 1. Faz 2 geliştirme akışları doğrulandı. Yayın öncesi `docs/auth-checklist.md` üzerinden uzak e-posta teslimi/recovery ve parola ayarı kontrolünü tamamla; bu eksik AC-01 için açık kalır.
 2. Şartnamenin özel soru/snapshot/practice şemasını ve iki havuzda toplam 30 özgün soruyu ekle; içerik testleri ve izin matrisini doğrula.
 3. Sunucu secret key'i güvenli yerel/platform ayarından yapılandırıp guest/hesaplı Practice dikey akışını tamamla. Anahtar sohbetten istenmez.

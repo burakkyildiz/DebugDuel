@@ -17,6 +17,7 @@
 ## Çalışma düzeni
 
 - **Bekleme kararı — 2 Kasım 2026:** Kullanıcı Faz 2 değişikliklerinin commit/push edilmesini istedi ve kullanım kotasını beklemek için sonraki geliştirmeyi durdurdu. **Faz 3'e yalnızca kullanıcı açıkça “Faz 3'e geçelim” dediğinde başla.** Push sonrasında kendiliğinden yeni faz, otomasyon veya ek geliştirme başlatma.
+- **Sonraki dar yetki:** Kullanıcı, başarısız Faz 2 CI çıkış testinin düzeltilmesi, test edilmesi, commit/push edilmesi ve CI sonucunun doğrulanması için devam talimatı verdi. Bu düzeltme Faz 3'ü başlatma yetkisi değildir.
 - Mevcut kullanıcı değişikliklerini koru. İstenmedikçe commit, push, yeni branch veya production yayın yapma. Kullanıcı 2 Kasım 2026'da mevcut başlangıç çalışmasını commit/push etmek için açık yetki verdi; bu yetki production yayını kapsamaz.
 - Şartnamenin Faz 0–9 sırasıyla ilerle. Faz tamamlandı iddiasını ilgili çalışan akış ve test kanıtıyla destekle.
 - Sürümleri resmi belgeler ve paket kayıt servisiyle doğrula, tam sürüm ve pnpm lockfile kullan. Paket yüklemek bir özelliğin tamamlandığı anlamına gelmez.

@@ -30,7 +30,7 @@ Ana plan ve çıkış koşulları: `DEBUG_DUEL_PROJECT_SPEC.md`, bölüm 22.
 | 1 — Tasarım ve iskelet | Ana sayfa ve hesap ekranları hazır; oyun/lobi/sonuç ilgili dikey akışlarda eklenecek |
 | 2 — Auth ve profil | Geliştirme akışları doğrulandı: yerel e-posta/profil/recovery, temiz DB ve gerçek GitHub OAuth; uzak/üretim e-posta teslimi ayrıca bekliyor |
 | 3 — DB ve soru bankası | Yerelde tamamlandı: 13 oyun tablosu, RLS/GRANT, 30 soru, 81 içerik vakası, 369 DB testi ve temiz kurulum; hosted uygulama yapılmadı |
-| 4 — Practice | Bekliyor |
+| 4 — Practice | Yerel akış uygulandı; doğrulama kaydı docs/PHASE_4_REPORT.md |
 | 5 — Özel oda, tek tur | Bekliyor |
 | 6 — Tam motor | Bekliyor |
 | 7 — İlerleme | Bekliyor |
@@ -62,3 +62,19 @@ AC-18 içerik koşulu yerelde doğrulandı (30 soru / 81 davranış vakası). Di
 - Practice ve düello hâlâ hazırlık ekranındadır. Realtime/Cron/settlement/guest endpoint'leri sonraki fazlarda; bu testler gerçek maç testleri sayılmaz.
 
 - Faz 3 tesliminden sonra kullanıcı değişikliklerin commit/push edilmesini ve yerel önizlemenin açılmasını istedi. Yerel `http://localhost:3000` HTTP 200 ile doğrulandı; production deploy ve Faz 4 bu isteğin kapsamında değildir.
+
+## Faz 4
+
+Kullanıcının devam talimatıyla guest/hesaplı Practice DB/API/UI akışı eklendi. 420 DB testi, 56 birim testi, lint/types/build geçti. Hosted şema/secret eksikliği sürer; .env.local değiştirilmedi. Ayrıntılar [Faz 4 raporu](PHASE_4_REPORT.md). Yeni commit/push veya production yayın yapılmadı.
+
+Faz 4 tamamlanma doğrulaması: gerçek yerel 11 Practice E2E geçti (mobil duplicate timeout skip); temiz migration/seed ve seed tekrarında 420 DB testi geçti. Yerel oynanabilir önizleme `http://localhost:3002/practice`; remote ortam tamamlanmış sayılmaz.
+
+Push öncesi son kontrol: production build üzerinde 19 E2E (11 Practice + 8 foundation) geçti, mobil duplicate timeout skip. 56 birim / 420 DB testi başarılı; test runner 3003'te izole production build kullanır ve 3002 önizlemesini etkilemez. Hosted şema ve server secret önkoşulları hâlâ açık; commit/push yapılmadı.
+
+3 Kasım: kullanıcı key'i ekledi; dört migration ve seed uzak geliştirme projesine uygulandı. Uzak guest HTTP ve rollback'li hesaplı DB smoke geçti. Connector'ın atadığı sürümlerle repository sürümleri farklı; metadata eşleştirme otomatik incelemede reddedildi, kullanıcı onayı bekler. Tam eşleme PHASE_4_REPORT.md içindedir. Bu fark giderilmeden CLI db push çalıştırma.
+
+3 Kasım repair sonucu: kullanıcı CLI girişi ve açık onayıyla resmî migration repair tamamlandı; 7 yerel/uzak sürüm birebir eşleşti. Schema snapshot karşılaştırması değişiklik göstermedi, uzak HTTP Practice smoke tekrar geçti. Önceki sürüm farkı giderildi.
+
+Repair sonrası `db push --dry-run --skip-vault`: remote up to date, bekleyen migration/seed/role listeleri boş. Şema ve kullanıcı verisine yeniden migration uygulanmadı; Git commit/push henüz yapılmadı.
+
+3 Kasım: Kullanıcı Faz 4 tamamlanması sonrası commit/push için açık yetki verdi. Son değişiklikler, yerel/uzak test kanıtları ve başarılı migration repair kaydı birlikte GitHub main'e gönderilmek üzere hazırlandı; production yayın kapsam dışıdır.

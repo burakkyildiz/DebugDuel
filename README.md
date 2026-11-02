@@ -8,7 +8,7 @@ Ana kaynak: [proje şartnamesi](docs/DEBUG_DUEL_PROJECT_SPEC.md). Çalışma yö
 
 Başlangıç temeli hazır: Next.js iskeleti, koyu/mor responsive ana sayfa, giriş/kayıt/recovery ekranları ve Auth handler'ları, gerçek Supabase profil tablosu ve kontrollü profil güncelleme fonksiyonları. Leaderboard ilk 25 gerçek kaydı okur; henüz maç olmadığından doğal boş durum gösterir.
 
-**Oyun henüz oynanabilir değildir.** Practice ve özel düello ekranları açık hazırlık durumu gösterir. 30 soruluk özel banka ve oyun şeması yerelde hazırdır. Practice akışı, üç turluk atomik motor, özel Realtime, Cron ve XP settlement sonraki fazlardır. Faz 3 kanıtları ve hosted ortam sınırı [Faz 3 raporundadır](docs/PHASE_3_REPORT.md). Mevcut Auth kodu gerçek sağlayıcı smoke testleri tamamlanmadan üretime hazır sayılmaz.
+**Practice yerelde oynanabilir.** Özel düello henüz hazırlık durumundadır. Yerel Practice için `pnpm practice:local` çalıştırıp `http://localhost:3002/practice` aç. Uzak geliştirme ortamına migration/seed uygulandı, server secret key yapılandırıldı ve migration geçmişi resmî repair ile eşleştirildi; [Faz 4 raporuna](docs/PHASE_4_REPORT.md) bak. 30 soruluk özel banka ve oyun şeması yerelde hazırdır. Practice akışı, üç turluk atomik motor, özel Realtime, Cron ve XP settlement sonraki fazlardır. Faz 3 kanıtları ve hosted ortam sınırı [Faz 3 raporundadır](docs/PHASE_3_REPORT.md). Mevcut Auth kodu gerçek sağlayıcı smoke testleri tamamlanmadan üretime hazır sayılmaz.
 
 ## Gereksinimler
 
@@ -59,6 +59,7 @@ pnpm build
 pnpm exec playwright install chromium
 pnpm test:e2e
 pnpm test:auth:local
+pnpm test:practice:local
 ```
 
 `test:questions`, güvenilir repository kodunun hatalı/düzeltilmiş sürümlerini 81 davranış vakasında denetler; API kullanıcı kodu çalıştırmaz. Soru ekleme/düzenleme için `supabase/questions/catalog.json` kullan, yeni içerik için version artır; `python3 scripts/check-questions.py --write-seed` ile seed üret ve farkı incele. Uygulamaya katalog import etme.
@@ -82,3 +83,5 @@ Mevcut DB'de yeni migration ve seed uygulamak için: `pnpm exec supabase migrati
 ## Dizinler
 
 `src/app`: sayfalar/API; `src/components`: ortak bileşenler; `src/lib`: Auth, doğrulama, güvenlik ve kural yardımcıları; `src/content`: İngilizce metinler; `supabase`: migration ve DB testleri; `tests`: birim/E2E; `docs`: mimari, kararlar ve ilerleme.
+
+`test:practice:local` artık 3003 portunda `.next-practice-test` dizinine ayrı production build oluşturur; Practice ile foundation testlerini birlikte çalıştırır. Açık 3002 önizlemesi ve onun guest imza anahtarı/kotası korunur. İzole test ortamının sunucusu sonunda kapanır. Testler yalnızca yerel Supabase'i kabul eder; gerçek hosted sunucu anahtarları kullanılmaz.

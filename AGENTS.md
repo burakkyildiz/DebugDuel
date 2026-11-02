@@ -15,6 +15,29 @@
 - `docs/decisions.md` kararları, `docs/progress.md` ise doğrulanmış ilerleme ve kalan işleri kaydeder.
 - **Yeni oturum başlangıcı:** `docs/PHASE_3_HANDOFF.md` devir notunu oku. Son doğrulanmış kod/CI, ortam sınırları ve Faz 3'ün somut işleri oradadır. Bu devir isteği Faz 3'ü bu oturumda başlatma talimatı değildir.
 
+## Faz 4 teslim/push yetkisi — 3 Kasım 2026
+
+- Kullanıcı Faz 4 için açık commit/push yetkisi verdi. Önceki commit/push yapılmadı notları teslim öncesi tarihseldir. Production yayın ve Faz 5 otomatik başlangıcı kapsam dışıdır.
+- Faz 4 güncel kanıtı: 56 birim, 420 pgTAP, production build üzerinde 19 E2E başarılı; 1 mobil duplicate-timeout skip. Uzak guest HTTP/tarayıcı ve rollback'li hesap DB smoke geçti. Yedi hosted/repository migration sürümü eşleşiyor; dry-run up to date.
+
+## Migration geçmişi düzeltmesi tamamlandı — 3 Kasım 2026
+
+- Kullanıcının açık güvenli repair onayı ve kendi CLI girişi sonrası resmî `migration repair` tamamlandı. Yedi yerel/uzak sürüm eşleşiyor. Önceki metadata reddi/onay bekleme kayıtları tarihseldir; doğrudan SQL UPDATE kullanılmadı.
+- Son `db push --dry-run --skip-vault` başarılı: upToDate=true; migrations/seeds/roles boş.
+- Önce/sonra şema snapshot karşılaştırması tablo, sütun, kısıt, indeks, RLS, policy, fonksiyon/owner/ACL değişmediğini doğruladı. Uzak HTTP guest smoke tekrar geçti. Snapshot'lar `.local-backups/migration-repair-20261103` altında Git dışındadır.
+
+## Uzak geliştirme güncellemesi — 3 Kasım 2026
+
+- Kullanıcı sunucu key'ini ekledi ve uzak kurulumun devamını istedi. Dört yeni migration + seed hosted geliştirme projesine uygulandı; secret yazdırılmadı. Guest HTTP ve rollback'li hesaplı DB smoke geçti.
+- **Önemli:** Connector migration sürümlerini yeniden üretti. Repository/hosted sürüm eşlemesi ve izin sınırı `docs/PHASE_4_REPORT.md` son bölümündedir. Metadata eşleştirmesi otomatik onay incelemesinde reddedildi; işlem uygulanmadı. Kullanıcı açık onayı olmadan bu işlemi tekrar deneme veya dolaylı düzeltme yapma. Fark giderilmeden CLI db push kullanma.
+- Aşağıdaki hosted migration/key eksikliği kayıtları tarihseldir. Production deploy veya yeni commit/push yapılmadı.
+
+## Faz 4 güncel kayıt — 2 Kasım 2026
+
+- Kullanıcının “tamam devam edebiliriz” ve sonraki devam talimatları Faz 4'ü başlattı. Yerel Practice DB/API/UI uygulandı; en güncel doğrulama ve kalan sınırlar `docs/PHASE_4_REPORT.md` içindedir. Aşağıdaki Faz 3 bekleme bilgileri tarihseldir.
+- Son push edilen kod `52ffeca` (Faz 3). Faz 4 için commit/push yetkisi çıkarılmadı. Hosted proje hâlâ yalnızca ilk üç profil migration'ını taşır; yerel yeni Practice migration'ları remote'a uygulanmadı.
+- `pnpm practice:local`: gerçek yerel Supabase ile 3002 önizlemesi. `pnpm test:practice:local`: izole sunucuda gerçek HTTP/DB/tarayıcı testleri. Sunucu anahtarı yalnızca child process ortamına alınır; .env.local değişmez.
+
 ## Faz 3 sonrası güncel kayıt — 2 Kasım 2026
 
 - Kullanıcı Faz 3 tesliminden sonra bu değişikliklerin commit/push edilmesini ve yerel önizlemenin açılmasını açıkça istedi. Bu yetki production yayını veya Faz 4 geliştirmesini kapsamaz. Aşağıdaki commit/push yapılmadı kayıtları bu yetkiden önceki teslim anını anlatır.

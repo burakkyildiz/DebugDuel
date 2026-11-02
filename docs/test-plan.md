@@ -45,3 +45,9 @@ GitHub OAuth gerçek hesapla doğrulandı; yerel e-posta/PKCE/recovery de geçti
 `pnpm test:db:clean`: ayrı rastgele project ID / 55322 portunda sıfırdan migration + seed + pgTAP; seed tekrarı ardından tekrar pgTAP. Sadece kendi oluşturduğu test konteyner/volume'ünü kaldırır. Geliştirme verisi korunur. Her iki tur başarılıdır.
 
 48 birim testi (katalog import sınırı ve Data API şema kontrolü dahil), lint, typecheck, Webpack production build ve production build üzerinde 8 desktop/mobile foundation E2E; yerel security/performance advisor uyarısız. Bu fazda Auth E2E ayrıca yeniden koşulmadı; önceki Faz 2 kanıtı tarihsel olarak korunur. Motor yarışı, guest erişimi, Realtime ve Cron henüz test edilmedi. Ayrıntılar [Faz 3 raporunda](PHASE_3_REPORT.md).
+
+## Faz 4 — Practice doğrulaması
+
+`pnpm test:practice:local` gerçek yerel Supabase ve 3002 izole Next sunucusunu kullanır. Guest/hesaplı oynama, klavye/mobil, yenileme, iki guest izolasyonu, strict body/Origin, paralel start/answer retry, kaybolmuş HTTP cevabı, hesaplı onboarding öncesi erişim ve XP/istatistik izolasyonu test edilir. Gerçek 45 saniyelik timeout yalnızca desktop projesinde bir kez çalışır. Auth doğrulamasını üretimde atlayan kapı eklenmedi; hesaplı Practice testinin sentetik doğrulanmış hesabı yalnızca yerel admin fixture'ıdır ve gerçek parola girişi/JWT kullanır. Ayrı Auth e-posta E2E'sinin yerine geçmez.
+
+56 birim testi, 420 pgTAP testi, lint/types/build; temiz ayrı DB kurulumunda migration/seed ve seed tekrarı başarılı. Hosted şema/anahtar ve fiziksel TTL temizliği sınırları [Faz 4 raporunda](PHASE_4_REPORT.md).

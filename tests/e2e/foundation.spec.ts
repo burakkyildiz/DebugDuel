@@ -5,7 +5,7 @@ test("landing, auth navigation and honest feature states", async ({ page }, test
   await expect(page.getByRole("heading", { name: "Sharp eyes. Faster fixes." })).toBeVisible();
   await page.screenshot({ path: testInfo.outputPath("home.png"), fullPage: true });
   await page.getByRole("link", { name: "Quick Practice", exact: true }).click();
-  await expect(page.getByRole("heading", { name: "Practice is getting ready." })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Start Practice", exact: true })).toBeVisible();
   await page.goto("/login");
   await page.getByRole("link", { name: "Continue with Email" }).click();
   await expect(page.getByLabel("Email address")).toBeVisible();

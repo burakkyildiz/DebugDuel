@@ -2,6 +2,7 @@ node_modules/
 .pnpm-store/
 .next/
 .next-auth-local/
+.next-practice-local/
 out/
 coverage/
 playwright-report/
@@ -15,3 +16,9 @@ test-results/
 *.tsbuildinfo
 supabase/.temp/
 supabase/.branches/
+
+.next-practice-test/
+
+.next-hosted-check/
+
+.local-backups/

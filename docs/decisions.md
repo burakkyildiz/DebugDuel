@@ -22,3 +22,10 @@
 - Seed tekrarında içerik sapmasını gizleyen DO NOTHING yerine aynı alanları karşılaştırmaya zorlayan upsert ve immutable-version trigger kullanılır; mevcut pasiflik korunur.
 - Temiz kurulum testi mevcut DB'yi resetlemez; ayrı rastgele yerel proje/port oluşturur ve yalnızca kendi kaynaklarını kaldırır. Hosted geliştirme projesine bu fazda yazılmadı.
 - Ayrıntılı test ve sınırlar: [Faz 3 raporu](PHASE_3_REPORT.md).
+
+## Faz 4 — Practice sınırları
+
+- Practice ayrı minimum izinli rol ile çalışır; hiçbir XP/maç/ledger yazması yoktur. Hesaplı wrapper mevcut doğrulanmış profil komutunu kullanır; korumalı Auth adaptörünün EXECUTE kapsamı değişmez.
+- Guest bootstrap cookie'si ile start isteği ayrıdır: idempotent soru başlatılmadan cookie sahipliği kurulur. Ham capability DB'ye gitmez. Start ve cevap tekrarları DB'de korunur.
+- Yerel deneme/test başlatıcısı 3002 kullanır; sunucu key'i yalnızca yerel Supabase status çıktısından child process ortamına geçer, diske/env dosyasına veya sohbete yazılmaz.
+- Hosted proje bu fazda değiştirilmedi. Fiziksel teknik kayıt temizliği işletim fazının açık işidir; erişim DB'de 24 saat sonunda kapanır.

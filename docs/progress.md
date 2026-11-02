@@ -15,7 +15,7 @@ Ana plan ve çıkış koşulları: `DEBUG_DUEL_PROJECT_SPEC.md`, bölüm 22.
 - 32 birim testi, lint, TypeScript ve Webpack üretim build'i geçti. Güvenlik advisor listesi boş.
 - Chromium ile masaüstü/mobil başlangıç E2E'si: 8/8 geçti. Ana sayfa ekran görüntüleri incelendi; 320 px sayfa taşması testi geçti.
 - `pnpm dev` yerelde `http://localhost:3000` için çalıştırıldı. Vercel yayını yapılmadı.
-- 2 Kasım 2026: kullanıcı mevcut başlangıç çalışması için commit/push istedi. `AGENTS.md` uygulanan katmanlar, test kanıtları, sınırlar ve sonraki sırayla güncellendi. Yerel branch `main`; ilk kontrolde henüz commit veya GitHub remote'u yoktu. Push hedefi doğrulanmalıdır.
+- 2 Kasım 2026: kullanıcı mevcut başlangıç çalışması için commit/push istedi. `AGENTS.md` uygulanan katmanlar, test kanıtları, sınırlar ve sonraki sırayla güncellendi. İlk commit `302c8cf`, branch `main`. Kullanıcının verdiği GitHub hedefi `https://github.com/burakkyildiz/DebugDuel.git`; push öncesi uzak depo erişimi ve boş olduğu doğrulandı.
 - Docker CLI var; daemon çalışmıyor. Yerel Supabase ve temiz yerel migration testleri için Docker'ın çalışması gerekir.
 
 ## Fazlar

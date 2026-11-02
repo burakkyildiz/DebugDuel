@@ -23,6 +23,7 @@
 
 ## Güncel durum — 2 Kasım 2026
 
+- GitHub hedefi: `https://github.com/burakkyildiz/DebugDuel.git`; ana branch `main`. İlk başlangıç commit'i `302c8cf`. Mevcut kullanıcı isteği bu başlangıç çalışmasının push edilmesini kapsar; sonraki commit/push işlemlerinde oturumdaki yetki kapsamını kontrol et.
 - Başlangıç iskeleti ve koyu/mor responsive ana sayfa hazır. Login, signup, recovery, callback, profil/onboarding ve gerçek verili ilk 25 kayıt leaderboard kodu mevcut.
 - Supabase geliştirme projesine üç profil migration'ı uygulandı; `src/types/database.generated.ts` gerçek şemadan üretildi. Migration dosyalarının sürümleri hosted geçmişle eşleşir.
 - Son doğrulama: 32 birim testi, 25 gerçek PostgreSQL/pgTAP testi ve 8 masaüstü/mobil başlangıç E2E testi geçti; lint, typecheck ve Webpack production build başarılı. DB testleri transaction sonunda rollback edildi.

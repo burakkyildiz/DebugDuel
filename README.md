@@ -55,9 +55,12 @@ pnpm test:db
 pnpm build
 pnpm exec playwright install chromium
 pnpm test:e2e
+pnpm test:auth:local
 ```
 
 `test:db` çalışan yerel Supabase ister. E2E'den önce ayrı terminalde `pnpm dev` başlat; varsayılan test URL'si `http://localhost:3000`, gerekirse `PLAYWRIGHT_BASE_URL` kullan. Başlangıç E2E testleri sayfa akışları, erişim yönlendirmesi, Origin/gövde doğrulaması ve 320 px taşmayı kapsar; gerçek düello testi değildir. CI uygulamayı ayrıca başlatır. Mevcut test kanıtları ve kalan testler [test planında](docs/test-plan.md).
+
+`test:auth:local` için yerel Supabase ve Chromium gerekir. Komut kendi izole 3001 sunucusunu açıp gerçek yerel e-posta/PKCE/profil/recovery zincirini test eder; uzak `.env.local` bağlantısını değiştirmez. Normal `test:e2e` bu yerel testi atlar; ayrı komutla çalıştırılır. GitHub ve uzak Auth için açık kalan adımlar [Auth kontrol listesinde](docs/auth-checklist.md).
 
 ## Veri ve güvenlik
 

@@ -15,6 +15,7 @@
     "test:watch": "vitest",
     "test:db": "supabase test db",
     "test:e2e": "playwright test",
+    "test:auth:local": "node scripts/test-auth-local.mjs",
     "db:start": "supabase start",
     "db:types": "supabase gen types typescript --local > src/types/database.generated.ts"
   },

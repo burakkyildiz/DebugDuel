@@ -16,6 +16,7 @@
 
 ## Çalışma düzeni
 
+- **Bekleme kararı — 2 Kasım 2026:** Kullanıcı Faz 2 değişikliklerinin commit/push edilmesini istedi ve kullanım kotasını beklemek için sonraki geliştirmeyi durdurdu. **Faz 3'e yalnızca kullanıcı açıkça “Faz 3'e geçelim” dediğinde başla.** Push sonrasında kendiliğinden yeni faz, otomasyon veya ek geliştirme başlatma.
 - Mevcut kullanıcı değişikliklerini koru. İstenmedikçe commit, push, yeni branch veya production yayın yapma. Kullanıcı 2 Kasım 2026'da mevcut başlangıç çalışmasını commit/push etmek için açık yetki verdi; bu yetki production yayını kapsamaz.
 - Şartnamenin Faz 0–9 sırasıyla ilerle. Faz tamamlandı iddiasını ilgili çalışan akış ve test kanıtıyla destekle.
 - Sürümleri resmi belgeler ve paket kayıt servisiyle doğrula, tam sürüm ve pnpm lockfile kullan. Paket yüklemek bir özelliğin tamamlandığı anlamına gelmez.
@@ -26,19 +27,19 @@
 - GitHub hedefi: `https://github.com/burakkyildiz/DebugDuel.git`; ana branch `main`. İlk başlangıç commit'i `302c8cf`. Mevcut kullanıcı isteği bu başlangıç çalışmasının push edilmesini kapsar; sonraki commit/push işlemlerinde oturumdaki yetki kapsamını kontrol et.
 - Başlangıç iskeleti ve koyu/mor responsive ana sayfa hazır. Login, signup, recovery, callback, profil/onboarding ve gerçek verili ilk 25 kayıt leaderboard kodu mevcut.
 - Supabase geliştirme projesine üç profil migration'ı uygulandı; `src/types/database.generated.ts` gerçek şemadan üretildi. Migration dosyalarının sürümleri hosted geçmişle eşleşir.
-- Son doğrulama: 32 birim testi, 25 gerçek PostgreSQL/pgTAP testi ve 8 masaüstü/mobil başlangıç E2E testi geçti; lint, typecheck ve Webpack production build başarılı. DB testleri transaction sonunda rollback edildi.
+- Son doğrulama: 46 birim testi, temiz yerel PostgreSQL'de 25 pgTAP testi, production build üzerinde 8 desktop/mobile foundation E2E testi ve ayrı komutla 1 gerçek yerel e-posta/PKCE/profil/recovery E2E zinciri geçti; lint, typecheck ve Webpack production build başarılı. DB test fixture'ları transaction sonunda rollback edilir; Auth E2E'sinin sentetik hesapları yalnızca yerelde kalır.
 - **Oyun henüz oynanabilir değil:** Practice ve özel düello hazırlık durumu gösterir. Oyun şeması, 30 soru, guest Practice, davet/ready, üç turluk motor, Realtime, Cron, XP settlement ve leaderboard pagination henüz uygulanmadı.
-- Auth handler'larının varlığı AC-01'i tamamlamaz: gerçek GitHub OAuth ve e-posta doğrulama/recovery smoke testi, uzak provider/callback/parola ayarları bekliyor.
-- Yerel Docker daemon önceki kontrolde kapalıydı; yerel DB testi `ECONNREFUSED 127.0.0.1:54322` verdi. Yeni çalışmada durumu yeniden kontrol et. Hosted rol testleri, temiz yerel migration kurulumunun yerini tutmaz.
+- Yerel e-posta doğrulama/recovery ve uzak Supabase üzerinden gerçek GitHub OAuth geçti. GitHub sağlayıcısı etkin; kullanıcı onayıyla yalnızca `user:email` kapsamı verildi. Yenileme, çıkış, korunan profile red ve tekrar giriş doğrulandı. Üretim/uzak e-posta teslimi testi henüz yok; AC-01 bütünüyle tamamlandı sayılmaz. Ayrıntılar `docs/auth-checklist.md` içinde.
+- Docker bu fazda başlatıldı. Yerel Supabase temiz kurulumunda üç migration başarıyla uygulandı; DB testleri geçti. Auth fazı için yalnızca gerekli yerel servisler açık; tam Realtime/Cron test ortamı henüz doğrulanmadı.
 - `.env.local` Git dışında tutulur. URL/publishable key ve üç uygulama secret'ı yerelde hazırlandı; Supabase sunucu secret key'i henüz ekli değil. Secret değerlerini yazdırma veya sohbetten isteme.
 - Vercel projesi/yayını ve canlı iki cihaz smoke testi yok. Hiçbir AC maddesi henüz tam tamamlandı olarak işaretlenmedi.
 
 ## Sonraki çalışma sırası
 
-1. Docker ile temiz yerel migration kurulumunu ve Auth sağlayıcı ayarlarını doğrula; gerçek test hesaplarıyla giriş/doğrulama/recovery smoke testini tamamla.
-2. Özel soru/snapshot/Practice şemasını ve ayrı havuzlarda 15 duel + 15 Practice sorusunu ekle; her havuzda 5 kolay, 5 orta, 5 zor soru ve içerik/izin testleri olsun.
-3. Güvenli server-only anahtar ve guest çereziyle gerçek Practice dikey akışını tamamla; XP/kalıcı istatistik oluşturma.
-4. Davetli tek turu iki izole tarayıcıyla kur; ardından üç tur, saniyelik Cron, reconnect/forfeit ve tek settlement/XP ledger'a ilerle.
+1. Faz 3: özel soru/snapshot/Practice şemasını ve ayrı havuzlarda 15 duel + 15 Practice sorusunu ekle; her havuzda 5 kolay, 5 orta, 5 zor soru ve içerik/izin testleri olsun.
+2. Faz 4: güvenli server-only anahtar ve guest çereziyle gerçek Practice dikey akışını tamamla; XP/kalıcı istatistik oluşturma.
+3. Davetli tek turu iki izole tarayıcıyla kur; ardından üç tur, saniyelik Cron, reconnect/forfeit ve tek settlement/XP ledger'a ilerle.
+4. Yayın öncesi uzak e-posta teslimi/recovery ve Auth panel parola ayarlarını doğrula. Yerel e-posta zinciri ve gerçek GitHub sağlayıcısı test edildi; ücretsiz SMTP limitleri nedeniyle halka açık teslim garantisi verilmez.
 
 ## Güven sınırları
 
@@ -58,6 +59,7 @@
 - Şema değişikliklerini Supabase CLI migration akışıyla dosyala; migration, izinler, üretilen tipler ve ilgili testleri birlikte güncelle.
 - Auth, veri mutasyonu ve kullanıcı akışlarını teslimden önce güvenlik/iş kuralı açısından gözden geçir.
 - `pnpm dev` ve `pnpm build` bu ortamın Turbopack process/port kısıtı nedeniyle desteklenen `--webpack` modunu kullanır. E2E'den önce ayrı terminalde sunucuyu aç; varsayılan uygulama/test origin'i `http://localhost:3000`.
+- `pnpm test:auth:local` yalnızca yerel Supabase'i kabul eder ve 3001 portunda `.next-auth-local` diziniyle ayrı sunucu açar. `.env.local` değişmez. Normal `test:e2e`, yerel Auth testini atlar; bu ayrı komutla veya CI database job'ında çalışır.
 - Profil yazıcısı `debug_duel_profile_engine` adlı minimum izinli NOLOGIN rolündedir. Supabase'in korumalı Auth tablosunu okuyan tek dar istisna `private.verified_actor_id()` fonksiyonudur: argümansız, salt okunur, postgres sahibi, sabit search_path; anon/authenticated EXECUTE izni yoktur. Gerekçe `docs/decisions.md` içinde kayıtlıdır; bu sınırı genişletme.
 
 <!-- BEGIN:nextjs-agent-rules -->

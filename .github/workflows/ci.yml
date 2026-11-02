@@ -49,5 +49,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec supabase start
       - run: pnpm test:db
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm test:auth:local
       - if: always()
         run: pnpm exec supabase stop

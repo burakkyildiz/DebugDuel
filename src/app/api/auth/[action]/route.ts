@@ -6,14 +6,27 @@ import { siteOrigin } from "@/lib/env";
 import { forgotSchema, loginSchema, oauthSchema, resetSchema, signupSchema } from "@/lib/validation/auth";
 import { copy } from "@/content/copy.en";
 import { z } from "zod";
+import { emailRequestResult } from "@/lib/validation/auth-errors";
+
+function emailResponse(error: { status?: number; code?: string } | null) {
+  const result = emailRequestResult(error);
+  if (result === "rate_limited") {
+    const response = failure("RATE_LIMITED", 429, copy.auth.rateLimit);
+    response.headers.set("Retry-After", "60");
+    return response;
+  }
+  if (result === "invalid") return failure();
+  if (result === "unavailable") return failure("EMAIL_UNAVAILABLE", 503, copy.auth.emailFailure);
+  return json({ confirmation: true });
+}
 
 export async function POST(request: Request, context: { params: Promise<{ action: string }> }) {
   const { action } = await context.params;
-  if (!["login", "signup", "forgot", "reset", "github", "logout"].includes(action)) return failure("NOT_FOUND", 404);
+  if (!["login", "signup", "resend", "forgot", "reset", "github", "logout"].includes(action)) return failure("NOT_FOUND", 404);
   let body: unknown;
   try { body = await mutationBody(request); }
   catch { return failure(); }
-  const schemas = { login: loginSchema, signup: signupSchema, forgot: forgotSchema, reset: resetSchema, github: oauthSchema, logout: z.object({}).strict() };
+  const schemas = { login: loginSchema, signup: signupSchema, resend: forgotSchema.extend({ next: z.string().optional() }), forgot: forgotSchema, reset: resetSchema, github: oauthSchema, logout: z.object({}).strict() };
   if (!schemas[action as keyof typeof schemas].safeParse(body).success) return failure();
   const supabase = await createClient();
   if (!supabase) return failure("AUTH_UNAVAILABLE", 503, copy.auth.unavailable);
@@ -30,16 +43,20 @@ export async function POST(request: Request, context: { params: Promise<{ action
     if (action === "signup") {
       const input = signupSchema.safeParse(body);
       if (!input.success) return failure();
-      const { error } = await supabase.auth.signUp({ ...input.data, options: { emailRedirectTo: `${siteOrigin()}/auth/callback` } });
-      if (error?.status === 429) return failure("RATE_LIMITED", 429, copy.auth.rateLimit);
-      // A neutral response avoids disclosing whether an account already exists.
-      return json({ confirmation: true });
+      const { email, password } = input.data;
+      const { error } = await supabase.auth.signUp({ email, password, options: { emailRedirectTo: `${siteOrigin()}/auth/callback?next=${encodeURIComponent(safeRedirect(input.data.next))}` } });
+      return emailResponse(error);
+    }
+    if (action === "resend") {
+      const input = schemas.resend.parse(body);
+      const { error } = await supabase.auth.resend({ type: "signup", email: input.email, options: { emailRedirectTo: `${siteOrigin()}/auth/callback?next=${encodeURIComponent(safeRedirect(input.next))}` } });
+      return emailResponse(error);
     }
     if (action === "forgot") {
       const input = forgotSchema.safeParse(body);
       if (!input.success) return failure();
-      await supabase.auth.resetPasswordForEmail(input.data.email, { redirectTo: `${siteOrigin()}/auth/callback?next=/reset-password` });
-      return json({ confirmation: true });
+      const { error } = await supabase.auth.resetPasswordForEmail(input.data.email, { redirectTo: `${siteOrigin()}/auth/callback?next=/reset-password` });
+      return emailResponse(error);
     }
     if (action === "github") {
       const input = oauthSchema.safeParse(body);

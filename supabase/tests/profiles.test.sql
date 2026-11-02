@@ -28,7 +28,7 @@ set local role authenticated;
 select set_config('request.jwt.claims','{"sub":"f0000000-0000-4000-8000-000000000001","role":"authenticated"}',true);
 insert into profile_test_results values (is((public.ensure_profile()).id, 'f0000000-0000-4000-8000-000000000001'::uuid, 'A creates only own profile'));
 insert into profile_test_results values (is((public.ensure_profile()).xp, 0::bigint, 'profile retries do not award XP'));
-insert into profile_test_results values (is((select count(*) from public.profiles), 1::bigint, 'A sees own incomplete profile'));
+insert into profile_test_results values (is((select count(*) from public.profiles where id in ('f0000000-0000-4000-8000-000000000001','f0000000-0000-4000-8000-000000000002','f0000000-0000-4000-8000-000000000003')), 1::bigint, 'A sees own incomplete fixture profile'));
 insert into profile_test_results values (is((public.update_profile('ProfileTester_A','Player A','violet')).username, 'ProfileTester_A', 'valid onboarding completes'));
 insert into profile_test_results values (throws_ok('update public.profiles set xp=999', '42501', null, 'forged XP update rejected'));
 insert into profile_test_results values (throws_ok($$select public.update_profile('!!','Player','violet')$$, '22023', 'INVALID_PROFILE', 'database validates username'));
@@ -40,7 +40,7 @@ insert into profile_test_results values (is((select display_name from public.pro
 
 set local role anon;
 select set_config('request.jwt.claims','{}',true);
-insert into profile_test_results values (is((select count(*) from public.profiles), 1::bigint, 'anonymous sees only completed profiles'));
+insert into profile_test_results values (is((select count(*) from public.profiles where id in ('f0000000-0000-4000-8000-000000000001','f0000000-0000-4000-8000-000000000002','f0000000-0000-4000-8000-000000000003')), 1::bigint, 'anonymous sees only completed fixture profiles'));
 
 set local role authenticated;
 select set_config('request.jwt.claims','{"sub":"f0000000-0000-4000-8000-000000000003","role":"authenticated"}',true);

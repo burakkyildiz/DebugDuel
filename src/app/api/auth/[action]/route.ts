@@ -6,6 +6,7 @@ import { siteOrigin } from "@/lib/env";
 import { forgotSchema, loginSchema, oauthSchema, resetSchema, signupSchema } from "@/lib/validation/auth";
 import { copy } from "@/content/copy.en";
 import { z } from "zod";
+import { githubProviderEnabled } from "@/lib/supabase/provider-settings";
 import { emailRequestResult } from "@/lib/validation/auth-errors";
 
 function emailResponse(error: { status?: number; code?: string } | null) {
@@ -61,6 +62,7 @@ export async function POST(request: Request, context: { params: Promise<{ action
     if (action === "github") {
       const input = oauthSchema.safeParse(body);
       if (!input.success) return failure();
+      if (!await githubProviderEnabled()) return failure("PROVIDER_NOT_ENABLED", 503, copy.auth.providerDisabled);
       const next = safeRedirect(input.data.next);
       const { data, error } = await supabase.auth.signInWithOAuth({ provider: "github", options: { redirectTo: `${siteOrigin()}/auth/callback?next=${encodeURIComponent(next)}`, skipBrowserRedirect: true } });
       if (error || !data.url) return failure("PROVIDER_UNAVAILABLE", 503, copy.auth.providerFailure);

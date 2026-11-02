@@ -89,3 +89,11 @@ Kullanıcı güvenli repair planına açık onay verdi ve CLI girişini kendisi 
 `migration list` yedi yerel/uzak sürümün birebir eşleştiğini doğruladı. Gitignore'daki işlem öncesi/sonrası snapshot'lar karşılaştırıldı: tablo/sütun/kısıt/indeks/policy/fonksiyon tanımı/owner/ACL/RLS değişmedi. Uzak HTTP guest Practice smoke (create, gizli çözüm, sahiplik, early reveal, answer, retry) tekrar geçti. Önceki onay bekleme kayıtları tarihsel durumdur.
 
 Son dry-run başarılı: `upToDate=true`, `migrations=[]`, `seeds=[]`, `roles=[]`. Hiçbir SQL uygulanmadı. İlk paralel CLI kontrolündeki uzun bağlantı beklemesi kesilip komut tek başına tekrarlandı ve başarıyla tamamlandı. Güvenli repair çıkış kontrolleri tamamlandı; commit/push yapılmadı.
+
+## 3 Kasım — yerel GitHub giriş hatası
+
+Kullanıcı 3002 yerel önizlemede GitHub girişinde provider-not-enabled ham JSON hatası gördü. Salt okunur ayarlar yerel Supabase'de GitHub=false, hosted projede true gösterdi. GitHub RPC başlatmadan önce provider settings kontrolü eklendi; kapalı/erişilemeyen sağlayıcıda OAuth URL'sine yönlendirmek yerine giriş kartında açıklayıcı hata gösterilir. Local OAuth credential eklenmedi ve hosted sağlayıcı ayarı değiştirilmedi.
+
+60 birim testi geçti. Gerçek tarayıcıda 3002 girişinin sayfada okunur uyarıyla kaldığı, 3000 uzak proje kullanan OAuth isteğinin başarılı URL ürettiği doğrulandı. Gerçek GitHub login/consent bu kontrolde kullanıcı adına tamamlanmadı. 3000 normal uzak proje önizlemesi yeniden açıldı; GitHub için 3002 yerine 3000 kullanılmalı. Bu takip düzeltmesi henüz commit/push edilmedi.
+
+Kullanıcının devam onayıyla GitHub provider guard takip düzeltmesi commit/push için hazırlandı: 60 birim testi, lint/typecheck ve Webpack production build geçti. Local sağlayıcı kapalıyken giriş kartında kalma ve remote OAuth URL'si kontrolü başarılı. Faz 5'e başlanmadı.

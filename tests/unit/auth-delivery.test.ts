@@ -1,6 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { emailRequestResult } from "@/lib/validation/auth-errors";
 
+const providerSettings = vi.hoisted(() => ({ githubProviderEnabled: vi.fn().mockResolvedValue(true) }));
+vi.mock("@/lib/supabase/provider-settings", () => providerSettings);
 const provider = vi.hoisted(() => ({ signUp: vi.fn(), resetPasswordForEmail: vi.fn(), resend: vi.fn() }));
 vi.mock("@/lib/supabase/server", () => ({ createClient: async () => ({ auth: provider }) }));
 vi.mock("@/lib/security/recovery", () => ({ clearRecovery: vi.fn(), validRecovery: vi.fn() }));
@@ -12,6 +14,7 @@ async function request(action: string, extra: Record<string, unknown> = {}) {
 }
 
 beforeEach(() => {
+  providerSettings.githubProviderEnabled.mockResolvedValue(true);
   vi.stubEnv("NEXT_PUBLIC_SITE_URL", "http://localhost:3000");
   for (const method of Object.values(provider)) method.mockReset().mockResolvedValue({ error: null });
 });
@@ -51,4 +54,11 @@ it("keeps only a safe canonical destination in signup and resend callbacks", asy
   expect(provider.signUp.mock.calls[0][0].options.emailRedirectTo).toBe("http://localhost:3000/auth/callback?next=%2Fprofile");
   await request("resend", { next: "/invite" });
   expect(provider.resend.mock.calls[0][0].options.emailRedirectTo).toBe("http://localhost:3000/auth/callback?next=%2Finvite");
+});
+
+it("rejects disabled GitHub before generating an OAuth URL", async () => {
+  providerSettings.githubProviderEnabled.mockResolvedValue(false);
+  const response = await POST(new Request("http://localhost:3000/api/auth/github", { method: "POST", headers: { Origin: "http://localhost:3000", "Content-Type": "application/json" }, body: JSON.stringify({ next: "/profile" }) }), { params: Promise.resolve({ action: "github" }) });
+  expect(response.status).toBe(503);
+  expect((await response.json()).error.code).toBe("PROVIDER_NOT_ENABLED");
 });

@@ -12,7 +12,7 @@ export function ProviderButton({ next }: { next: string }) {
     try {
       const response = await fetch("/api/auth/github", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ next }) });
       const data = await response.json();
-      if (!response.ok || !data.providerUrl) { setError(copy.auth.providerFailure); return; }
+      if (!response.ok || !data.providerUrl) { setError(data.error?.code === "PROVIDER_NOT_ENABLED" ? copy.auth.providerDisabled : copy.auth.providerFailure); return; }
       window.location.assign(data.providerUrl);
     } catch { setError(copy.auth.providerFailure); }
     finally { setPending(false); }

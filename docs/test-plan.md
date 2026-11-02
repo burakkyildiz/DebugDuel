@@ -26,12 +26,22 @@
 
 Faz 2'nin `a7f46a4` commit'ine ait [CI çalışmasında](https://github.com/burakkyildiz/DebugDuel/actions/runs/41446149331) quality geçti. Database job'ında pgTAP geçti; gerçek Auth E2E'si ikinci çıkıştan sonra `/profile` üzerinde kalıp ana sayfa beklentisinin süresini doldurdu. Bu nedenle önceki yerel başarı, o commit'in uzak CI başarısı sayılmaz.
 
-Dar düzeltme: çıkış düğmesi hydration tamamlanana kadar devre dışıdır; başarılı logout yanıtından sonra aynı origin'deki ana sayfaya tam belge geçişi yapar. Eşzamanlı `router.replace` / `router.refresh` kaldırıldı. E2E artık iki çıkışta da POST 200 yanıtını, gerçek document navigation'ı, girişsiz menüyü ve profile yeniden erişimde login yönlendirmesini kontrol eder. Güncellenen gerçek yerel Auth zinciri geçti; lint ve 46 birim testi geçti. Düzeltmenin uzak CI sonucu ilgili yeni commit'in Actions kaydından doğrulanmalıdır.
+Dar düzeltme: çıkış düğmesi hydration tamamlanana kadar devre dışıdır; başarılı logout yanıtından sonra aynı origin'deki ana sayfaya tam belge geçişi yapar. Eşzamanlı `router.replace` / `router.refresh` kaldırıldı. E2E artık iki çıkışta da POST 200 yanıtını, gerçek document navigation'ı, girişsiz menüyü ve profile yeniden erişimde login yönlendirmesini kontrol eder. Güncellenen gerçek yerel Auth zinciri geçti; lint ve 46 birim testi geçti. Düzeltme `998c828` ile push edildi; [CI 41452141699](https://github.com/burakkyildiz/DebugDuel/actions/runs/41452141699) **Success**: quality 1m 21s, database 4m 14s. Gerçek Auth E2E uzak runner üzerinde de geçti.
 
 Workflow yalnızca varsayılan GitHub runner'larını kullanır; ücretsiz Actions kotası ve hesap harcama ayarları kontrol edilir, ücretli runner veya production secret kullanılmaz. Quality job lint/types/unit/build ve başlangıç E2E; database job Docker üstünde sıfırdan Supabase/migration/pgTAP ve gerçek yerel Auth E2E çalıştırır. Fork koduna üretim sırları verilmez.
 
 ## Sonraki fazlarda zorunlu
 
-Şartnamenin bölüm 20'sindeki bütün testler geçerlidir. Henüz eksik: 30 sorunun içerik yürütme denetimi; guest çerezi ve oturum izolasyonu; tek koltuk/tek aktif oda yarışları; ready/answer/idempotency yarışları; cron ve kullanıcı komutu çakışması; deadline sonrası red; üç turluk iki browser context akışı; özel Realtime üçüncü kişi reddi; XP ledger/kota/idempotent settlement; reconnect/forfeit ve altyapı abort; 45 saniyelik gerçek smoke maç.
+Şartnamenin bölüm 20'sindeki bütün testler geçerlidir. Faz 3’te 30 sorunun içerik yürütme denetimi eklendi; aşağıdaki Faz 3 kaydına bak. Henüz eksik: guest çerezi ve oturum izolasyonu; tek koltuk/tek aktif oda yarışları; ready/answer/idempotency yarışları; cron ve kullanıcı komutu çakışması; deadline sonrası red; üç turluk iki browser context akışı; özel Realtime üçüncü kişi reddi; XP ledger/kota/idempotent settlement; reconnect/forfeit ve altyapı abort; 45 saniyelik gerçek smoke maç.
 
 GitHub OAuth gerçek hesapla doğrulandı; yerel e-posta/PKCE/recovery de geçti. Uzak/üretim e-posta teslimi ayrıca doğrulanır. Üretime yayın için bütün AC maddeleri ve iki farklı cihaz smoke kanıtı gerekir.
+
+## Faz 3 — yerel DB ve içerik
+
+`pnpm test:questions`: 30 soru, 81 davranış vakası; her hatalı sürüm için karşı örnek, her düzeltilmiş sürüm için tüm vakaların geçmesi; LF/satır/tek düzeltme/bölünmüş havuzlar/seed sapması denetimi. CI quality job'ına Python 3.12 ve bu komut eklendi.
+
+`pnpm test:db`: 369 pgTAP testi. Yeni test dosyası gerçek anon/A/B/C bağlamlarında RLS/GRANT/EXECUTE ve katılımcı izolasyonu ile şema bütünlüğünü test eder. Fixture'lar ve test içi geçici rol grant'i transaction sonunda rollback edilir. Profil/Auth testleri korunur.
+
+`pnpm test:db:clean`: ayrı rastgele project ID / 55322 portunda sıfırdan migration + seed + pgTAP; seed tekrarı ardından tekrar pgTAP. Sadece kendi oluşturduğu test konteyner/volume'ünü kaldırır. Geliştirme verisi korunur. Her iki tur başarılıdır.
+
+48 birim testi (katalog import sınırı ve Data API şema kontrolü dahil), lint, typecheck, Webpack production build ve production build üzerinde 8 desktop/mobile foundation E2E; yerel security/performance advisor uyarısız. Bu fazda Auth E2E ayrıca yeniden koşulmadı; önceki Faz 2 kanıtı tarihsel olarak korunur. Motor yarışı, guest erişimi, Realtime ve Cron henüz test edilmedi. Ayrıntılar [Faz 3 raporunda](PHASE_3_REPORT.md).

@@ -22,7 +22,11 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
       - run: pnpm typecheck
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
       - run: pnpm test
+      - run: pnpm test:questions
       - run: pnpm build
       - run: pnpm exec playwright install --with-deps chromium
       - name: Run application and foundation browser tests

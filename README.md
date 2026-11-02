@@ -8,11 +8,12 @@ Ana kaynak: [proje şartnamesi](docs/DEBUG_DUEL_PROJECT_SPEC.md). Çalışma yö
 
 Başlangıç temeli hazır: Next.js iskeleti, koyu/mor responsive ana sayfa, giriş/kayıt/recovery ekranları ve Auth handler'ları, gerçek Supabase profil tablosu ve kontrollü profil güncelleme fonksiyonları. Leaderboard ilk 25 gerçek kaydı okur; henüz maç olmadığından doğal boş durum gösterir.
 
-**Oyun henüz oynanabilir değildir.** Practice ve özel düello ekranları açık hazırlık durumu gösterir. 30 soruluk banka, Practice, üç turluk atomik motor, özel Realtime, Cron ve XP settlement sonraki fazlardır. Mevcut Auth kodu gerçek sağlayıcı smoke testleri tamamlanmadan üretime hazır sayılmaz.
+**Oyun henüz oynanabilir değildir.** Practice ve özel düello ekranları açık hazırlık durumu gösterir. 30 soruluk özel banka ve oyun şeması yerelde hazırdır. Practice akışı, üç turluk atomik motor, özel Realtime, Cron ve XP settlement sonraki fazlardır. Faz 3 kanıtları ve hosted ortam sınırı [Faz 3 raporundadır](docs/PHASE_3_REPORT.md). Mevcut Auth kodu gerçek sağlayıcı smoke testleri tamamlanmadan üretime hazır sayılmaz.
 
 ## Gereksinimler
 
 - Node.js `24.12.0` (`.nvmrc`), pnpm `11.25.0`.
+- Soru içerik denetimi için Python 3 (CI: 3.12), ek Python paketi gerekmez.
 - Yerel Supabase/DB testleri için çalışan Docker. Supabase CLI `2.122.0` geliştirme bağımlılığıdır.
 - Dış servisler yalnızca ücretsiz planda kullanılabilir. Ücretli branch, compute, SMTP veya plan yükseltmesi yapılmaz.
 
@@ -51,12 +52,20 @@ GitHub OAuth yerel ayarlarında sağlayıcıyı ayrıca etkinleştir; OAuth clie
 pnpm lint
 pnpm typecheck
 pnpm test
+pnpm test:questions
 pnpm test:db
+pnpm test:db:clean
 pnpm build
 pnpm exec playwright install chromium
 pnpm test:e2e
 pnpm test:auth:local
 ```
+
+`test:questions`, güvenilir repository kodunun hatalı/düzeltilmiş sürümlerini 81 davranış vakasında denetler; API kullanıcı kodu çalıştırmaz. Soru ekleme/düzenleme için `supabase/questions/catalog.json` kullan, yeni içerik için version artır; `python3 scripts/check-questions.py --write-seed` ile seed üret ve farkı incele. Uygulamaya katalog import etme.
+
+`test:db:clean` Docker ile ayrı rastgele proje kimliğinde ve 55322 portunda temiz DB kurar, migration/seed/test ve seed tekrarını doğrular, yalnızca kendi geçici ortamını kaldırır. Geliştirme DB'sine reset atmaz.
+
+Mevcut DB'de yeni migration ve seed uygulamak için: `pnpm exec supabase migration up --local`, ardından `pnpm exec supabase db query --local --file supabase/seed.sql`. Tipler: `pnpm db:types`. Bu oturumun Faz 3 migration'ları hosted projeye uygulanmadı.
 
 `test:db` çalışan yerel Supabase ister. E2E'den önce ayrı terminalde `pnpm dev` başlat; varsayılan test URL'si `http://localhost:3000`, gerekirse `PLAYWRIGHT_BASE_URL` kullan. Başlangıç E2E testleri sayfa akışları, erişim yönlendirmesi, Origin/gövde doğrulaması ve 320 px taşmayı kapsar; gerçek düello testi değildir. CI uygulamayı ayrıca başlatır. Mevcut test kanıtları ve kalan testler [test planında](docs/test-plan.md).
 
@@ -67,7 +76,7 @@ pnpm test:auth:local
 - İstemciler profil tablosunu doğrudan yazamaz. Profil komutları yalnızca doğrulanmış ve etkin hesabı değiştirir; XP/istatistikler bu fonksiyonlarla değişmez.
 - Kullanıcı adı ASCII 3–20 karakterdir; büyük/küçük harf duyarsız benzersizdir.
 - Özel yardımcılar Data API'ye açılmaz; profil motoru NOLOGIN rolüdür. Korumalı Supabase Auth tablosunu okuyan dar, argümansız adaptörün ayrıcalık gerekçesi [karar kaydında](docs/decisions.md).
-- Şema tipleri Supabase projesinden üretildi; migration dosyalarının sürümleri uzaktaki gerçek migration kayıtlarıyla eşleştirildi.
+- Public şema tipleri güncel yerel Supabase'den üretildi. İlk üç profil migration'ı hosted geçmişle eşleşir; yeni Faz 3 migration'ları yalnızca yerelde uygulandı.
 - Manuel hesap silme talebi için proje sahibine başvurulur. Üretime açılmadan önce devre dışı bırakma, oturum sonlandırma, profil/gelecek maç geçmişi anonimleştirme prosedürü tamamlanmalıdır. FK'ler geçmişi cascade ile silmez.
 
 ## Dizinler

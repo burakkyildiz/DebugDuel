@@ -12,3 +12,13 @@
 - Tarayıcı Python çalıştırmaz. Oyun motoru ve soru doğruluğu veritabanındadır; istemci yalnızca güvenli DTO alır.
 - Build, bu çalışma ortamında Turbopack'in port açma kısıtına takılması nedeniyle Next.js'in desteklenen Webpack derleyicisiyle doğrulandı; `pnpm build` bunu kullanır.
 - Supabase `auth.users` tablosu platforma aittir ve RLS'si istemci rolleri için policy içermez. Profil yazıcısı minimum tablo/sütun izinli NOLOGIN rolündedir. Doğrulanmış, aktif aktörü okumak için tek istisna `private.verified_actor_id()` adlı argümansız, salt okunur, sabit search_path'li ve postgres sahibi yardımcıdır. Bu fonksiyonu anon/authenticated çalıştıramaz; yalnızca profil yazıcısı çağırabilir. Auth tablosuna geniş istemci policy'si eklenmez. Bu platform sınırı sonraki güvenlik incelemelerinde ayrıca korunmalıdır.
+
+## 2026-11-02 — Faz 3
+
+- Kullanıcı Faz 3'ü açıkça başlattı; sonraki faz, commit/push ve production yayın yetkisi çıkarılmadı.
+- Oyun depolaması ayrı NOLOGIN/NOINHERIT `debug_duel_game_engine` rolündedir; istemci üye değildir, profil/XP yazma izni ve Auth adaptörü erişimi yoktur. Kullanıcı motor RPC'leri ilgili dikey akışlarla eklenecek.
+- Soru içerikleri private DB şemasında, güvenilir kaynak katalog ise yalnızca `supabase/questions` altında tutulur. Seed üretimi ve 81 Python davranış vakası yerel/CI aracıdır; uygulama runtime'ına bağlanmaz.
+- Soru sürümü ve snapshot içeriği değişmezdir; cevap, snapshot, settlement ve ledger için oyun rolünde UPDATE/DELETE kapalıdır. Soruya yalnızca `is_active` sütununda UPDATE verilir.
+- Seed tekrarında içerik sapmasını gizleyen DO NOTHING yerine aynı alanları karşılaştırmaya zorlayan upsert ve immutable-version trigger kullanılır; mevcut pasiflik korunur.
+- Temiz kurulum testi mevcut DB'yi resetlemez; ayrı rastgele yerel proje/port oluşturur ve yalnızca kendi kaynaklarını kaldırır. Hosted geliştirme projesine bu fazda yazılmadı.
+- Ayrıntılı test ve sınırlar: [Faz 3 raporu](PHASE_3_REPORT.md).

@@ -1,0 +1,653 @@
+[
+  {
+    "slug": "sum-readings",
+    "version": 1,
+    "pool": "duel",
+    "language": "python",
+    "difficulty": "easy",
+    "title": "Sum the readings",
+    "prompt": "Return the sum of all integer readings; an empty list totals zero.",
+    "code": "def sum_readings(readings):\n    total = 0\n    for reading in readings:\n        total = reading\n    return total",
+    "line_count": 5,
+    "correct_line": 4,
+    "explanation": "The accumulator is overwritten on each iteration. Add each reading to preserve the running total.",
+    "corrected_code": "def sum_readings(readings):\n    total = 0\n    for reading in readings:\n        total += reading\n    return total",
+    "tags": [
+      "sum"
+    ],
+    "tests": [
+      "assert sum_readings([2, 3, 4]) == 9",
+      "assert sum_readings([]) == 0",
+      "assert sum_readings([-2, 2]) == 0"
+    ]
+  },
+  {
+    "slug": "count-even",
+    "version": 1,
+    "pool": "duel",
+    "language": "python",
+    "difficulty": "easy",
+    "title": "Count even values",
+    "prompt": "Count even integers, including zero and negative even integers.",
+    "code": "def count_even(values):\n    count = 0\n    for value in values:\n        if value % 2 == 1:\n            count += 1\n    return count",
+    "line_count": 6,
+    "correct_line": 4,
+    "explanation": "A remainder of one identifies odd values. Even integers have a remainder of zero.",
+    "corrected_code": "def count_even(values):\n    count = 0\n    for value in values:\n        if value % 2 == 0:\n            count += 1\n    return count",
+    "tags": [
+      "count"
+    ],
+    "tests": [
+      "assert count_even([0, 2, 3, -4]) == 3",
+      "assert count_even([]) == 0"
+    ]
+  },
+  {
+    "slug": "inclusive-total",
+    "version": 1,
+    "pool": "duel",
+    "language": "python",
+    "difficulty": "easy",
+    "title": "Include the upper bound",
+    "prompt": "For a nonnegative integer n, sum every integer from 1 through n, inclusive.",
+    "code": "def inclusive_total(n):\n    total = 0\n    for value in range(1, n):\n        total += value\n    return total",
+    "line_count": 5,
+    "correct_line": 3,
+    "explanation": "The stop bound of range is exclusive, so n is omitted unless the bound is n + 1.",
+    "corrected_code": "def inclusive_total(n):\n    total = 0\n    for value in range(1, n + 1):\n        total += value\n    return total",
+    "tags": [
+      "inclusive"
+    ],
+    "tests": [
+      "assert inclusive_total(4) == 10",
+      "assert inclusive_total(0) == 0",
+      "assert inclusive_total(1) == 1"
+    ]
+  },
+  {
+    "slug": "largest-negative",
+    "version": 1,
+    "pool": "duel",
+    "language": "python",
+    "difficulty": "easy",
+    "title": "Largest reading",
+    "prompt": "Return the largest number in a nonempty list; all values may be negative.",
+    "code": "def largest(values):\n    best = 0\n    for value in values:\n        if value > best:\n            best = value\n    return best",
+    "line_count": 6,
+    "correct_line": 2,
+    "explanation": "Zero is not a valid starting maximum when all inputs are negative. Start with an actual list element.",
+    "corrected_code": "def largest(values):\n    best = values[0]\n    for value in values:\n        if value > best:\n            best = value\n    return best",
+    "tags": [
+      "largest"
+    ],
+    "tests": [
+      "assert largest([-8, -3, -5]) == -3",
+      "assert largest([2, 9, 1]) == 9"
+    ]
+  },
+  {
+    "slug": "first-position",
+    "version": 1,
+    "pool": "duel",
+    "language": "python",
+    "difficulty": "easy",
+    "title": "First matching position",
+    "prompt": "Return the zero-based index of the first target, or -1 when absent.",
+    "code": "def first_position(values, target):\n    found = -1\n    for index, value in enumerate(values):\n        if value == target:\n            found = index\n    return found",
+    "line_count": 6,
+    "correct_line": 5,
+    "explanation": "Overwriting found on every match returns the last occurrence. Return immediately at the first match.",
+    "corrected_code": "def first_position(values, target):\n    found = -1\n    for index, value in enumerate(values):\n        if value == target:\n            return index\n    return found",
+    "tags": [
+      "first"
+    ],
+    "tests": [
+      "assert first_position([4, 7, 4], 4) == 0",
+      "assert first_position([], 4) == -1"
+    ]
+  },
+  {
+    "slug": "balanced-brackets",
+    "version": 1,
+    "pool": "duel",
+    "language": "python",
+    "difficulty": "medium",
+    "title": "Balanced parentheses",
+    "prompt": "For a string containing only parentheses, return whether every prefix and the whole string are balanced.",
+    "code": "def balanced(text):\n    depth = 0\n    for char in text:\n        depth += 1 if char == '(' else -1\n        if depth < 0:\n            return False\n    return depth >= 0",
+    "line_count": 7,
+    "correct_line": 7,
+    "explanation": "A nonnegative final depth may leave unclosed parentheses. A balanced string must finish at exactly zero.",
+    "corrected_code": "def balanced(text):\n    depth = 0\n    for char in text:\n        depth += 1 if char == '(' else -1\n        if depth < 0:\n            return False\n    return depth == 0",
+    "tags": [
+      "balanced"
+    ],
+    "tests": [
+      "assert balanced('(()') is False",
+      "assert balanced('()()') is True",
+      "assert balanced(')(') is False",
+      "assert balanced('') is True"
+    ]
+  },
+  {
+    "slug": "merge-touching",
+    "version": 1,
+    "pool": "duel",
+    "language": "python",
+    "difficulty": "medium",
+    "title": "Merge touching intervals",
+    "prompt": "Merge sorted closed intervals; intervals sharing an endpoint must merge. Empty input returns [].",
+    "code": "def merge_intervals(intervals):\n    result = []\n    for start, end in intervals:\n        if result and start < result[-1][1]:\n            result[-1][1] = max(result[-1][1], end)\n        else:\n            result.append([start, end])\n    return result",
+    "line_count": 8,
+    "correct_line": 4,
+    "explanation": "Closed intervals overlap at equal endpoints too. Include equality in the overlap test.",
+    "corrected_code": "def merge_intervals(intervals):\n    result = []\n    for start, end in intervals:\n        if result and start <= result[-1][1]:\n            result[-1][1] = max(result[-1][1], end)\n        else:\n            result.append([start, end])\n    return result",
+    "tags": [
+      "merge"
+    ],
+    "tests": [
+      "assert merge_intervals([(1, 3), (3, 5)]) == [[1, 5]]",
+      "assert merge_intervals([]) == []",
+      "assert merge_intervals([(1, 2), (4, 5)]) == [[1, 2], [4, 5]]"
+    ]
+  },
+  {
+    "slug": "run-length",
+    "version": 1,
+    "pool": "duel",
+    "language": "python",
+    "difficulty": "medium",
+    "title": "Run length encoding",
+    "prompt": "Return (character, count) pairs for adjacent runs, including the last run.",
+    "code": "def encode_runs(text):\n    result = []\n    index = 0\n    while index < len(text):\n        end = index + 1\n        while end < len(text) and text[end] == text[index]:\n            end += 1\n        result.append((text[index], end - index - 1))\n        index = end\n    return result",
+    "line_count": 10,
+    "correct_line": 8,
+    "explanation": "The run occupies indices index through end - 1. Its length is end - index, without another subtraction.",
+    "corrected_code": "def encode_runs(text):\n    result = []\n    index = 0\n    while index < len(text):\n        end = index + 1\n        while end < len(text) and text[end] == text[index]:\n            end += 1\n        result.append((text[index], end - index))\n        index = end\n    return result",
+    "tags": [
+      "run"
+    ],
+    "tests": [
+      "assert encode_runs('aaabbc') == [('a', 3), ('b', 2), ('c', 1)]",
+      "assert encode_runs('') == []"
+    ]
+  },
+  {
+    "slug": "unique-order",
+    "version": 1,
+    "pool": "duel",
+    "language": "python",
+    "difficulty": "medium",
+    "title": "Keep first occurrences",
+    "prompt": "Remove duplicate hashable values while preserving their first-occurrence order.",
+    "code": "def unique_order(values):\n    seen = set()\n    result = []\n    for value in values:\n        if value in seen:\n            result.append(value)\n            seen.add(value)\n    return result",
+    "line_count": 8,
+    "correct_line": 5,
+    "explanation": "Only values not yet seen should be appended. The reversed condition prevents any first occurrence from entering the result.",
+    "corrected_code": "def unique_order(values):\n    seen = set()\n    result = []\n    for value in values:\n        if value not in seen:\n            result.append(value)\n            seen.add(value)\n    return result",
+    "tags": [
+      "unique"
+    ],
+    "tests": [
+      "assert unique_order([3, 1, 3, 2, 1]) == [3, 1, 2]",
+      "assert unique_order([]) == []"
+    ]
+  },
+  {
+    "slug": "window-sums",
+    "version": 1,
+    "pool": "duel",
+    "language": "python",
+    "difficulty": "medium",
+    "title": "Fixed window sums",
+    "prompt": "For 1 <= width <= len(values), return the sum of each consecutive window of that width.",
+    "code": "def window_sums(values, width):\n    total = sum(values[:width])\n    result = [total]\n    for index in range(width, len(values)):\n        total += values[index]\n        total -= values[index - width + 1]\n        result.append(total)\n    return result",
+    "line_count": 8,
+    "correct_line": 6,
+    "explanation": "The element leaving the window is width positions before the new element. The extra +1 removes a retained element.",
+    "corrected_code": "def window_sums(values, width):\n    total = sum(values[:width])\n    result = [total]\n    for index in range(width, len(values)):\n        total += values[index]\n        total -= values[index - width]\n        result.append(total)\n    return result",
+    "tags": [
+      "window"
+    ],
+    "tests": [
+      "assert window_sums([1, 2, 3, 4], 2) == [3, 5, 7]",
+      "assert window_sums([2, 5], 1) == [2, 5]",
+      "assert window_sums([1, 2], 2) == [3]"
+    ]
+  },
+  {
+    "slug": "lower-bound",
+    "version": 1,
+    "pool": "duel",
+    "language": "python",
+    "difficulty": "hard",
+    "title": "First insertion position",
+    "prompt": "For a sorted list, return the first index whose value is >= target, or len(values) if none.",
+    "code": "def lower_bound(values, target):\n    left, right = 0, len(values)\n    while left < right:\n        middle = (left + right) // 2\n        if values[middle] <= target:\n            left = middle + 1\n        else:\n            right = middle\n    return left",
+    "line_count": 9,
+    "correct_line": 5,
+    "explanation": "Advancing past equality finds the upper bound. Keep equal values in the candidate interval for the first insertion position.",
+    "corrected_code": "def lower_bound(values, target):\n    left, right = 0, len(values)\n    while left < right:\n        middle = (left + right) // 2\n        if values[middle] < target:\n            left = middle + 1\n        else:\n            right = middle\n    return left",
+    "tags": [
+      "lower"
+    ],
+    "tests": [
+      "assert lower_bound([1, 2, 2, 4], 2) == 1",
+      "assert lower_bound([], 2) == 0",
+      "assert lower_bound([1, 2], 3) == 2"
+    ]
+  },
+  {
+    "slug": "grid-paths",
+    "version": 1,
+    "pool": "duel",
+    "language": "python",
+    "difficulty": "hard",
+    "title": "Count grid paths",
+    "prompt": "Count right/down paths through an unblocked rows-by-cols grid of positive dimensions.",
+    "code": "def grid_paths(rows, cols):\n    paths = [1] * cols\n    for row in range(1, rows):\n        for col in range(1, cols):\n            paths[col] = paths[col - 1]\n    return paths[-1]",
+    "line_count": 6,
+    "correct_line": 5,
+    "explanation": "Each cell is reachable from above and from the left. Add the left count to the stored above count instead of discarding it.",
+    "corrected_code": "def grid_paths(rows, cols):\n    paths = [1] * cols\n    for row in range(1, rows):\n        for col in range(1, cols):\n            paths[col] += paths[col - 1]\n    return paths[-1]",
+    "tags": [
+      "grid"
+    ],
+    "tests": [
+      "assert grid_paths(3, 3) == 6",
+      "assert grid_paths(1, 4) == 1",
+      "assert grid_paths(2, 3) == 3"
+    ]
+  },
+  {
+    "slug": "topological-order",
+    "version": 1,
+    "pool": "duel",
+    "language": "python",
+    "difficulty": "hard",
+    "title": "Dependency ordering",
+    "prompt": "Return a topological ordering of a DAG whose vertices are 0..n-1 and edges point from prerequisites to dependents.",
+    "code": "def dependency_order(n, edges):\n    outgoing = [[] for _ in range(n)]\n    degree = [0] * n\n    for source, target in edges:\n        outgoing[source].append(target)\n        degree[source] += 1\n    queue = [node for node in range(n) if degree[node] == 0]\n    order = []\n    for node in queue:\n        order.append(node)\n        for target in outgoing[node]:\n            degree[target] -= 1\n            if degree[target] == 0:\n                queue.append(target)\n    return order",
+    "line_count": 15,
+    "correct_line": 6,
+    "explanation": "In-degree counts incoming edges at the target, not outgoing edges at the source. The queue must begin with prerequisite-free vertices.",
+    "corrected_code": "def dependency_order(n, edges):\n    outgoing = [[] for _ in range(n)]\n    degree = [0] * n\n    for source, target in edges:\n        outgoing[source].append(target)\n        degree[target] += 1\n    queue = [node for node in range(n) if degree[node] == 0]\n    order = []\n    for node in queue:\n        order.append(node)\n        for target in outgoing[node]:\n            degree[target] -= 1\n            if degree[target] == 0:\n                queue.append(target)\n    return order",
+    "tags": [
+      "topological"
+    ],
+    "tests": [
+      "assert dependency_order(3, [(0, 1), (1, 2)]) == [0, 1, 2]",
+      "assert dependency_order(1, []) == [0]"
+    ]
+  },
+  {
+    "slug": "longest-distinct",
+    "version": 1,
+    "pool": "duel",
+    "language": "python",
+    "difficulty": "hard",
+    "title": "Longest distinct substring",
+    "prompt": "Return the maximum length of a contiguous substring with no repeated character.",
+    "code": "def longest_distinct(text):\n    seen = {}\n    left = 0\n    best = 0\n    for right, char in enumerate(text):\n        if char in seen:\n            left = seen[char] + 1\n        seen[char] = right\n        best = max(best, right - left + 1)\n    return best",
+    "line_count": 10,
+    "correct_line": 7,
+    "explanation": "A repeat before the current window must not move its left edge backward. Keep left monotonic using max.",
+    "corrected_code": "def longest_distinct(text):\n    seen = {}\n    left = 0\n    best = 0\n    for right, char in enumerate(text):\n        if char in seen:\n            left = max(left, seen[char] + 1)\n        seen[char] = right\n        best = max(best, right - left + 1)\n    return best",
+    "tags": [
+      "longest"
+    ],
+    "tests": [
+      "assert longest_distinct('abba') == 2",
+      "assert longest_distinct('abcabcbb') == 3",
+      "assert longest_distinct('') == 0"
+    ]
+  },
+  {
+    "slug": "minimum-coins",
+    "version": 1,
+    "pool": "duel",
+    "language": "python",
+    "difficulty": "hard",
+    "title": "Minimum coin count",
+    "prompt": "For positive coin denominations and nonnegative amount, return the fewest coins, or -1 if impossible. Coins may be reused.",
+    "code": "def minimum_coins(coins, amount):\n    unreachable = amount + 1\n    counts = [0] + [unreachable] * amount\n    for subtotal in range(1, amount + 1):\n        for coin in coins:\n            if coin <= subtotal:\n                counts[subtotal] = min(counts[subtotal], counts[subtotal - coin])\n    return -1 if counts[amount] == unreachable else counts[amount]",
+    "line_count": 8,
+    "correct_line": 7,
+    "explanation": "Extending a solution by one coin costs one additional coin. Without +1, reachable amounts incorrectly cost zero.",
+    "corrected_code": "def minimum_coins(coins, amount):\n    unreachable = amount + 1\n    counts = [0] + [unreachable] * amount\n    for subtotal in range(1, amount + 1):\n        for coin in coins:\n            if coin <= subtotal:\n                counts[subtotal] = min(counts[subtotal], counts[subtotal - coin] + 1)\n    return -1 if counts[amount] == unreachable else counts[amount]",
+    "tags": [
+      "minimum"
+    ],
+    "tests": [
+      "assert minimum_coins([1, 3, 4], 6) == 2",
+      "assert minimum_coins([2], 3) == -1",
+      "assert minimum_coins([2], 0) == 0"
+    ]
+  },
+  {
+    "slug": "ticket-product",
+    "version": 1,
+    "pool": "practice",
+    "language": "python",
+    "difficulty": "easy",
+    "title": "Ticket bundle price",
+    "prompt": "Multiply all positive ticket multipliers. The empty bundle has product 1.",
+    "code": "def bundle_product(multipliers):\n    product = 0\n    for multiplier in multipliers:\n        product *= multiplier\n    return product",
+    "line_count": 5,
+    "correct_line": 2,
+    "explanation": "Multiplication must start at the identity value 1. Starting at zero forces every product to zero.",
+    "corrected_code": "def bundle_product(multipliers):\n    product = 1\n    for multiplier in multipliers:\n        product *= multiplier\n    return product",
+    "tags": [
+      "ticket"
+    ],
+    "tests": [
+      "assert bundle_product([2, 3, 4]) == 24",
+      "assert bundle_product([]) == 1"
+    ]
+  },
+  {
+    "slug": "passing-grade",
+    "version": 1,
+    "pool": "practice",
+    "language": "python",
+    "difficulty": "easy",
+    "title": "Passing grades",
+    "prompt": "Return the grades meeting the inclusive passing threshold.",
+    "code": "def passing_grades(grades, threshold):\n    passed = []\n    for grade in grades:\n        if grade > threshold:\n            passed.append(grade)\n    return passed",
+    "line_count": 6,
+    "correct_line": 4,
+    "explanation": "A grade equal to the passing threshold also passes. The strict comparison drops that boundary.",
+    "corrected_code": "def passing_grades(grades, threshold):\n    passed = []\n    for grade in grades:\n        if grade >= threshold:\n            passed.append(grade)\n    return passed",
+    "tags": [
+      "passing"
+    ],
+    "tests": [
+      "assert passing_grades([49, 50, 80], 50) == [50, 80]",
+      "assert passing_grades([], 50) == []"
+    ]
+  },
+  {
+    "slug": "reverse-copy",
+    "version": 1,
+    "pool": "practice",
+    "language": "python",
+    "difficulty": "easy",
+    "title": "Reverse a copy",
+    "prompt": "Return all list elements in reverse order without modifying the original.",
+    "code": "def reverse_copy(values):\n    result = []\n    for index in range(len(values) - 1, 0, -1):\n        result.append(values[index])\n    return result",
+    "line_count": 5,
+    "correct_line": 3,
+    "explanation": "The descending range excludes its stop. Stop at -1 to visit index zero too.",
+    "corrected_code": "def reverse_copy(values):\n    result = []\n    for index in range(len(values) - 1, -1, -1):\n        result.append(values[index])\n    return result",
+    "tags": [
+      "reverse"
+    ],
+    "tests": [
+      "assert reverse_copy([1, 2, 3]) == [3, 2, 1]",
+      "assert reverse_copy([8]) == [8]",
+      "assert reverse_copy([]) == []"
+    ]
+  },
+  {
+    "slug": "valid-temperature",
+    "version": 1,
+    "pool": "practice",
+    "language": "python",
+    "difficulty": "easy",
+    "title": "Valid temperatures",
+    "prompt": "Keep temperatures in the inclusive interval from low to high, where low <= high.",
+    "code": "def valid_temperatures(values, low, high):\n    result = []\n    for value in values:\n        if value >= low or value <= high:\n            result.append(value)\n    return result",
+    "line_count": 6,
+    "correct_line": 4,
+    "explanation": "Both bounds must hold simultaneously. Using or accepts values outside either end of the interval.",
+    "corrected_code": "def valid_temperatures(values, low, high):\n    result = []\n    for value in values:\n        if value >= low and value <= high:\n            result.append(value)\n    return result",
+    "tags": [
+      "valid"
+    ],
+    "tests": [
+      "assert valid_temperatures([-5, 0, 5, 10, 15], 0, 10) == [0, 5, 10]",
+      "assert valid_temperatures([], 0, 1) == []"
+    ]
+  },
+  {
+    "slug": "all-positive",
+    "version": 1,
+    "pool": "practice",
+    "language": "python",
+    "difficulty": "easy",
+    "title": "All readings positive",
+    "prompt": "Return True only if every value is strictly positive; the empty list satisfies this condition.",
+    "code": "def all_positive(values):\n    valid = True\n    for value in values:\n        if value <= 0:\n            valid = True\n    return valid",
+    "line_count": 6,
+    "correct_line": 5,
+    "explanation": "Finding any zero or negative value must invalidate the result. The current assignment leaves it true.",
+    "corrected_code": "def all_positive(values):\n    valid = True\n    for value in values:\n        if value <= 0:\n            valid = False\n    return valid",
+    "tags": [
+      "all"
+    ],
+    "tests": [
+      "assert all_positive([1, 0, 3]) is False",
+      "assert all_positive([1, 2]) is True",
+      "assert all_positive([]) is True"
+    ]
+  },
+  {
+    "slug": "word-frequency",
+    "version": 1,
+    "pool": "practice",
+    "language": "python",
+    "difficulty": "medium",
+    "title": "Word frequencies",
+    "prompt": "Count each whitespace-separated word case-insensitively; return a dictionary with lowercase keys.",
+    "code": "def word_frequency(text):\n    counts = {}\n    for word in text.lower().split():\n        previous = counts.get(word, 0)\n        counts[word] = previous\n    return counts",
+    "line_count": 6,
+    "correct_line": 5,
+    "explanation": "Each occurrence adds one to the previous frequency. Reassigning the old count never counts the current word.",
+    "corrected_code": "def word_frequency(text):\n    counts = {}\n    for word in text.lower().split():\n        previous = counts.get(word, 0)\n        counts[word] = previous + 1\n    return counts",
+    "tags": [
+      "word"
+    ],
+    "tests": [
+      "assert word_frequency('Red blue RED') == {'red': 2, 'blue': 1}",
+      "assert word_frequency('') == {}"
+    ]
+  },
+  {
+    "slug": "transpose-grid",
+    "version": 1,
+    "pool": "practice",
+    "language": "python",
+    "difficulty": "medium",
+    "title": "Transpose a matrix",
+    "prompt": "Return the transpose of a nonempty rectangular matrix with at least one column.",
+    "code": "def transpose(matrix):\n    rows = len(matrix)\n    cols = len(matrix[0])\n    result = []\n    for col in range(cols):\n        column = []\n        for row in range(rows):\n            column.append(matrix[col][row])\n        result.append(column)\n    return result",
+    "line_count": 10,
+    "correct_line": 8,
+    "explanation": "Read the original matrix by row first, then column. Reversing those indices repeats the original layout for square matrices and may fail for rectangles.",
+    "corrected_code": "def transpose(matrix):\n    rows = len(matrix)\n    cols = len(matrix[0])\n    result = []\n    for col in range(cols):\n        column = []\n        for row in range(rows):\n            column.append(matrix[row][col])\n        result.append(column)\n    return result",
+    "tags": [
+      "transpose"
+    ],
+    "tests": [
+      "assert transpose([[1, 2], [3, 4]]) == [[1, 3], [2, 4]]",
+      "assert transpose([[1, 2, 3]]) == [[1], [2], [3]]"
+    ]
+  },
+  {
+    "slug": "rotate-right",
+    "version": 1,
+    "pool": "practice",
+    "language": "python",
+    "difficulty": "medium",
+    "title": "Rotate a list right",
+    "prompt": "Rotate values right by nonnegative steps. Return a new list and handle empty input.",
+    "code": "def rotate_right(values, steps):\n    if not values:\n        return []\n    shift = steps % len(values)\n    tail = values[-shift:]\n    head = values[:-shift]\n    return head + tail",
+    "line_count": 7,
+    "correct_line": 7,
+    "explanation": "The removed tail must precede the old head after a right rotation. Joining head then tail leaves the original order.",
+    "corrected_code": "def rotate_right(values, steps):\n    if not values:\n        return []\n    shift = steps % len(values)\n    tail = values[-shift:]\n    head = values[:-shift]\n    return tail + head",
+    "tags": [
+      "rotate"
+    ],
+    "tests": [
+      "assert rotate_right([1, 2, 3, 4], 1) == [4, 1, 2, 3]",
+      "assert rotate_right([1, 2], 0) == [1, 2]",
+      "assert rotate_right([], 3) == []"
+    ]
+  },
+  {
+    "slug": "pair-target",
+    "version": 1,
+    "pool": "practice",
+    "language": "python",
+    "difficulty": "medium",
+    "title": "Pair with a target sum",
+    "prompt": "Return whether two distinct indices sum to target; input is a list of integers.",
+    "code": "def has_pair(values, target):\n    for left in range(len(values)):\n        for right in range(left, len(values)):\n            if values[left] + values[right] == target:\n                return True\n    return False",
+    "line_count": 6,
+    "correct_line": 3,
+    "explanation": "The second index must be strictly greater than the first. Starting at left allows one element to pair with itself.",
+    "corrected_code": "def has_pair(values, target):\n    for left in range(len(values)):\n        for right in range(left + 1, len(values)):\n            if values[left] + values[right] == target:\n                return True\n    return False",
+    "tags": [
+      "pair"
+    ],
+    "tests": [
+      "assert has_pair([3], 6) is False",
+      "assert has_pair([3, 3], 6) is True",
+      "assert has_pair([1, 4, 7], 8) is True",
+      "assert has_pair([], 0) is False"
+    ]
+  },
+  {
+    "slug": "prefix-averages",
+    "version": 1,
+    "pool": "practice",
+    "language": "python",
+    "difficulty": "medium",
+    "title": "Running averages",
+    "prompt": "Return the mean of every nonempty prefix of a list of numbers.",
+    "code": "def prefix_averages(values):\n    total = 0\n    result = []\n    for index, value in enumerate(values):\n        total += value\n        result.append(total / len(values))\n    return result",
+    "line_count": 7,
+    "correct_line": 6,
+    "explanation": "At index i the prefix contains i + 1 values. Dividing by the full list length underestimates earlier averages.",
+    "corrected_code": "def prefix_averages(values):\n    total = 0\n    result = []\n    for index, value in enumerate(values):\n        total += value\n        result.append(total / (index + 1))\n    return result",
+    "tags": [
+      "prefix"
+    ],
+    "tests": [
+      "assert prefix_averages([2, 4, 9]) == [2, 3, 5]",
+      "assert prefix_averages([]) == []"
+    ]
+  },
+  {
+    "slug": "edit-distance",
+    "version": 1,
+    "pool": "practice",
+    "language": "python",
+    "difficulty": "hard",
+    "title": "Edit distance",
+    "prompt": "Return the minimum number of single-character insertions, deletions, or substitutions converting a to b.",
+    "code": "def edit_distance(a, b):\n    previous = list(range(len(b) + 1))\n    for i, char_a in enumerate(a, 1):\n        current = [i]\n        for j, char_b in enumerate(b, 1):\n            cost = 0 if char_a == char_b else 1\n            current.append(min(current[j - 1] + 1, previous[j] + 1, previous[j - 1]))\n        previous = current\n    return previous[-1]",
+    "line_count": 9,
+    "correct_line": 7,
+    "explanation": "The diagonal transition must pay the substitution cost for unequal characters. Omitting it makes replacements free.",
+    "corrected_code": "def edit_distance(a, b):\n    previous = list(range(len(b) + 1))\n    for i, char_a in enumerate(a, 1):\n        current = [i]\n        for j, char_b in enumerate(b, 1):\n            cost = 0 if char_a == char_b else 1\n            current.append(min(current[j - 1] + 1, previous[j] + 1, previous[j - 1] + cost))\n        previous = current\n    return previous[-1]",
+    "tags": [
+      "edit"
+    ],
+    "tests": [
+      "assert edit_distance('cat', 'cut') == 1",
+      "assert edit_distance('kitten', 'sitting') == 3",
+      "assert edit_distance('', 'ab') == 2",
+      "assert edit_distance('abc', 'abc') == 0"
+    ]
+  },
+  {
+    "slug": "shortest-hops",
+    "version": 1,
+    "pool": "practice",
+    "language": "python",
+    "difficulty": "hard",
+    "title": "Shortest unweighted route",
+    "prompt": "Return the fewest edges from start to goal in a directed adjacency-list graph; return -1 if unreachable.",
+    "code": "def shortest_hops(graph, start, goal):\n    queue = [(start, 0)]\n    seen = {start}\n    while queue:\n        node, distance = queue.pop()\n        if node == goal:\n            return distance\n        for neighbor in graph.get(node, []):\n            if neighbor not in seen:\n                seen.add(neighbor)\n                queue.append((neighbor, distance + 1))\n    return -1",
+    "line_count": 12,
+    "correct_line": 5,
+    "explanation": "Shortest paths in an unweighted graph require a FIFO queue. Popping from the end explores depth first and can report a longer route first.",
+    "corrected_code": "def shortest_hops(graph, start, goal):\n    queue = [(start, 0)]\n    seen = {start}\n    while queue:\n        node, distance = queue.pop(0)\n        if node == goal:\n            return distance\n        for neighbor in graph.get(node, []):\n            if neighbor not in seen:\n                seen.add(neighbor)\n                queue.append((neighbor, distance + 1))\n    return -1",
+    "tags": [
+      "shortest"
+    ],
+    "tests": [
+      "assert shortest_hops({'s': ['a', 'b'], 'a': ['t'], 'b': ['c'], 'c': ['t']}, 's', 't') == 2",
+      "assert shortest_hops({}, 's', 's') == 0",
+      "assert shortest_hops({}, 's', 't') == -1"
+    ]
+  },
+  {
+    "slug": "maximum-subarray",
+    "version": 1,
+    "pool": "practice",
+    "language": "python",
+    "difficulty": "hard",
+    "title": "Maximum contiguous sum",
+    "prompt": "Return the maximum sum of a nonempty contiguous subarray of a nonempty list, including all-negative inputs.",
+    "code": "def maximum_subarray(values):\n    ending = values[0]\n    best = ending\n    for value in values[1:]:\n        ending = max(ending, ending + value)\n        best = max(best, ending)\n    return best",
+    "line_count": 7,
+    "correct_line": 5,
+    "explanation": "A subarray ending at the current position must include its value. Choose between starting there and extending the previous subarray.",
+    "corrected_code": "def maximum_subarray(values):\n    ending = values[0]\n    best = ending\n    for value in values[1:]:\n        ending = max(value, ending + value)\n        best = max(best, ending)\n    return best",
+    "tags": [
+      "maximum"
+    ],
+    "tests": [
+      "assert maximum_subarray([-4, -2, -7]) == -2",
+      "assert maximum_subarray([5, -100, 6]) == 6",
+      "assert maximum_subarray([2, -1, 3]) == 4"
+    ]
+  },
+  {
+    "slug": "increasing-length",
+    "version": 1,
+    "pool": "practice",
+    "language": "python",
+    "difficulty": "hard",
+    "title": "Longest increasing subsequence",
+    "prompt": "Return the length of a strictly increasing subsequence of maximum length; empty input returns zero.",
+    "code": "def increasing_length(values):\n    lengths = [1] * len(values)\n    for right in range(len(values)):\n        for left in range(right):\n            if values[left] <= values[right]:\n                lengths[right] = max(lengths[right], lengths[left] + 1)\n    return max(lengths, default=0)",
+    "line_count": 7,
+    "correct_line": 5,
+    "explanation": "Strictly increasing excludes equal adjacent subsequence values. Using <= computes a nondecreasing subsequence instead.",
+    "corrected_code": "def increasing_length(values):\n    lengths = [1] * len(values)\n    for right in range(len(values)):\n        for left in range(right):\n            if values[left] < values[right]:\n                lengths[right] = max(lengths[right], lengths[left] + 1)\n    return max(lengths, default=0)",
+    "tags": [
+      "increasing"
+    ],
+    "tests": [
+      "assert increasing_length([2, 2, 2]) == 1",
+      "assert increasing_length([3, 1, 2, 4]) == 3",
+      "assert increasing_length([]) == 0"
+    ]
+  },
+  {
+    "slug": "resource-capacity",
+    "version": 1,
+    "pool": "practice",
+    "language": "python",
+    "difficulty": "hard",
+    "title": "Peak concurrent jobs",
+    "prompt": "Return peak concurrent jobs for (start, end) intervals with start < end. Intervals are half-open: a job ending at t does not overlap one starting at t.",
+    "code": "def peak_jobs(intervals):\n    events = []\n    for start, end in intervals:\n        events.extend([(start, 1), (end, -1)])\n    events.sort(key=lambda event: (event[0], -event[1]))\n    active = 0\n    peak = 0\n    for time, change in events:\n        active += change\n        peak = max(peak, active)\n    return peak",
+    "line_count": 11,
+    "correct_line": 5,
+    "explanation": "At equal times, process endings (-1) before starts (+1). Otherwise touching half-open intervals are incorrectly counted as overlapping.",
+    "corrected_code": "def peak_jobs(intervals):\n    events = []\n    for start, end in intervals:\n        events.extend([(start, 1), (end, -1)])\n    events.sort(key=lambda event: (event[0], event[1]))\n    active = 0\n    peak = 0\n    for time, change in events:\n        active += change\n        peak = max(peak, active)\n    return peak",
+    "tags": [
+      "resource"
+    ],
+    "tests": [
+      "assert peak_jobs([(1, 3), (3, 5)]) == 1",
+      "assert peak_jobs([(1, 4), (2, 5)]) == 2",
+      "assert peak_jobs([]) == 0"
+    ]
+  }
+]

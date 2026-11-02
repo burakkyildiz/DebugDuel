@@ -29,7 +29,7 @@ Ana plan ve çıkış koşulları: `DEBUG_DUEL_PROJECT_SPEC.md`, bölüm 22.
 | 0 — Hazırlık | Temel kurulum hazır; Vercel/üretim hedefi yayın fazında |
 | 1 — Tasarım ve iskelet | Ana sayfa ve hesap ekranları hazır; oyun/lobi/sonuç ilgili dikey akışlarda eklenecek |
 | 2 — Auth ve profil | Geliştirme akışları doğrulandı: yerel e-posta/profil/recovery, temiz DB ve gerçek GitHub OAuth; uzak/üretim e-posta teslimi ayrıca bekliyor |
-| 3 — DB ve soru bankası | Profil temeli hazır; oyun şeması ve 30 soru henüz yok |
+| 3 — DB ve soru bankası | Yerelde tamamlandı: 13 oyun tablosu, RLS/GRANT, 30 soru, 81 içerik vakası, 369 DB testi ve temiz kurulum; hosted uygulama yapılmadı |
 | 4 — Practice | Bekliyor |
 | 5 — Özel oda, tek tur | Bekliyor |
 | 6 — Tam motor | Bekliyor |
@@ -37,15 +37,28 @@ Ana plan ve çıkış koşulları: `DEBUG_DUEL_PROJECT_SPEC.md`, bölüm 22.
 | 8 — Sağlamlaştırma | Bekliyor |
 | 9 — Üretim | Bekliyor |
 
-Henüz hiçbir AC maddesi tamamlandı olarak işaretlenmedi.
+AC-18 içerik koşulu yerelde doğrulandı (30 soru / 81 davranış vakası). Diğer AC maddeleri, özellikle oynanabilir akışlar ve yayın, tam tamamlandı değildir.
 
 ## Sıradaki uygulama adımları
 
-**Beklemede:** Kullanıcı kullanım kotasını bekliyor. Mevcut Faz 2 commit/push işleminden sonra geliştirme durur. Faz 3 yalnızca kullanıcının açık “Faz 3'e geçelim” talebiyle başlatılır.
+**Güncel:** Kullanıcı 2 Kasım 2026’da “Faz 3’e geçelim” dedi. Faz 3 yerel şema/soru/test kapsamı tamamlandı; [rapor](PHASE_3_REPORT.md). Faz 4 için yeni talimat beklenir. Aşağıdaki devir bilgisi önceki oturumun tarihsel kaydıdır.
 
-**Onaylanan dar istisna:** `a7f46a4` için uzak CI'da ikinci logout yönlendirmesi başarısız oldu. Kullanıcı bu Faz 2 hatasının düzeltilip test/commit/push ve CI kontrolünün yapılmasını istedi. Çıkışta tam belge geçişi ve hydration öncesi tıklama koruması eklendi; daha güçlü gerçek yerel Auth testi, lint ve 46 birim testi geçti. Bu iş Faz 3'ü başlatmaz.
+**Faz 2 düzeltmesi tamamlandı:** `a7f46a4` için uzak CI'da ikinci logout yönlendirmesi başarısız olmuştu. Kullanıcı onaylı düzeltme `998c828` ile push edildi. Çıkışta tam belge geçişi ve hydration öncesi tıklama koruması eklendi; daha güçlü gerçek yerel Auth testi, lint ve 46 birim testi geçti. [Uzak CI](https://github.com/burakkyildiz/DebugDuel/actions/runs/41452141699) quality ve database işlerinde başarılıdır.
+
+**Oturum devri:** Kullanıcı Faz 3'ü başka oturumda sürdürmek istedi. `docs/PHASE_3_HANDOFF.md` hazırlandı ve `AGENTS.md` üzerinden bağlandı. Bu oturumda Faz 3 başlamadı; yeni oturum notu okuyup kullanıcı Faz 3'ü başlattığında ilerler. Hafıza kayıtları için ayrıca commit/push yapılmadı.
 
 1. Faz 2 geliştirme akışları doğrulandı. Yayın öncesi `docs/auth-checklist.md` üzerinden uzak e-posta teslimi/recovery ve parola ayarı kontrolünü tamamla; bu eksik AC-01 için açık kalır.
 2. Şartnamenin özel soru/snapshot/practice şemasını ve iki havuzda toplam 30 özgün soruyu ekle; içerik testleri ve izin matrisini doğrula.
 3. Sunucu secret key'i güvenli yerel/platform ayarından yapılandırıp guest/hesaplı Practice dikey akışını tamamla. Anahtar sohbetten istenmez.
 4. Davetli tek turu iki tarayıcıyla kur; sonra üç tur, Cron, reconnect ve settlement/XP/leaderboard pagination fazlarına geç.
+
+## Faz 3 doğrulama kaydı
+
+- İki yeni CLI migration'ı mevcut yerel DB'ye reset olmadan uygulandı; 13 oyun tablosu ve ayrı minimum izinli rol eklendi.
+- İki ayrı havuzda 30 soru; 81 davranış vakası, tek satır düzeltme ve seed/katalog eşleşmesi geçti.
+- 369 gerçek DB testi (344 yeni + 25 profil), 48 birim testi, lint, typecheck, production build ve 8 desktop/mobile foundation E2E geçti. Temiz ayrı DB kurulumunda migration/seed ve seed tekrarı da aynı testlerle geçti.
+- Yerel security/performance advisor uyarı vermedi. Browser bundle'da soru/çözüm içeriği bulunmadı.
+- Yeni migration/seed yalnızca yerelde; hosted projenin son uygulanmış migration'ı değişmedi. Secret eklenmedi; ücretli kaynak, commit, push, deploy yok.
+- Practice ve düello hâlâ hazırlık ekranındadır. Realtime/Cron/settlement/guest endpoint'leri sonraki fazlarda; bu testler gerçek maç testleri sayılmaz.
+
+- Faz 3 tesliminden sonra kullanıcı değişikliklerin commit/push edilmesini ve yerel önizlemenin açılmasını istedi. Yerel `http://localhost:3000` HTTP 200 ile doğrulandı; production deploy ve Faz 4 bu isteğin kapsamında değildir.

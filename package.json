@@ -24,7 +24,9 @@
     "test:questions": "python3 scripts/check-questions.py",
     "test:db:clean": "node scripts/test-db-clean.mjs",
     "test:practice:local": "node scripts/practice-local.mjs --test",
-    "practice:local": "node scripts/practice-local.mjs"
+    "practice:local": "node scripts/practice-local.mjs",
+    "test:match:local": "node scripts/match-local.mjs --test",
+    "match:local": "node scripts/match-local.mjs"
   },
   "dependencies": {
     "@fontsource-variable/geist": "5.3.0",

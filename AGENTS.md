@@ -1,5 +1,21 @@
 # Debug Duel — çalışma yönergeleri
 
+## Son yetki ve uzak ortam — 3 Kasım 2026
+
+- Kullanıcı “tamam tum islemleri yapalim OK” diyerek Faz 5 uzak DB uygulaması ve commit/push için açık onay verdi. Aşağıdaki yalnız yerel/push bekliyor notları bu onaydan öncedir. Production yayın ve Faz 6 başlatılmadı.
+- Altı Faz 5 migration'ı resmî CLI ile hosted `debug-duel` projesine uygulandı; 13 repository/uzak sürüm birebir eşleşti. Realtime yalnız private kanallara izin verir (`private_only=true`), gerçek public WebSocket red doğrulandı. Ücretli kaynak/limit artışı yok.
+- Uzak BEGIN/ROLLBACK içinde 63/63 düello DB testi geçti; sentetik Auth fixture'ları ve pgTAP extension'ı kalmadı. Gerçek iki hesaplı browser/Auth/Realtime E2E kanıtı yereldedir; uzak eşdeğeri henüz yok. Güncel kanıtlar `docs/PHASE_5_REPORT.md` son bölümünde.
+- Kod GitHub main'e commit/push için hazırlanmıştır; commit/push ve CI durumunun en son kaynağı git geçmişi ve GitHub Actions'tır. Yeni faz yalnız kullanıcı isterse başlar. Gerçek e-posta teslimi, üç tur/Cron ve XP mevcut teslimle tamamlandı sayılmaz.
+
+## Güncel çalışma — Faz 5, 3 Kasım 2026
+
+- Kullanıcı açıkça “selam faz 5 e gecebiliriz” dedi; önceki Faz 5 bekleme kararını kaldırdı. Başlangıç HEAD `ba836e8`; Faz 4 `15e7e3d`, provider guard `ba836e8` push edilmiştir. Faz 5 commit/push/production yayını ayrıca istenmedi.
+- Faz 5 yerel özel oda/tek tur dikey akışı geliştirildi. Güncel kapsam, testler ve ortam sınırları için önce `docs/PHASE_5_REPORT.md` oku; aşağıdaki Faz 2–4 notları tarihseldir.
+- Altı yeni migration yalnız yerelde; hosted gelişim projesi Faz 4'ün yedi migration'ında kalır. Önceki migration repair farkı resmî CLI ile giderildi. Hosted yeni migration/Realtime private-only ayarı uygulanmadı.
+- Yerel komutlar: `pnpm match:local` → 3006, `pnpm test:match:local` → izole production build 3005. Gerçek yerel Auth/PostgREST/Realtime gerekir. Yerel GitHub kapalı; e-posta doğrulama yerel posta kutusundan yapılır.
+- Tek sabit soru ve maç puanı vardır; XP/kalıcı istatistik yoktur. Üç tur, saniyelik Cron ve otomatik reconnect/forfeit Faz 6; settlement/XP Faz 7. Kullanıcı istemeden yeni faza geçme.
+- Game-engine korumalı Auth adaptörüne erişmez. Yeni dar postgres-owned `private.match_notify(uuid)` köprüsü yalnız sabit topic/event/metadata gönderir, yalnız game-engine EXECUTE sahibidir; gerekçe/testler rapor ve decisions içindedir.
+
 ## Kaynak ve ürün
 
 - Uygulamaya başlamadan `docs/DEBUG_DUEL_PROJECT_SPEC.md` dosyasının tamamını oku. Ürün kuralları, veri modeli, API sözleşmeleri ve AC-01–AC-22 için ana kaynak bu belgedir.

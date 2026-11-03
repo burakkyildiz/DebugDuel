@@ -29,3 +29,11 @@
 - Guest bootstrap cookie'si ile start isteği ayrıdır: idempotent soru başlatılmadan cookie sahipliği kurulur. Ham capability DB'ye gitmez. Start ve cevap tekrarları DB'de korunur.
 - Yerel deneme/test başlatıcısı 3002 kullanır; sunucu key'i yalnızca yerel Supabase status çıktısından child process ortamına geçer, diske/env dosyasına veya sohbete yazılmaz.
 - Hosted proje bu fazda değiştirilmedi. Fiziksel teknik kayıt temizliği işletim fazının açık işidir; erişim DB'de 24 saat sonunda kapanır.
+
+## 3 Kasım 2026 — Faz 5 tek tur ve Realtime köprüsü
+
+Şartnamedeki Faz 5 kilometre taşı tek sabit sorudur; final üç turluk format değiştirilmedi. `engine_stage=5` kaydı ve görünür single-round preview etiketiyle XP/kalıcı istatistik yazmadan kapanır; kullanılmayan turlar kod/çözüm üretmeden kapanır. Cron ve üç turlu motor Faz 6, ledger/settlement Faz 7'de kalır.
+
+Yeni komut sınırı mevcut minimum izinli profile-engine kimlik relay'ini kullanır; game-engine'e korumalı Auth adaptörü yetkisi verilmez. Yönetilen Realtime tablosunda dar game rolüyle gönderim izin hatası verdiği için yalnız `private.match_notify(uuid)` postgres-owned SECURITY DEFINER yapılır: sabit topic/event ve yalnız matchId/stateVersion/status, sabit search_path, yalnız game-engine EXECUTE. İstemci veya service role keyfi broadcast yaptıramaz. Realtime RLS/owner değiştirilmez; katılımcı SELECT, yalnız Presence INSERT alır. Oyun kararı bildirime güvenmez ve her HTTP/RPC yeniden katılımcılık denetler. Test kanıtı ve kalan ortam sınırları [Faz 5 raporunda](PHASE_5_REPORT.md).
+
+Davet HTTP kabul sayacı ayrı server-only RPC'de false döndürerek commit edilir; ardından başarısız davetin transaction rollback'i ağ sayacını geri alamaz. Yalnız güvenilir Vercel proxy IP'si HMAC'lenir; diğer ortamlarda ortak ağ kovası kullanılır. Ham IP kaydedilmez.

@@ -2,6 +2,10 @@
 
 Ana plan ve çıkış koşulları: `DEBUG_DUEL_PROJECT_SPEC.md`, bölüm 22.
 
+## Güncel kayıt — 3 Kasım 2026, Faz 5
+
+Kullanıcının açık Faz 5 talimatıyla özel oda/tek tur dikey akış geliştirildi. [Faz 5 raporu](PHASE_5_REPORT.md) güncel kaynak; aşağıdaki önceki faz notları tarihseldir. Tek sabit soru, ortak countdown/45 saniye, atomik DB puanı, özel Realtime ve polling, davetin login/onboarding dönüşünde korunması çalışır. Üç tur/Cron Faz 6; XP/ledger Faz 7. Hosted Faz 5 değişiklikleri, commit/push ve production yayın yapılmadı.
+
 ## Başlangıç durumu
 
 - Şartname okundu; ürün sahibinin yeni proje, sıfır bütçe ve mevcut palet kararları kaydedildi.
@@ -31,7 +35,7 @@ Ana plan ve çıkış koşulları: `DEBUG_DUEL_PROJECT_SPEC.md`, bölüm 22.
 | 2 — Auth ve profil | Geliştirme akışları doğrulandı: yerel e-posta/profil/recovery, temiz DB ve gerçek GitHub OAuth; uzak/üretim e-posta teslimi ayrıca bekliyor |
 | 3 — DB ve soru bankası | Yerelde tamamlandı: 13 oyun tablosu, RLS/GRANT, 30 soru, 81 içerik vakası, 369 DB testi ve temiz kurulum; hosted uygulama yapılmadı |
 | 4 — Practice | Yerel akış uygulandı; doğrulama kaydı docs/PHASE_4_REPORT.md |
-| 5 — Özel oda, tek tur | Bekliyor |
+| 5 — Özel oda, tek tur | Yerel dikey akış tamamlandı; iki gerçek oturum/özel Realtime ve yarış testleri; hosted uygulama bekliyor |
 | 6 — Tam motor | Bekliyor |
 | 7 — İlerleme | Bekliyor |
 | 8 — Sağlamlaştırma | Bekliyor |
@@ -78,3 +82,7 @@ Push öncesi son kontrol: production build üzerinde 19 E2E (11 Practice + 8 fou
 Repair sonrası `db push --dry-run --skip-vault`: remote up to date, bekleyen migration/seed/role listeleri boş. Şema ve kullanıcı verisine yeniden migration uygulanmadı; Git commit/push henüz yapılmadı.
 
 3 Kasım: Kullanıcı Faz 4 tamamlanması sonrası commit/push için açık yetki verdi. Son değişiklikler, yerel/uzak test kanıtları ve başarılı migration repair kaydı birlikte GitHub main'e gönderilmek üzere hazırlandı; production yayın kapsam dışıdır.
+
+Faz 5 kapanışı (3 Kasım): 63 birim, 483 DB (temiz kurulum + seed tekrarında da 483), 30 soru/81 davranış vakası, lint/typecheck ve production build başarılı. İki izole oturumlu düello testleri 3/3 + desktop foundation 4/4; mevcut Practice/foundation regression 19 geçti/1 bilinçli skip; gerçek yerel Auth zinciri 1/1 geçti. Başlangıç `ba836e8`; yeni commit/push yok. Yerel tek tur kilometre taşı tamamlandı, hosted uygulama ayrı bekler. Faz 6 kullanıcı talimatı olmadan başlatılmaz.
+
+Faz 5 uzak uygulama (3 Kasım): Kullanıcı tüm işlemlere açık onay verdi. Altı migration resmî CLI ile `debug-duel` geliştirme projesine uygulandı; geçmiş 13/13 eşleşti. Management API ile yalnız Realtime private_only=true yapıldı ve public WebSocket red doğrulandı. Uzak rollback kapsamındaki 63 düello DB testi geçti; sentetik hesap/pgTAP kalmadı. Advisor yeni şema uyarısı yok; eski Auth parola koruması uyarısı ve unused-index INFO kayıtları sürer. Lint/typecheck/63 unit yeniden geçti. Değişiklikler GitHub main'e commit/push için hazırlandı; uzak CI sonucu push sonrasında ayrıca izlenecek. Üretim yayını ve yeni faz yok.

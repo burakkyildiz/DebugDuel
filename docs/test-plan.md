@@ -51,3 +51,11 @@ GitHub OAuth gerçek hesapla doğrulandı; yerel e-posta/PKCE/recovery de geçti
 `pnpm test:practice:local` gerçek yerel Supabase ve 3002 izole Next sunucusunu kullanır. Guest/hesaplı oynama, klavye/mobil, yenileme, iki guest izolasyonu, strict body/Origin, paralel start/answer retry, kaybolmuş HTTP cevabı, hesaplı onboarding öncesi erişim ve XP/istatistik izolasyonu test edilir. Gerçek 45 saniyelik timeout yalnızca desktop projesinde bir kez çalışır. Auth doğrulamasını üretimde atlayan kapı eklenmedi; hesaplı Practice testinin sentetik doğrulanmış hesabı yalnızca yerel admin fixture'ıdır ve gerçek parola girişi/JWT kullanır. Ayrı Auth e-posta E2E'sinin yerine geçmez.
 
 56 birim testi, 420 pgTAP testi, lint/types/build; temiz ayrı DB kurulumunda migration/seed ve seed tekrarı başarılı. Hosted şema/anahtar ve fiziksel TTL temizliği sınırları [Faz 4 raporunda](PHASE_4_REPORT.md).
+
+## Faz 5 — iki gerçek oturum / özel Realtime
+
+`pnpm test:match:local` localhost-only Auth/DB/Realtime ile izole production build açar. İki browser context (ikincisi mobil), login/onboarding boyunca davet korunması, açık join, shared countdown, yanlış/doğru seçim, yenileme, paralel create/join/ready/answer, aynı receipt retry ve üçüncü kullanıcının HTTP/Realtime reddi test edilir. Public kanallar yerel tenant'ta kapalıdır; sahte yayın skor değiştirmez. WebSocket engellenmiş gerçek 45 saniyelik timeout polling/sync ile biter. Background heartbeat devam ederken Ready komutunun kaybolmaması da regresyon testidir. CI database job bu komutu çalıştırır; henüz push edilmediği için uzak başarı iddiası yoktur.
+
+483 yerel DB testi (63 yeni), 63 birim testi. Yeni DB denetimleri aktör/izin/receipt/erken ifşa, gizli rakip seçimi, tek doğru kazanan, kesin DB zamanı/puan formülü, aktif koltukların açılması, XP/istatistiklerin değişmemesi ve server-only ağ limiti kapsamındadır. Temiz DB/seed tekrarı da aynı testleri geçirir. Son E2E kapanış sayıları ve ortam sınırları [Faz 5 raporunda](PHASE_5_REPORT.md).
+
+Üç tur/Cron, istemciler kapalıyken ilerleme, otomatik reconnect/forfeit, XP settlement ve hosted iki hesap testi henüz bu kanıtların kapsamına girmez.

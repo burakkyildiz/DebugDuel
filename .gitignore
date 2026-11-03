@@ -22,3 +22,6 @@ supabase/.branches/
 .next-hosted-check/
 
 .local-backups/
+
+.next-match-local/
+.next-match-test/

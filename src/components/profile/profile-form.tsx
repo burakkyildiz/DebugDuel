@@ -5,7 +5,7 @@ import { Bug, Check } from "lucide-react";
 import { copy } from "@/content/copy.en";
 import type { Tables } from "@/types/database.generated";
 
-export function ProfileForm({ profile }: { profile: Tables<"profiles"> }) {
+export function ProfileForm({ profile, next }: { profile: Tables<"profiles">; next?: string }) {
   const router = useRouter();
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
@@ -20,7 +20,8 @@ export function ProfileForm({ profile }: { profile: Tables<"profiles"> }) {
       const response = await fetch("/api/me/profile", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ username: form.get("username"), displayName: form.get("displayName"), avatarSeed: form.get("avatarSeed") }) });
       const data = await response.json();
       if (!response.ok) { setError(data.error?.message ?? text.unavailable); return; }
-      setSaved(true); router.refresh();
+      setSaved(true);
+      if (next) router.push(next); else router.refresh();
     } catch { setError(text.unavailable); }
     finally { setPending(false); }
   }

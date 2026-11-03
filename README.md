@@ -85,3 +85,11 @@ Mevcut DB'de yeni migration ve seed uygulamak için: `pnpm exec supabase migrati
 `src/app`: sayfalar/API; `src/components`: ortak bileşenler; `src/lib`: Auth, doğrulama, güvenlik ve kural yardımcıları; `src/content`: İngilizce metinler; `supabase`: migration ve DB testleri; `tests`: birim/E2E; `docs`: mimari, kararlar ve ilerleme.
 
 `test:practice:local` artık 3003 portunda `.next-practice-test` dizinine ayrı production build oluşturur; Practice ile foundation testlerini birlikte çalıştırır. Açık 3002 önizlemesi ve onun guest imza anahtarı/kotası korunur. İzole test ortamının sunucusu sonunda kapanır. Testler yalnızca yerel Supabase'i kabul eder; gerçek hosted sunucu anahtarları kullanılmaz.
+
+## Faz 5 — yerel iki oyunculu deneme
+
+Davetli tek tur şu anda yerelde çalışır: **1 × 45 saniye**, maç içi puan, XP/kalıcı istatistik yok. Sonraki faz üç tur ve istemciden bağımsız Cron ilerleticisidir. Güncel kapsam ve ortam farkı: [Faz 5 raporu](docs/PHASE_5_REPORT.md).
+
+Yerel Supabase Auth, PostgREST ve **Realtime** açık olmalıdır. `pnpm match:local` izole ortam değişkenleriyle `http://localhost:3006/play` önizlemesini açar; `.env.local` ve hosted proje değişmez. Yerel e-posta doğrulamasını Supabase'in yerel posta kutusunda tamamla, iki ayrı tarayıcı profili/gizli pencere kullan, her hesap için profil oluştur. İlk oyuncu oda açıp daveti paylaşır; ikinci oyuncu giriş/profil sonrasında **Join Match** der; iki taraf **Ready** olur. Yerel GitHub sağlayıcısı yapılandırılmamıştır; e-posta hesabı kullanılır.
+
+`pnpm test:match:local` 3005 portunda ayrı production build ve iki izole hesapla gerçek DB/Auth/özel Realtime testlerini çalıştırır. Yerel Realtime tenant'ında public kanal erişimini kapatır. Testler sentetik hesapları yalnızca yerel projeye yazar; bu kayıtlar geliştirici DB'sinde kalabilir. Başka porttaki önizlemeler korunur. 3 Kasım takip: Hosted Faz 5 migration'ları ve Realtime private-only ayarı uygulandı. Hosted ve yerel hesaplar ayrıdır; uzak gerçek iki hesaplı browser smoke ayrıca bekler.

@@ -1,3 +1,4 @@
+
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[]
 
 export type Database = {
@@ -58,14 +59,14 @@ isOneToOne: false
                   ]
                 },"matches": {
                   Row: {
-                    "created_at": string,"current_round_number": number,"ended_reason": string | null,"finished_at": string | null,"guest_user_id": string | null,"host_user_id": string,"id": string,"language": string,"lobby_expires_at": string,"mode": string,"next_transition_at": string | null,"outcome_type": string | null,"round_count": number,"round_duration_ms": number,"started_at": string | null,"state_version": number,"status": string,"updated_at": string,"winner_user_id": string | null
+                    "created_at": string,"current_round_number": number,"ended_reason": string | null,"engine_stage": number,"finished_at": string | null,"guest_user_id": string | null,"host_user_id": string,"id": string,"language": string,"lobby_expires_at": string,"mode": string,"next_transition_at": string | null,"outcome_type": string | null,"round_count": number,"round_duration_ms": number,"started_at": string | null,"state_version": number,"status": string,"updated_at": string,"winner_user_id": string | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "created_at"?: string,"current_round_number"?: number,"ended_reason"?: string | null,"finished_at"?: string | null,"guest_user_id"?: string | null,"host_user_id": string,"id"?: string,"language"?: string,"lobby_expires_at"?: string,"mode"?: string,"next_transition_at"?: string | null,"outcome_type"?: string | null,"round_count"?: number,"round_duration_ms"?: number,"started_at"?: string | null,"state_version"?: number,"status"?: string,"updated_at"?: string,"winner_user_id"?: string | null
+                    "created_at"?: string,"current_round_number"?: number,"ended_reason"?: string | null,"engine_stage"?: number,"finished_at"?: string | null,"guest_user_id"?: string | null,"host_user_id": string,"id"?: string,"language"?: string,"lobby_expires_at"?: string,"mode"?: string,"next_transition_at"?: string | null,"outcome_type"?: string | null,"round_count"?: number,"round_duration_ms"?: number,"started_at"?: string | null,"state_version"?: number,"status"?: string,"updated_at"?: string,"winner_user_id"?: string | null
                   }
                   Update: {
-                    "created_at"?: string,"current_round_number"?: number,"ended_reason"?: string | null,"finished_at"?: string | null,"guest_user_id"?: string | null,"host_user_id"?: string,"id"?: string,"language"?: string,"lobby_expires_at"?: string,"mode"?: string,"next_transition_at"?: string | null,"outcome_type"?: string | null,"round_count"?: number,"round_duration_ms"?: number,"started_at"?: string | null,"state_version"?: number,"status"?: string,"updated_at"?: string,"winner_user_id"?: string | null
+                    "created_at"?: string,"current_round_number"?: number,"ended_reason"?: string | null,"engine_stage"?: number,"finished_at"?: string | null,"guest_user_id"?: string | null,"host_user_id"?: string,"id"?: string,"language"?: string,"lobby_expires_at"?: string,"mode"?: string,"next_transition_at"?: string | null,"outcome_type"?: string | null,"round_count"?: number,"round_duration_ms"?: number,"started_at"?: string | null,"state_version"?: number,"status"?: string,"updated_at"?: string,"winner_user_id"?: string | null
                   }
                   Relationships: [
                     {
@@ -136,6 +137,12 @@ isOneToOne: false
         isOneToOne: true
         isSetofReturn: false
       } },
+"match_command":
+{ Args: { "p_action": string,"p_cipher"?: string,"p_hash"?: string,"p_key"?: string,"p_line"?: number,"p_match"?: string,"p_ready"?: boolean,"p_round"?: string }; Returns: Json
+                           },
+"match_join_admission":
+{ Args: { "p_subject": string }; Returns: boolean
+                           },
 "practice_account":
 { Args: { "p_action": string,"p_key"?: string,"p_selected_line"?: number,"p_session_id"?: string }; Returns: Json
                            },

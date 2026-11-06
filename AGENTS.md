@@ -1,5 +1,17 @@
 # Debug Duel — çalışma yönergeleri
 
+## Güncel çalışma — Faz 6, 6 Kasım 2026
+
+- Kullanıcı açıkça “tamam faz 6 y baslayalim” dedi; Faz 6 başladı ve yerel üç turluk motor akışı tamamlandı. Yeni oturumda önce `docs/PHASE_6_HANDOFF.md` ve `docs/PHASE_6_REPORT.md` dosyalarını oku. Aşağıdaki Faz 5 bekleme/kapsam notları tarihseldir.
+- Kullanıcı 6 Kasım 2026’da Faz 6’yı iki yerel hesapla denedi ve onayladı. Bu teslimin commit/push işlemini ve yeni oturum için devir kaydını istedi. Son commit ve CI durumunu Git ve GitHub Actions’tan doğrula. Uzak geliştirme DB uygulaması ve production yayın için ayrı kullanıcı talimatı gerekir. Yeni oturumda Faz 6 tesliminden devam et.
+- Altı Faz 6 migration'ı yalnız yerelde; yerel toplam 19, hosted hâlâ Faz 5'in 13 sürümünde. Yerel pg_cron 1.6.4 gerçek saniyelik advance ve günlük bakım işlerini çalıştırır. `GET /api/health` gerçek tick ile 200/ready=true doğrulandı.
+- UI güncellemesi (4 Kasım): Explanation/Previous rounds yalnız maç sonunda; tur arası sonuç ve 15+3 saniye korunur. Connection_lost mesajı oyuncu bakış açısına göre en az 30 saniye heartbeat yokluğunu ve puandan bağımsız forfeit sonucunu açıklar.
+- Yeni odalar stage 6: easy/medium/hard üç soru, 3 saniye ilk countdown, 15+3 saniye ara (4 Kasım kullanıcı kararı), 45 saniye/tur, DB toplam puan sonucu. Stage-5 odalar eski tek tur sözleşmesiyle korunur. XP/profile stats/ledger yazılmaz; Faz 7 kullanıcı talimatını bekler.
+- Son yerel paket 559 DB testi içerir. Önceki 554 DB testi temiz kurulum ve seed tekrarında da geçti. Ayrıca 67 unit, 30 soru/81 vaka, gerçek paralel DB kilit yarışları, production build üzerinde 9 motor/foundation E2E ve 19 Practice/foundation regression geçti (1 duplicate mobile timeout skip). Yeni iki-browsers-closed testi gerçek Cron'u doğrudan katılımcı SELECT ile gözler; service role'a oyun tablo SELECT yetkisi eklenmedi.
+- Health >5 saniye eskiyse yeni başlangıç durur; tick boşluğu >10 saniye aktif maçlara infrastructure abort; tek ≥30 saniye kopma/son 15 saniye canlı rakip forfeit, iki ≥30 saniye kopma abort. Heartbeat önce geçmiş eşiği değerlendirir. Deadline/normal son tur kapanışı bağlantı değerlendirmesinden önce gelir.
+- `pnpm test:engine:local` gerçek Docker/Postgres paralel oturumlarıyla SKIP LOCKED ve kilit sonrası deadline testi yapar; yalnız yerel fixture'ları temizler. `pnpm test:match:local --grep ...` odaklı E2E destekler; `pnpm match:local` 3006 (yerel e-posta hesapları, GitHub kapalı). Hosted bağlantılı 3000 hâlâ Faz 5 DB'sidir.
+- Public health private yardımcı çözümlemesi için anon'a schema USAGE verildi; private Data API expose veya tablo SELECT/DML verilmedi, diğer EXECUTE revokeları korunur. Scheduler'a yalnız advance/cleanup/health EXECUTE; engine rolü INHERIT/SET edilmez. Auth adaptör sınırı genişletilmedi.
+
 ## Son yetki ve uzak ortam — 3 Kasım 2026
 
 - Kullanıcı “tamam tum islemleri yapalim OK” diyerek Faz 5 uzak DB uygulaması ve commit/push için açık onay verdi. Aşağıdaki yalnız yerel/push bekliyor notları bu onaydan öncedir. Production yayın ve Faz 6 başlatılmadı.
@@ -29,7 +41,7 @@
 - **Bütçe sıfır:** ücretli plan, ücretli servis, ücretli branch/compute, satın alma ve ücretli eklenti kullanma. Ücretsiz kapasite yetmezse bunu açıkla; plan yükseltme.
 - Görsel referans yoktur. Şartnamedeki koyu antrasit/mor terminal estetiğini uygula; sahte oyuncu sayısı veya sahte sıralama gösterme.
 - `docs/decisions.md` kararları, `docs/progress.md` ise doğrulanmış ilerleme ve kalan işleri kaydeder.
-- **Yeni oturum başlangıcı:** `docs/PHASE_3_HANDOFF.md` devir notunu oku. Son doğrulanmış kod/CI, ortam sınırları ve Faz 3'ün somut işleri oradadır. Bu devir isteği Faz 3'ü bu oturumda başlatma talimatı değildir.
+- **Yeni oturum başlangıcı:** Güncel devir için `docs/PHASE_6_HANDOFF.md` dosyasını oku. `docs/PHASE_3_HANDOFF.md` tarihsel kayıttır.
 
 ## Faz 4 teslim/push yetkisi — 3 Kasım 2026
 

@@ -24,12 +24,12 @@ export function MatchEntry({ joining = false, userId }: { joining?: boolean; use
       const response = await fetch(joining ? "/api/invites/redeem" : "/api/matches", { method: "POST", headers: { "Content-Type": "application/json", "Idempotency-Key": key.current }, body: "{}", signal: AbortSignal.timeout(15000) });
       const result = await response.json();
       if (!response.ok) { setError(result.error?.message ?? text.errors.ENGINE_UNAVAILABLE); return; }
-      if (result.inviteUrl) sessionStorage.setItem(`dd-invite:${userId}:${result.matchId}`, result.inviteUrl);
+      if (result.inviteUrl) { try { sessionStorage.setItem(`dd-invite:${userId}:${result.matchId}`, result.inviteUrl); } catch { /* Sharing can be recovered with a fresh invitation. */ } }
       router.push(`/match/${result.matchId}`);
     } catch { setError(text.errors.ENGINE_UNAVAILABLE); }
     finally { inFlight.current = false; setPending(false); }
   }
-  return <div className="profile-panel match-entry"><p className="notice">{text.preview}</p>
+  return <div className="profile-panel match-entry"><p className="notice">{text.fullMatch}</p>
     {error && <p className="form-error" role="alert">{error}</p>}
     {active && <Link className="button button-secondary" href={`/match/${active}`}>{text.resume}</Link>}
     <button type="button" className="button button-primary" onClick={() => void submit()} disabled={pending}>{pending ? copy.common.pending : error ? text.retry : joining ? text.join : text.create}</button>

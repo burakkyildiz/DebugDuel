@@ -51,13 +51,16 @@ try {
   for (let attempt = 0; attempt < 90 && !interrupted; attempt++) {
     if (server.exitCode !== null) throw new Error("Match server stopped before startup. " + startupLog);
     try { ready = (await fetch(origin + "/login", { signal: AbortSignal.timeout(1000) })).ok; } catch { /* startup */ }
+    if (ready) {
+      try { ready = (await fetch(origin + "/api/health", { signal: AbortSignal.timeout(1000) })).ok; } catch { ready = false; }
+    }
     if (ready) break;
     await delay(500);
   }
-  if (!ready) throw new Error("Match server did not become ready.");
+  if (!ready) throw new Error("Match server or its one-second Cron did not become ready. Check local Supabase and engine health.");
   for (const path of generatedFiles) afterStartup.set(path, readFileSync(path, "utf8"));
   if (testing) {
-    const tests = spawn("node_modules/.bin/playwright", ["test", "tests/e2e/foundation.spec.ts", "tests/e2e/match.local.spec.ts", "--project=desktop", "--workers=1"], { env, stdio: ["ignore", "pipe", "pipe"] });
+    const tests = spawn("node_modules/.bin/playwright", ["test", "tests/e2e/foundation.spec.ts", "tests/e2e/match.local.spec.ts", "--project=desktop", "--workers=1", ...process.argv.slice(2).filter(arg => arg !== "--test")], { env, stdio: ["ignore", "pipe", "pipe"] });
     // Playwright failure logs can include cookie headers; redact before relaying.
     const relay = stream => {
       let pending = "";

@@ -115,7 +115,10 @@ isOneToOne: false
             [_ in never]: never
           }
           Functions: {
-            "ensure_profile":
+            "engine_status":
+{ Args: Record<PropertyKey, never>; Returns: Json
+                           },
+"ensure_profile":
 { Args: Record<PropertyKey, never>; Returns: {
               "avatar_seed": string,
 "correct_answers": number,

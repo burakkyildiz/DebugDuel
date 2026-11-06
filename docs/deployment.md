@@ -31,3 +31,27 @@ Yerel migration dosyaları CLI ile üretildi, uygulanan hosted migration sürüm
 ## Geri dönüş
 
 Yayından önce son iyi deployment, env ve migration sürümlerini kaydet. Uygulama rollback'i DB'yi geri almaz. Geriye uyumlu schema genişletmesi kullan; sonuç/XP kayıtlarını silerek geri dönüş yapma. Motor hatası halinde yeni maçları durdurup mevcut maçların güvenli kapanış yolunu koru. Gerçek staging geri yükleme testi tamamlanmadan prosedürü doğrulanmış sayma.
+
+## Güncel Faz 6 scheduler runbook — yalnız yerel uygulandı
+
+Önceki eksik özellik listeleri tarihsel başlangıçtır. Faz 5 hosted migration/Realtime private-only kurulumu tamamdır. Faz 6 dört yeni migration ile yerelde üç tur/Cron/health/bakım akışını doğruladı; hosted uygulama ve production yayın ayrıca bekler. Uzak SMTP/gerçek iki hesaplı smoke, XP/settlement, CSP/yük ve production işletim kontrolleri kapanmış sayılmaz.
+
+Kurulum sırası: proje kimliğini ve migration geçmişini doğrula → dört migration'ı dry-run incele → yetkilendirilen ortamda resmî CLI ile uygula → job/health/erişim kontrolleri → gerçek iki oturumlu smoke. Reset, history metadata UPDATE, toplu config push veya ücretli kaynak gerekmez. Kullanıcı ayrıca istemeden hosted Faz 6 uygulaması veya push yapma.
+
+Admin SQL denetimleri:
+
+```sql
+select jobname,schedule,active from cron.job
+where jobname in ('debug-duel-advance-matches','debug-duel-maintenance');
+select last_successful_tick_at,last_gap_at,last_error_at,failed_matches
+from private.engine_health where id;
+select status,count(*) from cron.job_run_details
+where jobid=(select jobid from cron.job where jobname='debug-duel-advance-matches')
+  and start_time>clock_timestamp()-interval '5 minutes' group by status;
+```
+
+Advance `1 second`, maintenance UTC `0 0 * * *`; uygulama GET `/api/health` 200/ready=true ve son tick güncel olmalı. Health yalnız liveness alanları döndürür. Public rol scheduler EXECUTE alamaz; managed cron/realtime sahiplik/RLS'si değiştirilmez. Scheduler postgres rolünün explicit fonksiyon izinlerini koru.
+
+Cron'u durdurmak oyun saatini durdurmaz: >5 saniye yeni oda/başlangıç engeli, >10 saniye aktif maçlarda infrastructure abort beklenir. Planlı bakımda yeni başlangıçları kapatıp aktif maçları güvenli bitir; kayıp pencere için geriye dönük forfeit/galibiyet hesaplama. Job'ı tekrar etkinleştirince health ve abort nedenlerini denetle. Salt uygulama rollback'i DB migration'larını geri almaz; stage-5 uyumluluk yolu ve normal terminal idempotency korunur.
+
+Bakım yalnız expired teknik kayıtları ve Debug Duel'in iki job'ının yedi günden eski çalışma kayıtlarını siler; maç/ledger geçmişi silinmez. Ciphertext temizlense de receipt expired tombstone'u kalır. Sırları, SQL hata detail'larını veya ham davet URL'lerini loga basma. Ayrıntılar [Faz 6 raporunda](PHASE_6_REPORT.md).

@@ -1,6 +1,8 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path=public,extensions;
+-- Historical stage-5 compatibility suite; stage-6 rules have their own tests.
+update private.engine_health set last_successful_tick_at=clock_timestamp() where id;
 create temp table match_test_results(line text);
 create temp table match_test_data(name text primary key,value jsonb);
 grant all on match_test_results,match_test_data to authenticated,anon;
@@ -35,6 +37,9 @@ insert into match_test_results values(throws_ok('select public.match_command(''c
 set local role authenticated;
 select set_config('request.jwt.claims','{"sub":"f3000000-0000-4000-8000-000000000001","role":"authenticated"}',true);
 insert into match_test_data values('created',public.match_command('create',null,'a3000000-0000-4000-8000-000000000001'::uuid,null,null,null,repeat('a',64),encode(convert_to('opaque-fixture','UTF8'),'base64')));
+reset role;
+update public.matches set engine_stage=5 where id=(select (value->>'matchId')::uuid from match_test_data where name='created');
+set local role authenticated;
 insert into match_test_results values(is((public.match_command('create',null,'a3000000-0000-4000-8000-000000000001'::uuid,null,null,null,repeat('b',64),encode(convert_to('opaque-fixture','UTF8'),'base64'))->>'matchId'),((select (value->>'matchId')::uuid from match_test_data where name='created'))::text,'create retry returns original match despite regenerated capability'));
 insert into match_test_results values(throws_ok('select public.match_command(''create'',null,gen_random_uuid(),null,null,null,repeat(''a'',64),encode(convert_to(''opaque-fixture'',''UTF8''),''base64''))','P0001','ALREADY_IN_ACTIVE_MATCH','one active room per account'));
 insert into match_test_results values(is((public.match_command('get',(select (value->>'matchId')::uuid from match_test_data where name='created'),gen_random_uuid(),null,null,null,null,null)->'question'),'null'::jsonb,'waiting room has no code'));
@@ -108,6 +113,9 @@ insert into match_test_results values(is((select sum(matches_played) from public
 set local role authenticated;
 select set_config('request.jwt.claims','{"sub":"f3000000-0000-4000-8000-000000000001","role":"authenticated"}',true);
 update match_test_data set value=public.match_command('create',null,gen_random_uuid(),null,null,null,repeat('b',64),encode(convert_to('opaque-fixture','UTF8'),'base64')) where name='created';
+reset role;
+update public.matches set engine_stage=5 where id=(select (value->>'matchId')::uuid from match_test_data where name='created');
+set local role authenticated;
 select public.match_command('invite',(select (value->>'matchId')::uuid from match_test_data where name='created'),gen_random_uuid(),null,null,null,repeat('c',64),encode(convert_to('opaque-fixture','UTF8'),'base64'));
 select set_config('request.jwt.claims','{"sub":"f3000000-0000-4000-8000-000000000002","role":"authenticated"}',true);
 insert into match_test_results values(throws_ok('select public.match_command(''join'',null,gen_random_uuid(),null,null,null,repeat(''b'',64),null)','P0001','ROOM_UNAVAILABLE','rotated token cannot be reused'));

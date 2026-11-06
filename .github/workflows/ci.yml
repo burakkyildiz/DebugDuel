@@ -53,6 +53,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec supabase start
       - run: pnpm test:db
+      - run: pnpm test:engine:local
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm test:auth:local
       - run: pnpm test:practice:local

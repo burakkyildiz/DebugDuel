@@ -93,3 +93,11 @@ Davetli tek tur şu anda yerelde çalışır: **1 × 45 saniye**, maç içi puan
 Yerel Supabase Auth, PostgREST ve **Realtime** açık olmalıdır. `pnpm match:local` izole ortam değişkenleriyle `http://localhost:3006/play` önizlemesini açar; `.env.local` ve hosted proje değişmez. Yerel e-posta doğrulamasını Supabase'in yerel posta kutusunda tamamla, iki ayrı tarayıcı profili/gizli pencere kullan, her hesap için profil oluştur. İlk oyuncu oda açıp daveti paylaşır; ikinci oyuncu giriş/profil sonrasında **Join Match** der; iki taraf **Ready** olur. Yerel GitHub sağlayıcısı yapılandırılmamıştır; e-posta hesabı kullanılır.
 
 `pnpm test:match:local` 3005 portunda ayrı production build ve iki izole hesapla gerçek DB/Auth/özel Realtime testlerini çalıştırır. Yerel Realtime tenant'ında public kanal erişimini kapatır. Testler sentetik hesapları yalnızca yerel projeye yazar; bu kayıtlar geliştirici DB'sinde kalabilir. Başka porttaki önizlemeler korunur. 3 Kasım takip: Hosted Faz 5 migration'ları ve Realtime private-only ayarı uygulandı. Hosted ve yerel hesaplar ayrıdır; uzak gerçek iki hesaplı browser smoke ayrıca bekler.
+
+## Faz 6 — üç tur ve gerçek Cron
+
+Yeni yerel odalar üç tur oynar: easy → medium → hard, tur başına 45 saniye, aralarda 5 saniye açıklama +3 saniye countdown. XP/profil istatistikleri Faz 7'de kalır. Önceki stage-5 odalar tek tur olarak korunur; yeni motoru denemek için yeni oda oluştur.
+
+`pnpm match:local` ile mevcut iki yerel e-posta hesabını kullanıp 3006'dan deneyebilirsin. `GET /api/health` ready=true olmalıdır; runner hem uygulamayı hem gerçek Cron sağlığını bekler. Yerel e-posta kutusu `http://localhost:54324`, onay bağlantısı kayıt yapılan aynı tarayıcı oturumunda açılır. Hosted 3000 bağlantısı Faz 5 DB'sidir; Faz 6'nın dört migration'ı henüz oraya uygulanmadı.
+
+`pnpm test:engine:local` iki gerçek PostgreSQL oturumuyla kilit/deadline yarışlarını sınar, yalnız yerel fixture'ları oluşturup temizler. `pnpm test:match:local` üç gerçek 45 saniyelik tur, kopma ve tarayıcılar kapalıyken gerçek Cron dahil production E2E'dir; yaklaşık beş dakika sürebilir. Odaklı tekrar: `pnpm test:match:local --grep 'real Cron aborts'`. Son teslim kanıtları ve sınırlar: [Faz 6 raporu](docs/PHASE_6_REPORT.md).

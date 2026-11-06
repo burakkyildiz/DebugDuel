@@ -12,5 +12,5 @@ export default async function Match({ params }: { params: Promise<{ matchId: str
   const response = await client?.rpc("match_command", { p_action: "get", p_match: matchId });
   const state = matchStateSchema.safeParse(response?.data);
   if (response?.error || !state.success) notFound();
-  return <section className="container page-container"><MatchRoom initial={state.data} /></section>;
+  return <section className="container page-container"><MatchRoom key={state.data.matchId} initial={state.data} /></section>;
 }

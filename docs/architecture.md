@@ -21,3 +21,9 @@ Soru sürümü ve snapshot içerikleri değişmezdir. Python içerik denetleyici
 Practice için server-only ayrıcalıklı istemci, HttpOnly guest çerezi ve özeti; düello için mevcut private tabloları kullanan atomik RPC motoru, tek settlement/XP ledger iş akışı, özel Realtime ve saniyelik Cron eklenecek. Oyun saatini Vercel process belleği veya tarayıcı belirlemeyecek.
 
 Şartnamenin bölüm 5–12'si nihai sözleşmedir. Depolama ve izinler uygulanmıştır; bu katmanların oynanabilir iş akışları henüz uygulanmamıştır. Profil temelinin çalışması oyun motorunun kabul edildiği anlamına gelmez.
+
+## Faz 6 — güncel oyun akışı
+
+Önceki depolama/gelecek faz notları tarihseldir. Yeni stage-6 odalar üç turlu DB motorunu kullanır. Son ready üç private immutable snapshot üretir; match→round kilidi, DB kabul zamanı ve tek cevap kısıtları hem kullanıcı komutunda hem Cron'da geçerlidir. Cron 1 second tick + SKIP LOCKED/bounded batch; deadline, next round, liveness ve infrastructure gap tek motor yolunda değerlendirilir. Realtime yalnız refetch'tir. İstemci olmadan gerçek Cron abort testi ve bağımsız transaction yarışları geçti.
+
+State/results DTO'su current round ve üç tur metadata'sı taşır; gelecek kod/çözüm null'dır. UI round id değişince seçimi temizler; match id değişince komponent state'i sıfırlanır. 5 saniye açıklama, 3 saniye geri sayım ve final toplam skor vardır. Yeni komut hataları, önceden gerçekleşen transition'ı rollback etmez. Public health salt liveness okur. XP/profile settlement bir sonraki Faz 7'dedir. [Faz 6 raporu](PHASE_6_REPORT.md) ortam ve izin sınırları için güncel kaynaktır.

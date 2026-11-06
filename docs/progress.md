@@ -2,6 +2,10 @@
 
 Ana plan ve çıkış koşulları: `DEBUG_DUEL_PROJECT_SPEC.md`, bölüm 22.
 
+## Güncel kayıt — Faz 6, 6 Kasım 2026
+
+Yerel üç turluk düello motoru, Cron, yeniden bağlanma ve forfeit akışı tamamlandı. Kullanıcı iki hesapla yerelde oynadı ve sonucu onayladı. Güncel kapsam, doğrulamalar ve sıradaki Faz 6 işleri [devir notunda](PHASE_6_HANDOFF.md). Hosted geliştirme veritabanı 13 migration ile Faz 5'te. Yereldeki altı Faz 6 migration'ı toplamı 19'a çıkarıyor. Faz 7 ve production yayın için kullanıcı talimatı beklenir.
+
 ## Güncel kayıt — 3 Kasım 2026, Faz 5
 
 Kullanıcının açık Faz 5 talimatıyla özel oda/tek tur dikey akış geliştirildi. [Faz 5 raporu](PHASE_5_REPORT.md) güncel kaynak; aşağıdaki önceki faz notları tarihseldir. Tek sabit soru, ortak countdown/45 saniye, atomik DB puanı, özel Realtime ve polling, davetin login/onboarding dönüşünde korunması çalışır. Üç tur/Cron Faz 6; XP/ledger Faz 7. Hosted Faz 5 değişiklikleri, commit/push ve production yayın yapılmadı.
@@ -36,7 +40,7 @@ Kullanıcının açık Faz 5 talimatıyla özel oda/tek tur dikey akış gelişt
 | 3 — DB ve soru bankası | Yerelde tamamlandı: 13 oyun tablosu, RLS/GRANT, 30 soru, 81 içerik vakası, 369 DB testi ve temiz kurulum; hosted uygulama yapılmadı |
 | 4 — Practice | Yerel akış uygulandı; doğrulama kaydı docs/PHASE_4_REPORT.md |
 | 5 — Özel oda, tek tur | Yerel dikey akış tamamlandı; iki gerçek oturum/özel Realtime ve yarış testleri; hosted uygulama bekliyor |
-| 6 — Tam motor | Bekliyor |
+| 6 — Tam motor | Yerel üç tur/Cron/kopma akışı ve gerçek yarış/E2E kanıtları tamamlandı; hosted uygulama bekler |
 | 7 — İlerleme | Bekliyor |
 | 8 — Sağlamlaştırma | Bekliyor |
 | 9 — Üretim | Bekliyor |

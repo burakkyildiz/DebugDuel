@@ -65,6 +65,7 @@ export async function matchRequest(request: Request, action: Action, matchId?: s
     const answer = action === "answer" ? answerBody.parse(body) : undefined;
     const result = await client.rpc("match_command", { p_action: action, p_match: matchId, p_key: key, p_ready: ready, p_round: answer?.roundId, p_line: answer?.selectedLine, p_hash: hash, p_cipher: ciphertext });
     if (result.error) return matchError(result.error.message);
+    if (result.data && typeof result.data === "object" && !Array.isArray(result.data) && typeof result.data.commandError === "string") return matchError(result.data.commandError);
     if (["create", "join", "invite", "ready", "leave"].includes(action)) {
       const receipt = matchReceiptSchema.parse(result.data);
       if (receipt.inviteResponseExpired) return json({ ...receipt, error: { code: "INVITE_RESPONSE_EXPIRED", message: copy.match.errors.INVITE_RESPONSE_EXPIRED } }, 410);

@@ -59,3 +59,13 @@ GitHub OAuth gerçek hesapla doğrulandı; yerel e-posta/PKCE/recovery de geçti
 483 yerel DB testi (63 yeni), 63 birim testi. Yeni DB denetimleri aktör/izin/receipt/erken ifşa, gizli rakip seçimi, tek doğru kazanan, kesin DB zamanı/puan formülü, aktif koltukların açılması, XP/istatistiklerin değişmemesi ve server-only ağ limiti kapsamındadır. Temiz DB/seed tekrarı da aynı testleri geçirir. Son E2E kapanış sayıları ve ortam sınırları [Faz 5 raporunda](PHASE_5_REPORT.md).
 
 Üç tur/Cron, istemciler kapalıyken ilerleme, otomatik reconnect/forfeit, XP settlement ve hosted iki hesap testi henüz bu kanıtların kapsamına girmez.
+
+## Faz 6 — motor ve bağımsız Cron kanıtı
+
+554 pgTAP (483 önceki +71 yeni), temiz migration/seed ve seed tekrarında geçti. Üç tur sırası/snapshot, geleceğin gizliliği, DB puan formülü, cross-round retry, deadline commit, 5/10 saniye health/gap, 30/15 saniye liveness, bozuk maç izolasyonu ve teknik cleanup sınanır. Fault-isolation fixture'ının tek SQLSTATE uyarısı beklenir. Test saati yalnız admin fixture verilerindedir; production request'ine saat/test modu eklenmedi.
+
+`pnpm test:engine:local`: gerçek paralel DB oturumları; kilitli maçı SKIP LOCKED ile atlama, diğer due maçı ilerletme, Cron'un sonradan geri dönmesi; cevap lock beklerken deadline geçmesi ve geç cevabın hakkı/puanı tüketmeden tek timeout commit etmesi. Yalnız yerel fixture'lar kullanılır ve kaldırılır.
+
+`pnpm test:match:local`: production build ile 4 desktop foundation +5 çok oturumlu motor testi. Gerçek üç tur (yanlış/doğru/iki yanlış/final toplam), WS engelli üç **gerçek 45 saniye** timeout, iki browser context tamamen kapatılıp katılımcı doğrudan SELECT ile Cron abort gözlemi, 7 saniye offline+refresh ve uzun kopmada forfeit. Service role'a oyun okuma izni verilmez. Public/üçüncü kişi WS ve HTTP denetimleri korunur. Sonuç 320 px screenshot'ı incelenir; uzun isimler tablo hücresinde sarılır.
+
+67 unit, 81 soru davranış vakası; mevcut Practice/foundation production regression 19 geçti/1 bilinçli mobil duplicate timeout skip. Bu fazda Auth kodu değiştirilmedi; signup/e-posta/recovery zincirinin önceki kanıtı korunur, yeni hosted Auth smoke iddia edilmez. Yeni kod push edilmedi; CI job'a concurrency komutu eklenmesi uzak CI geçti anlamına gelmez. Nihai kanıt ve ortam sınırı [Faz 6 raporunda](PHASE_6_REPORT.md).

@@ -201,7 +201,7 @@ SSR oturumunu resmi [Supabase Next.js rehberine](https://supabase.com/docs/guide
 | Tur sırası | Bir kolay, bir orta, bir zor soru |
 | Tur süresi | En fazla 45.000 ms |
 | İlk geri sayım | 3 saniye |
-| Turlar arası | 5 saniye açıklama, ardından 3 saniye geri sayım |
+| Turlar arası | 15 saniye tur sonucu, ardından 3 saniye geri sayım; Explanation/Previous rounds maç sonunda (4 Kasım 2026 kullanıcı kararı) |
 | Cevap | 1 tabanlı hatalı satır numarası |
 | Cevap hakkı | Oyuncu başına turda bir geçerli gönderim |
 | Tur bitişi | İlk doğru cevap, iki yanlış cevap veya süre bitimi |

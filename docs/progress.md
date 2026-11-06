@@ -4,7 +4,7 @@ Ana plan ve çıkış koşulları: `DEBUG_DUEL_PROJECT_SPEC.md`, bölüm 22.
 
 ## Güncel kayıt — Faz 6, 6 Kasım 2026
 
-Yerel üç turluk düello motoru, Cron, yeniden bağlanma ve forfeit akışı tamamlandı. Kullanıcı iki hesapla yerelde oynadı ve sonucu onayladı. Güncel kapsam, doğrulamalar ve sıradaki Faz 6 işleri [devir notunda](PHASE_6_HANDOFF.md). Hosted geliştirme veritabanı 13 migration ile Faz 5'te. Yereldeki altı Faz 6 migration'ı toplamı 19'a çıkarıyor. Faz 7 ve production yayın için kullanıcı talimatı beklenir.
+Yerel üç turluk düello motoru, Cron, yeniden bağlanma ve forfeit akışı tamamlandı. Kullanıcı iki hesapla yerelde oynadı ve sonucu onayladı. Açık talimatıyla altı migration Free plandaki Supabase geliştirme projesine uygulandı. Yerel ve uzak 19 sürüm eşleşiyor. Saniyelik Cron, health ve uzak geliştirme DB’ye bağlı iki hesaplı üç tur doğrulandı. Faz 7 ve production yayın için kullanıcı talimatı beklenir. [Devir notu](PHASE_6_HANDOFF.md)
 
 ## Güncel kayıt — 3 Kasım 2026, Faz 5
 

@@ -76,3 +76,10 @@ Lint/typecheck, production build ve 2/2 odaklı E2E geçti: üç tur boyunca Exp
 ## Devir — 6 Kasım 2026
 
 Kullanıcı iki hesapla yerel düelloyu onayladı ve bu teslimin GitHub’a gönderilmesini istedi. Push öncesi 559 DB testi temiz kurulumda ve seed tekrarında geçti. Lint, TypeScript, 67 birim testi ve 81 soru vakası başarılı. Yeni oturumda [devir notundan](PHASE_6_HANDOFF.md) Faz 6’ya devam et.
+
+## Uzak geliştirme uygulaması — 6 Kasım 2026
+
+- Kullanıcının açık talimatıyla Free plandaki `debug-duel` projesine (`hvqklcqyjqjwwwcsioch`) resmî CLI ile altı migration uygulandı. Ön kontrolde aktif maç yoktu. CLI yalnız bu altı dosyayı planladı ve Vault adımı atlandı. Yerel ve uzak geçmiş 19 sürümde eşleşti. Uygulama sonrası dry-run bekleyen migration, seed veya rol göstermedi.
+- PostgreSQL 17.11 üzerinde `pg_cron` 1.6.4 etkin. İlerletici 1 saniyede bir ve bakım işi UTC 00.00’da zamanlanmış. 15 saniyelik gözlemde 15 başarılı tick kaydedildi. Uzak veritabanına bağlı geçici yerel Next.js sunucusunda `GET /api/health` 200 ve `ready: true` döndü. Anon, authenticated ve service_role ilerletici EXECUTE sahibi değil. Scheduler ayrıcalığı doğrudan EXECUTE ile sınırlı. Anon rolünün private tablolarda SELECT/DML erişimi yok.
+- Geçici iki tarayıcı oturumunda gerçek Supabase Auth, davet, profil tamamlama, private Realtime, üç tur ve final doğrulandı. İlk deneme Ready kontrolünün beş saniyelik test penceresinde zaman aşımına uğradı. Yerel teste özgü heartbeat bekletmesi çıkarılarak ikinci deneme geçti. İki denemenin dört sentetik Auth hesabı ve ilişkili oyun kayıtları temizlendi. Gözlem gerçek e-posta teslimini kapsamıyor.
+- [CI koşusunda](https://github.com/burakkyildiz/DebugDuel/actions/runs/42212008808) `quality` ve 559 pgTAP testi geçti. Chromium kurulumu tamamlandı. GitHub, 20 dakikalık iş sınırında `test:match:local` adımını iptal etti. `database` sınırı 30 dakikaya çıkarıldı.

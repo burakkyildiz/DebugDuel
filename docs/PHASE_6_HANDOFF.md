@@ -13,7 +13,7 @@ Kullanıcı iki yerel hesapla düelloyu denedi, 0–0 beraberlik ekranını gör
 
 ## Sonraki oturum
 
-1. Faz 6 commit’inin GitHub Actions `quality` ve `database` sonuçlarına bak. Kırmızı kontrol varsa önce onu incele.
+1. [Faz 6 CI koşusunda](https://github.com/burakkyildiz/DebugDuel/actions/runs/42212008808) `quality` ve 559 pgTAP testi geçti. `database` işi 20 dakikalık sınıra düello E2E adımında ulaştı. İşin sınırı 30 dakikaya çıkarıldı. Yeni koşunun sonucunu GitHub Actions’tan kontrol et.
 2. Yerel tekrar denemesi için Docker ve yerel Supabase açıkken `pnpm match:local` çalıştır. [Düello](http://localhost:3006/play) ve [yerel posta kutusu](http://127.0.0.1:54324/) ile iki ayrı tarayıcı oturumunda **yeni** oda aç. Yerel GitHub giriş sağlayıcısı kapalıdır.
-3. Hosted geliştirme projesi `debug-duel` (`hvqklcqyjqjwwwcsioch`) 13 migration ile Faz 5 düzeyindedir. Faz 6’nın altı migration’ı yerelde uygulanmış durumda. Kullanıcı uzak DB uygulamasını ayrıca isterse önce ücretsiz ortamda Cron desteğini ve migration planını doğrula. Ardından health ve iki hesaplı düelloyu hosted ortamda sınamak Faz 6’nın kalan işidir.
+3. Free plandaki `debug-duel` geliştirme projesine (`hvqklcqyjqjwwwcsioch`) Faz 6’nın altı migration’ı uygulandı. Yerel ve uzak 19 sürüm eşleşiyor. Gerçek Cron tick’i, `/api/health` ve geliştirme DB’ye bağlı iki hesaplı üç turluk düello doğrulandı. Ayrıntılar [Faz 6 raporunda](PHASE_6_REPORT.md).
 4. Production yayını ve Faz 7 için ayrı kullanıcı talimatı bekle. Bütçe sıfır. Yerel Auth kullanıcıları ve secret değerleri Git'e girmez.

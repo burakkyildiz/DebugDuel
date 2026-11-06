@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { MatchEntry } from "./entry";
 import { Trophy, Flag, Minus } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { copy } from "@/content/copy.en";
@@ -152,7 +153,13 @@ export function MatchRoom({ initial }: { initial: MatchState }) {
     {error && <div className="form-error" role="alert"><p>{error}</p><button type="button" className="button button-secondary" disabled={busy} onClick={() => { if (failed.current) void command(failed.current); else void refresh().catch(() => setError(text.errors.ENGINE_UNAVAILABLE)); }}>{text.retry}</button></div>}
     {terminal && <section className={`match-outcome match-outcome-${outcome}`} aria-labelledby="match-outcome-heading">
       <div className="match-outcome-main"><span className="match-outcome-icon"><ResultIcon aria-hidden="true" size={32} /></span><div><p className="eyebrow">{text.matchFinished}</p><h2 id="match-outcome-heading" tabIndex={-1} ref={resultHeading}>{finalResult}</h2>{decided && <p className="match-outcome-winner">@{state.players.find(player => player.id === state.winnerId)?.username} {text.winsMatch}</p>}{reason && <p>{reason}</p>}</div></div>
-      <div className="match-outcome-footer"><div className="match-final-score" aria-label={text.finalScore}>{state.players.map((player, index) => <span className="match-final-score-entry" key={player.id}>{index > 0 && <span aria-hidden="true" className="match-score-divider">:</span>}<span><strong>{player.score}</strong><small>@{player.username}</small></span></span>)}</div><Link className="button button-primary" href="/play">{text.newRoom}</Link></div>
+      <div className="match-outcome-footer"><div className="match-final-score" aria-label={text.finalScore}>{state.players.map((player, index) => <span className="match-final-score-entry" key={player.id}>{index > 0 && <span aria-hidden="true" className="match-score-divider">:</span>}<span><strong>{player.score}</strong><small>@{player.username}</small></span></span>)}</div><MatchEntry replay userId={state.self.id} /></div>
+      {state.progress && <div className="match-progress">
+        <p>{text.xpEarned} <strong>+{state.progress.xpEarned}</strong></p>
+        <p>{text.totalXpAfterMatch} <strong>{state.progress.totalXp}</strong></p>
+        {state.progress.dailyLimit && <p>{text.dailyXpLimit}</p>}
+      </div>}
+      <Link className="text-link" href="/history">{text.viewHistory}</Link>
     </section>}
     <div className="match-players">{[1, 2].map(slot => {
       const player = state.players.find(p => p.slot === slot);

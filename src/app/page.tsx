@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight, Check, Code2, Crosshair, GitBranch, Terminal, Timer, Trophy, Users, Zap } from "lucide-react";
+import { currentUser } from "@/lib/auth";
+import { createClient } from "@/lib/supabase/server";
 import { copy } from "@/content/copy.en";
 
 const snippet = [
@@ -10,14 +12,23 @@ const snippet = [
   <>    <span className="syntax-purple">return</span> total</>,
 ];
 
-export default function Home() {
+export default async function Home() {
   const text = copy.home;
+  const user = await currentUser();
+  const client = user?.email_confirmed_at ? await createClient() : null;
+  const profile = user && client
+    ? (await client.from("profiles").select("xp,wins,losses").eq("id", user.id).maybeSingle()).data
+    : null;
   return <>
     <section className="hero container">
       <div className="hero-copy"><p className="eyebrow"><span className="tiny-dot" />{text.eyebrow}</p>
         <h1>{text.titleStart}<br /><span>{text.titleEnd}</span></h1>
         <p className="hero-description">{text.description}</p>
         <div className="hero-actions"><Link href="/play" className="button button-primary"><Users size={18} aria-hidden="true" />{text.play}<ArrowUpRight size={18} aria-hidden="true" /></Link><Link href="/practice" className="button button-secondary">{text.practice}<ArrowRight size={17} aria-hidden="true" /></Link></div>
+        {profile && <div className="hero-facts">
+          <Link className="text-link" href="/profile">{copy.profile.xp} {profile.xp}</Link>
+          <span>{copy.profile.wins} {profile.wins} · {copy.profile.losses} {profile.losses}</span>
+        </div>}
         <div className="hero-facts"><span><GitBranch size={14} aria-hidden="true" />{text.detail}</span><span><Timer size={14} aria-hidden="true" />{text.duration}</span><span><Code2 size={14} aria-hidden="true" />{text.language}</span></div>
       </div>
       <div className="challenge-wrap"><div className="challenge-card">

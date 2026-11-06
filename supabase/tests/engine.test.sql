@@ -116,6 +116,11 @@ select pg_temp.engine_cmd(1,'answer',(select (value->>'id')::uuid from engine_te
 insert into engine_test_results values(is(pg_temp.engine_cmd(1,'get',(select (value->>'id')::uuid from engine_test_data where name='room'))->>'status','finished','all three rounds produce a final match'));
 insert into engine_test_results values(is(pg_temp.engine_cmd(1,'get',(select (value->>'id')::uuid from engine_test_data where name='room'))->>'winnerId',pg_temp.engine_actor(2)::text,'total score decides winner instead of last round winner'));
 insert into engine_test_results values(is((select count(*) from public.match_rounds where match_id=(select (value->>'id')::uuid from engine_test_data where name='room') and status='resolved'),3::bigint,'three rounds actually resolved'));
+insert into engine_test_results values(is(pg_temp.engine_cmd(1,'get',(select (value->>'id')::uuid from engine_test_data where name='room'))#>>'{progress,xpEarned}','30','normal loss with one round and an attempt earns 30 XP'));
+insert into engine_test_results values(is(pg_temp.engine_cmd(2,'get',(select (value->>'id')::uuid from engine_test_data where name='room'))#>>'{progress,totalXp}','60','normal winner with one round earns 60 total XP'));
+select private.finish_match((select (value->>'id')::uuid from engine_test_data where name='room'),pg_temp.engine_actor(2),'completed');
+insert into engine_test_results values(is((select count(*) from private.match_settlements where match_id=(select (value->>'id')::uuid from engine_test_data where name='room')),1::bigint,'retrying finalization keeps one settlement'));
+
 insert into engine_test_results values(is((select count(*) from public.match_players where match_id=(select (value->>'id')::uuid from engine_test_data where name='room') and is_active),0::bigint,'normal final result releases both active seats'));
 insert into engine_test_results values(is(pg_temp.engine_cmd(2,'answer',(select (value->>'id')::uuid from engine_test_data where name='room'),(select id from public.match_rounds where match_id=(select (value->>'id')::uuid from engine_test_data where name='room') and round_number=1),(select correct_line from private.round_questions where round_id=(select id from public.match_rounds where match_id=(select (value->>'id')::uuid from engine_test_data where name='room') and round_number=1)),key=>'a6000000-0000-4000-8000-000000000002')->>'status','finished','round-one retry is valid after round three'));
 insert into engine_test_data values('room',jsonb_build_object('id',pg_temp.engine_room())) on conflict(name) do update set value=excluded.value;
@@ -158,9 +163,43 @@ insert into engine_test_results values(is((select ended_reason from public.match
 insert into engine_test_results values(is(pg_temp.engine_cmd(3,'get',(select (value->>'id')::uuid from engine_test_data where name='good'))->>'status','playing','failed room does not stop another due room'));
 insert into engine_test_results values(ok((select failed_matches>0 from private.engine_health),'engine keeps a bounded failure count without secret errors'));
 select private.finish_match((select (value->>'id')::uuid from engine_test_data where name='good'),null,'both_disconnected');
-insert into engine_test_results values(is((select sum(xp) from public.profiles where id in(select pg_temp.engine_actor(n) from generate_series(1,4)n)),0::numeric,'Phase 6 writes no XP'));
-insert into engine_test_results values(is((select sum(matches_played) from public.profiles where id in(select pg_temp.engine_actor(n) from generate_series(1,4)n)),0::bigint,'Phase 6 does not settle profile statistics'));
-insert into engine_test_results values(is((select count(*) from private.xp_ledger where user_id in(select pg_temp.engine_actor(n) from generate_series(1,4)n)),0::bigint,'no premature ledger writes'));
+insert into engine_test_results values(is((select sum(xp) from public.profiles where id in(select pg_temp.engine_actor(n) from generate_series(1,4)n)),90::numeric,'no-attempt draws and forfeits add no XP'));
+insert into engine_test_results values(is((select sum(matches_played) from public.profiles where id in(select pg_temp.engine_actor(n) from generate_series(1,4)n)),8::bigint,'four finished matches update both profiles, excluding aborts'));
+insert into engine_test_results values(is((select count(*) from private.xp_ledger where user_id in(select pg_temp.engine_actor(n) from generate_series(1,4)n)),8::bigint,'one ledger record per participant of each settled match'));
+insert into engine_test_results values(ok(not has_function_privilege('authenticated','private.settle_finished_duel()','execute'),'participants cannot invoke settlement'));
+insert into engine_test_results values(ok(not has_column_privilege('debug_duel_game_engine','public.profiles','xp','update'),'game engine cannot write profile XP directly'));
+insert into engine_test_results values(ok(not has_schema_privilege('debug_duel_settlement_engine','auth','usage'),'settlement role has no Auth access'));
+insert into engine_test_results values(ok(not has_function_privilege('anon','public.match_history(timestamptz,uuid,integer)','execute'),'guest cannot read match history'));
+select set_config('request.jwt.claims',jsonb_build_object('sub',pg_temp.engine_actor(3),'role','authenticated')::text,true);
+set local role authenticated;
+insert into engine_test_results values(is((select count(*) from public.match_history() where status='finished'),0::bigint,'unrelated account sees none of the finished matches'));
+reset role;
+
+-- A reversed host order still shares the same pair's five-match quota.
+do $$
+declare mid uuid; rid uuid; correct integer; start_time timestamptz;
+begin
+  for n in 1..6 loop
+    mid := case when n=6 then pg_temp.engine_room(4,3) else pg_temp.engine_room(3,4) end;
+    start_time := clock_timestamp() - interval '1 second';
+    update public.match_rounds set starts_at=start_time, ends_at=start_time+interval '45 seconds'
+      where match_id=mid and round_number=1 returning id into strict rid;
+    perform private.match_advance(mid);
+    select correct_line into strict correct from private.round_questions where round_id=rid;
+    perform pg_temp.engine_cmd(3,'answer',mid,rid,correct);
+    perform pg_temp.engine_cmd(4,'leave',mid);
+    insert into engine_test_data values ('quota-'||n,jsonb_build_object('id',mid));
+  end loop;
+end $$;
+insert into engine_test_results values(is((select xp from public.profiles where id=pg_temp.engine_actor(3)),200::bigint,'five attempted forfeits award 40 XP each'));
+insert into engine_test_results values(is((select wins from public.profiles where id=pg_temp.engine_actor(3)),6,'quota does not suppress the sixth win'));
+insert into engine_test_results values(is((select losses from public.profiles where id=pg_temp.engine_actor(4)),6,'forfeit losses persist across the daily limit'));
+insert into engine_test_results values(is(pg_temp.engine_cmd(3,'get',(select (value->>'id')::uuid from engine_test_data where name='quota-6'))#>>'{progress,dailyLimit}','true','sixth match reports quota to the participant'));
+select set_config('request.jwt.claims',jsonb_build_object('sub',pg_temp.engine_actor(3),'role','authenticated')::text,true);
+set local role authenticated;
+insert into engine_test_results values(is((select match_id from public.match_history(p_limit=>1)),(select (value->>'id')::uuid from engine_test_data where name='quota-6'),'history first page uses newest match'));
+insert into engine_test_results values(is((select page.match_id from public.match_history(p_limit=>1) first cross join lateral public.match_history(first.created_at,first.match_id,1) page),(select (value->>'id')::uuid from engine_test_data where name='quota-5'),'history cursor advances without repeating the newest match'));
+reset role;
 -- Daily cleanup removes sensitive payloads without breaking idempotent expiry.
 insert into private.command_receipts(user_id,command_name,idempotency_key,request_hash,safe_response,sensitive_response_ciphertext,ciphertext_expires_at,created_at)
 values(pg_temp.engine_actor(1),'create_match','a6000000-0000-4000-8000-000000000099',

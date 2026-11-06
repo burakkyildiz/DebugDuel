@@ -63,10 +63,10 @@ try {
   for (let i = 0; i < 8; i++) { if (query(`select status from public.matches where id='${rooms[0]}';`) === "between_rounds") { advanced = true; break; } await delay(300); }
   if (!advanced) throw new Error("Real Cron did not revisit the unlocked room.");
   console.log("PASS: concurrent tick skips a locked room, progresses another, and real Cron revisits it.");
-  // Round 2's deadline passes WHILE the answer transaction is waiting on the match lock.
+  // The final round's deadline passes WHILE the answer transaction is waiting on the match lock.
   const mid = rooms[1]; const actor = actors[2];
-  const rid = query(`select id from public.match_rounds where match_id='${mid}' and round_number=2;`);
-  query(`begin;with t as(select clock_timestamp()-interval '44 seconds' v) update public.match_rounds set status='active',starts_at=t.v,ends_at=t.v+interval '45 seconds' from t where id='${rid}';update public.matches set status='playing',current_round_number=2,next_transition_at=(select ends_at from public.match_rounds where id='${rid}') where id='${mid}';commit;`);
+  const rid = query(`select id from public.match_rounds where match_id='${mid}' and round_number=3;`);
+  query(`begin;with t as(select clock_timestamp()-interval '44 seconds' v) update public.match_rounds set status='active',starts_at=t.v,ends_at=t.v+interval '45 seconds' from t where id='${rid}';update public.matches set status='playing',current_round_number=3,next_transition_at=(select ends_at from public.match_rounds where id='${rid}') where id='${mid}';commit;`);
   holder = lock(`begin;select 1 from public.matches where id='${mid}' for update;select 'LOCK_READY';select pg_sleep(2.5);commit;`);
   await holder.ready;
   const answer = query(`begin;${command(actor, "answer", quote(mid), quote(rid), "1")}commit;`);
@@ -74,13 +74,19 @@ try {
   if (!answer.includes('"commandError": "ROUND_CLOSED"')) throw new Error("Late answer was not rejected using the post-lock clock.");
   if (query(`select count(*) from private.answers where round_id='${rid}';`) !== "0") throw new Error("Late answer consumed a right.");
   if (query(`select end_reason from public.match_rounds where id='${rid}';`) !== "timeout") throw new Error("Late answer rolled back its deadline transition.");
-  console.log("PASS: post-lock DB clock rejects an answer after deadline and commits exactly one timeout.");
+  const retried = query("begin;" + command(actor, "answer", quote(mid), quote(rid), "1") + "commit;");
+  if (!retried.includes('"commandError": "ROUND_CLOSED"')) throw new Error("Final round accepted a retry.");
+  const settlement = query("select count(*) || ':' || (select count(*) from private.xp_ledger where match_id=" + quote(mid) + ") from private.match_settlements where match_id=" + quote(mid) + ";");
+  if (settlement !== "1:2") throw new Error("Final timeout did not settle exactly once for both participants.");
+  console.log("PASS: post-lock DB clock rejects a late answer, settles the final timeout once, and preserves the result on retry.");
 } finally {
   if (holder) { holder.child.kill(); await holder.completion.catch(() => {}); }
   const ids = actors.map(quote).join(",");
-  // Fixture matches never reach a final winner; only their first two timeout rounds run.
+  // Fixture matches have no winner. A final timeout can leave settlement evidence.
   query(`begin;
     select 1 from public.matches where host_user_id in(${ids}) order by id for update;
+    delete from private.xp_ledger where user_id in(${ids});
+    delete from private.match_settlements where match_id in(select id from public.matches where host_user_id in(${ids}));
     delete from private.answers where user_id in(${ids});
     delete from private.round_questions where round_id in(select r.id from public.match_rounds r join public.matches m on m.id=r.match_id where m.host_user_id in(${ids}));
     delete from private.match_invites where match_id in(select id from public.matches where host_user_id in(${ids}));

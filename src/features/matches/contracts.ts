@@ -18,8 +18,16 @@ export const matchStateSchema = z.object({
   players: z.array(z.object({ id: z.uuid(), username: z.string(), slot: z.number().int().min(1).max(2), ready: z.boolean(), lastSeenAt: time, score: z.number().int().min(0).max(450), hasSubmitted: z.boolean() }).strict()).min(1).max(2),
   round, self: z.object({ id: z.uuid(), selectedLine: z.number().int().nullable() }).strict(),
   question: question.nullable(), solution: solution.nullable(),
+  progress: z.object({
+    xpEarned: z.number().int().min(0).max(80),
+    totalXp: z.number().int().nonnegative(),
+    dailyLimit: z.boolean(),
+  }).strict().optional(),
 }).strict().superRefine((value, context) => {
   if (value.stage === "full_match" && (!value.rounds || value.roundCount !== 3 || value.nextPhaseAt === undefined)) context.addIssue({ code: "custom", message: "Incomplete three-round state" });
+  if (value.progress && (value.status !== "finished" || value.stage !== "full_match" || value.progress.totalXp < value.progress.xpEarned || (value.progress.dailyLimit && value.progress.xpEarned > 0))) {
+    context.addIssue({ code: "custom", message: "Invalid match progress" });
+  }
   for (const item of [{ ...value.round, question: value.question, solution: value.solution }, ...(value.rounds ?? [])]) {
     if (item.question && (!item.startsAt || Date.parse(item.startsAt) > Date.parse(value.serverNow))) context.addIssue({ code: "custom", message: "Premature question" });
     if (item.solution && (item.status !== "resolved" || !item.question)) context.addIssue({ code: "custom", message: "Premature solution" });

@@ -173,7 +173,33 @@ test("invite survives sign-in and onboarding; two browsers complete three real p
     await b.page.screenshot({ path: testInfo.outputPath("match-result-mobile.png"), fullPage: true });
     const client = publicClient(); await client.auth.signInWithPassword({ email: b.email, password: b.password });
     const profile = await client.from("profiles").select("xp,matches_played").eq("id", b.id).single();
-    expect(profile.data).toEqual({ xp: 0, matches_played: 0 });
+    const expectedXp = 30 + (finalB.winnerId === b.id ? 30 : finalB.winnerId ? 0 : 15);
+    expect(finalB.progress).toEqual({ xpEarned: expectedXp, totalXp: expectedXp, dailyLimit: false });
+    expect(profile.data).toEqual({ xp: expectedXp, matches_played: 1 });
+    await expect(b.page.getByText("XP earned", { exact: false })).toContainText("+" + expectedXp);
+
+    const ownHistory = await b.context.request.get("/api/me/history?limit=1");
+    expect(ownHistory.status()).toBe(200);
+    expect((await ownHistory.json()).items[0]).toMatchObject({ match_id: matchId, xp_earned: expectedXp });
+    const publicPage = await b.context.request.get("/api/leaderboard?limit=1");
+    expect(publicPage.status()).toBe(200);
+    const firstPage = await publicPage.json();
+    expect(firstPage.items[0]).not.toHaveProperty("id");
+    expect(firstPage.nextCursor).toBeTruthy();
+    const nextPage = await b.context.request.get("/api/leaderboard?limit=1&cursor=" + encodeURIComponent(firstPage.nextCursor));
+    expect(nextPage.status()).toBe(200);
+    const nextPlayer = (await nextPage.json()).items[0];
+    expect(nextPlayer.rank).toBe(2);
+    expect(nextPlayer.username).not.toBe(firstPage.items[0].username);
+
+    await b.page.getByRole("link", { name: "View match history" }).click();
+    await expect(b.page.getByRole("row").filter({ hasText: a.username })).toBeVisible();
+    await b.page.getByRole("link", { name: "View result" }).click();
+    await expect(b.page).toHaveURL(origin + "/match/" + matchId + "/results");
+    await b.page.getByRole("button", { name: "Play again" }).click();
+    await expect(b.page).toHaveURL(/\/match\/[a-f0-9-]+$/);
+    expect(b.page.url()).not.toContain(matchId);
+    await expect(b.page.getByRole("textbox", { name: "Invite a friend" })).toBeVisible();
     await client.auth.signOut();
   } finally { await a.context.close(); await b.context.close(); }
 });

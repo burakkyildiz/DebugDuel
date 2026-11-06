@@ -143,6 +143,11 @@ isOneToOne: false
 "match_command":
 { Args: { "p_action": string,"p_cipher"?: string,"p_hash"?: string,"p_key"?: string,"p_line"?: number,"p_match"?: string,"p_ready"?: boolean,"p_round"?: string }; Returns: Json
                            },
+"match_history":
+{ Args: { "p_before"?: string,"p_before_id"?: string,"p_limit"?: number }; Returns: {
+              "created_at": string,"match_id": string,"outcome": string,"own_result": string,"own_score": number,"rival": string,"rival_score": number,"status": string,"xp_earned": number
+            }[]
+                           },
 "match_join_admission":
 { Args: { "p_subject": string }; Returns: boolean
                            },

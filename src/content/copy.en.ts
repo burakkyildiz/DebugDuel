@@ -53,9 +53,12 @@ export const copy = {
   },
   match: {
     eyebrow: "A FRIENDLY CHALLENGE", title: "Bring your rival.", description: "Create a private room, share the link and find the bug together.",
-    fullMatch: "Three rounds: easy, medium, hard. Up to 45 seconds each. XP and permanent statistics are coming in the next phase.",
+    fullMatch: "Three rounds: easy, medium, hard. Up to 45 seconds each. Completed duels count toward your progress.",
     round: "Round", between: "Round complete", roundRule: "First correct answer wins the round. A wrong answer does not end it unless both players are wrong.", wonFirst: "You found the bug first. The round ends immediately on the first correct answer.", rivalFirst: "Your rival found the bug first, so the round ended before your answer.", rivalFirstAnswered: "Your rival found the bug first. The first correct answer ends the round.", bothWrong: "Both players answered incorrectly. No points this round.", roundTimeout: "Time is up. No correct answer was accepted.", nextRound: "Next countdown in", nextStarts: "Next round begins in", seconds: "seconds", connectedPlayer: "Connected", previousRounds: "Previous rounds", reviewRound: "Review round", matchSummary: "Round results", notPlayed: "Not played", noWinner: "No winner", roundVictory: "You won this round.", roundDefeat: "Your rival won this round.", roundDraw: "No winner this round.",
     winner: "Winner", loser: "Defeat", winsMatch: "wins the match", finalScore: "Final score", matchFinished: "Match complete", matchVictory: "You won!", matchDefeat: "You lost", matchDraw: "Draw", aborted: "Match interrupted", yourAnswer: "Your answer", noAnswer: "No answer submitted", result: "Result", points: "Points",
+    xpEarned: "XP earned", totalXpAfterMatch: "Total XP after this match",
+    dailyXpLimit: "You reached today’s XP limit for matches against this rival.",
+    viewHistory: "View match history",
     difficulties: { easy: "Easy", medium: "Medium", hard: "Hard" },
     rivalDisconnected: "No connection update was received from {player} for at least 30 seconds while you remained connected. You win by forfeit, regardless of the score.",
     youDisconnected: "Your connection was not confirmed for at least 30 seconds while {player} remained connected. Your rival wins by forfeit, regardless of the score. Rejoining does not restart the match.",
@@ -77,6 +80,13 @@ export const copy = {
     },
   },
   friend: { eyebrow: "A FRIENDLY CHALLENGE", title: "Your rivalry starts with a link.", body: "Private two-player rooms are on their way. Sign in now to choose your username.", action: "Choose your username", waiting: "Private duels are getting ready. You’ll be able to invite a friend once the challenge rooms open." },
-  history: { eyebrow: "PAST RIVALRIES", title: "Every duel tells a story.", body: "Your completed matches will appear here when private duels open.", emptyTitle: "A clean slate.", emptyBody: "Your first match is still ahead of you." },
+  pagination: { first: "First page", next: "Next page" },
+  history: {
+    eyebrow: "PAST RIVALRIES", title: "Every duel tells a story.", body: "Review your past duels, results and earned XP.",
+    emptyTitle: "A clean slate.", emptyBody: "Your first match is still ahead of you.", error: "We couldn’t load your match history.",
+    columns: ["Rival", "Date (UTC)", "Result", "Score", "XP", "Match"],
+    outcomes: { win: "Victory", loss: "Defeat", draw: "Draw", aborted: "Interrupted", expired: "Expired", cancelled: "Cancelled" },
+    noRival: "—", forfeit: "Forfeit", details: "View result",
+  },
   errors: { notFoundTitle: "This line leads nowhere.", notFoundBody: "The page may have moved, or you may not have access to it.", title: "Something went off script.", body: "We couldn’t load this page. Please try again.", loading: "Getting things ready…" },
 } as const;

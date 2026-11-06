@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { copy } from "@/content/copy.en";
 const text = copy.match;
-export function MatchEntry({ joining = false, userId }: { joining?: boolean; userId: string }) {
+export function MatchEntry({ joining = false, replay = false, userId }: { joining?: boolean; replay?: boolean; userId: string }) {
   const router = useRouter();
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
@@ -29,9 +29,10 @@ export function MatchEntry({ joining = false, userId }: { joining?: boolean; use
     } catch { setError(text.errors.ENGINE_UNAVAILABLE); }
     finally { inFlight.current = false; setPending(false); }
   }
-  return <div className="profile-panel match-entry"><p className="notice">{text.fullMatch}</p>
+  return <div className={replay ? "match-replay" : "profile-panel match-entry"}>
+    {!replay && <p className="notice">{text.fullMatch}</p>}
     {error && <p className="form-error" role="alert">{error}</p>}
     {active && <Link className="button button-secondary" href={`/match/${active}`}>{text.resume}</Link>}
-    <button type="button" className="button button-primary" onClick={() => void submit()} disabled={pending}>{pending ? copy.common.pending : error ? text.retry : joining ? text.join : text.create}</button>
+    {(!replay || !active) && <button type="button" className="button button-primary" onClick={() => void submit()} disabled={pending}>{pending ? copy.common.pending : error ? text.retry : joining ? text.join : replay ? text.newRoom : text.create}</button>}
   </div>;
 }

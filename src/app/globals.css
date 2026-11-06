@@ -104,3 +104,8 @@ h1,h2,h3 { font-weight: 600; letter-spacing: -.04em; line-height: 1.15; }
 @media(max-width:540px) { .match-outcome { padding: 20px; }.match-outcome-main { align-items: flex-start; gap: 12px; }.match-outcome-icon { width: 44px; height: 44px; border-radius: 12px; }.match-outcome-icon svg { width: 24px; }.match-outcome-footer { align-items: stretch; flex-direction: column; }.match-final-score { justify-content: center; }.match-final-score-entry { flex: 1; }.match-final-score-entry>span:last-child { flex: 1; text-align: center; } }
 
 .match-outcome-main>div { min-width: 0; }
+
+.leaderboard-player { display: inline-flex; align-items: center; gap: 10px; }
+.leaderboard-player .avatar-chip { width: 30px; height: 30px; border-radius: 7px; }
+.match-progress { display: flex; flex-wrap: wrap; gap: 8px 20px; }
+.match-progress strong { color: var(--text); margin-left: 4px; }

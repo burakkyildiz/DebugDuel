@@ -1,5 +1,11 @@
 # Debug Duel — çalışma yönergeleri
 
+## Güncel çalışma — Faz 7, 6 Kasım 2026
+
+- Kullanıcı “tamam faz7 ye baslayabiliriz” diyerek Faz 7’yi başlattı. Yerel kapsam ve doğrulamalar `docs/PHASE_7_REPORT.md` içinde. Faz 6 teslimi `4b55d8b` ve [başarılı CI](https://github.com/burakkyildiz/DebugDuel/actions/runs/42214847641) ile GitHub `main` dalında.
+- Kullanıcı Faz 7 tesliminden devam edilmesini istedi. Faz 7 commit’i ve CI sonucu GitHub `main` ve Actions üzerinden takip edilir. Faz 7 migration’ı yerel Supabase’e uygulandı. Yerelde 20, uzak geliştirme projesinde 19 sürüm var. Uzak migration, production yayın ve Faz 8 ayrı kullanıcı talimatıyla yürütülür. Yerel test hesabı ve XP temizliği yayın öncesine ertelendi.
+- Üç turluk maçlar kapanırken XP ledger, oyuncu XP’si ve profil istatistikleri aynı transaction’da yazılır. Kota UTC günü başına sırasız hesap çiftinin ilk beş sonuçlanmış maçı içindir. Eski tamamlanmış maçlara geriye dönük ödül yazılmaz. Geçmiş katılımcıya özel ve cursor sayfalı, liderlik tablosu tamamlanan maçlardan gelen gerçek XP’ye göre sıralanır.
+
 ## Güncel çalışma — Faz 6, 6 Kasım 2026
 
 - Kullanıcı açıkça “tamam faz 6 y baslayalim” dedi; Faz 6 başladı ve yerel üç turluk motor akışı tamamlandı. Yeni oturumda önce `docs/PHASE_6_HANDOFF.md` ve `docs/PHASE_6_REPORT.md` dosyalarını oku. Aşağıdaki Faz 5 bekleme/kapsam notları tarihseldir.

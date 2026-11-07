@@ -3,7 +3,7 @@
 ## Güncel çalışma — Faz 7, 6 Kasım 2026
 
 - Kullanıcı “tamam faz7 ye baslayabiliriz” diyerek Faz 7’yi başlattı. Yerel kapsam ve doğrulamalar `docs/PHASE_7_REPORT.md` içinde. Faz 6 teslimi `4b55d8b` ve [başarılı CI](https://github.com/burakkyildiz/DebugDuel/actions/runs/42214847641) ile GitHub `main` dalında.
-- Kullanıcı Faz 7 tesliminden devam edilmesini istedi. Faz 7 commit’i ve CI sonucu GitHub `main` ve Actions üzerinden takip edilir. Faz 7 migration’ı yerel Supabase’e uygulandı. Yerelde 20, uzak geliştirme projesinde 19 sürüm var. Uzak migration, production yayın ve Faz 8 ayrı kullanıcı talimatıyla yürütülür. Yerel test hesabı ve XP temizliği yayın öncesine ertelendi.
+- Faz 7 commit’i `2df6df4` uzak `main` dalında. [CI](https://github.com/burakkyildiz/DebugDuel/actions/runs/42223200800) başarılı. Kullanıcı onayıyla Faz 7 migration’ı uzak geliştirme projesine uygulandı. Yerel ve uzak geçmişte 20 sürüm eşleşiyor. Production yayın ve Faz 8 ayrı kullanıcı talimatıyla yürütülür. Yerel test hesabı ve XP temizliği yayın öncesine ertelendi.
 - Üç turluk maçlar kapanırken XP ledger, oyuncu XP’si ve profil istatistikleri aynı transaction’da yazılır. Kota UTC günü başına sırasız hesap çiftinin ilk beş sonuçlanmış maçı içindir. Eski tamamlanmış maçlara geriye dönük ödül yazılmaz. Geçmiş katılımcıya özel ve cursor sayfalı, liderlik tablosu tamamlanan maçlardan gelen gerçek XP’ye göre sıralanır.
 
 ## Güncel çalışma — Faz 6, 6 Kasım 2026

@@ -4,7 +4,7 @@ Ana plan ve çıkış koşulları: `DEBUG_DUEL_PROJECT_SPEC.md`, bölüm 22.
 
 ## Güncel kayıt — Faz 7, 6 Kasım 2026
 
-Faz 7’nin yerel kapsamı maç kapanışında tek XP ve istatistik işlemini, özel maç geçmişini ve sayfalı XP liderlik tablosunu içeriyor. Yerel Supabase’te 20 migration var. Uzak geliştirme veritabanı 19 migration ile Faz 6’da. [Faz 7 raporu](PHASE_7_REPORT.md)
+Faz 7 maç kapanışında tek XP ve istatistik işlemini, özel maç geçmişini ve sayfalı XP liderlik tablosunu içeriyor. `2df6df4` GitHub `main` dalında ve CI başarılı. Uzak geliştirme projesine Faz 7 migration’ı uygulandı. Yerel ve uzak 20 sürüm eşleşiyor. [Faz 7 raporu](PHASE_7_REPORT.md)
 
 ## Güncel kayıt — Faz 6, 6 Kasım 2026
 

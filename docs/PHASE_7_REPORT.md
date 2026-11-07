@@ -15,5 +15,11 @@
 - 573 pgTAP testi mevcut ve temiz yerel DB’de geçti. Seed tekrarından sonra 573 test yeniden geçti. Paralel PostgreSQL oturumları SKIP LOCKED, kilit sonrası deadline ve tek settlement davranışını doğruladı.
 - Lint, TypeScript, 67 birim testi ve 30 soru için 81 davranış vakası geçti.
 - Yerel Supabase güvenlik ve performans danışmanları WARN veya ERROR bildirmedi. Production build üzerinde 9 düello ve foundation tarayıcı testi geçti. İki gerçek hesapla beraberlik XP’si, profil, geçmiş, sayfalama ve yeni davet akışı doğrulandı. Misafir geçmiş isteği 401 döndü. Public liderlik tablosu misafire iki sayfa döndürdü ve bozuk cursor ile 50 üzerindeki sayfa boyutunu 400 ile reddetti. Sonuç ekranı 320 px genişlikte kontrol edildi.
-- Yerel önizleme için Docker ve Supabase açıkken `pnpm match:local` çalıştır. [Düello](http://localhost:3006/play) üzerinden iki yerel hesapla yeni bir oda aç. Uzak geliştirme veritabanına bağlı varsayılan uygulama Faz 7 geçmiş RPC’si için yeni migration gerektirir.
-- Yerelde 20 migration, uzak geliştirme ortamında 19 migration vardır. Faz 7 tesliminin commit ve CI durumu GitHub `main` ve Actions üzerinden takip edilir. Uzak migration, production yayın ve Faz 8 ayrı kullanıcı talimatıyla yürütülür. Yerel test hesabı ve XP temizliği yayın öncesine ertelendi.
+- Yerel önizleme için Docker ve Supabase açıkken `pnpm match:local` çalıştır. [Düello](http://localhost:3006/play) üzerinden iki yerel hesapla yeni bir oda aç.
+- `2df6df4` GitHub `main` dalında. [CI](https://github.com/burakkyildiz/DebugDuel/actions/runs/42223200800) quality ve database işlerinde başarılı. Yerel test hesabı ve XP temizliği yayın öncesine ertelendi.
+
+## Uzak geliştirme uygulaması
+
+- Kullanıcı onayıyla `20261106123743_match_progression.sql` uzak `debug-duel` geliştirme projesine uygulandı. Ön kontrolde aktif maç yoktu. Uygulama sonrası CLI dry-run bekleyen migration göstermedi. Yerel ve uzak geçmiş 20 sürümde eşleşti.
+- Uzak PostgreSQL üzerinde rollback ile 90 motor testi geçti. Bu testler XP, tek settlement, günlük kota ve katılımcıya özel geçmişi kapsadı. Dört sentetik hesap ve geçici pgTAP uzantısı rollback sonrasında yoktu.
+- Uzak veritabanına bağlı geçici yerel uygulamada health ve liderlik tablosu 200, misafir geçmişi 401, bozuk cursor 400 döndü. Uzak liderlik tablosu boş durum döndürdü. Faz 7’nin tam iki tarayıcılı akışı yerelde ve CI’da sınandı. Production yayın ve Faz 8 ayrı kullanıcı talimatıyla yürütülür.

@@ -59,3 +59,7 @@ Host odada tek başınayken Ready olabilir. Stage-6 join işlemi artık tüm rea
 ## 4 Kasım 2026 — çözümler maç sonunda incelenir
 
 Kullanıcı isteğiyle düello arayüzündeki Explanation ve Previous rounds yalnız terminal maç durumunda gösterilir. Tur arası kazanan/neden/sonraki başlangıç sayacı ve 15+3 saniye zamanlama korunur. Doğru/yanlış satır vurgusu değişmez. Connection_lost metni oyuncunun bakış açısına göre bağlantısı onaylanmayan kullanıcıyı, en az 30 saniye eşiğini ve puandan bağımsız forfeit sonucunu açıklar. Heartbeat/Cron/puan kuralları değiştirilmedi.
+
+## 7 Kasım 2026 — turuncu vurgu
+
+Kullanıcı turuncu denemesini kabul etti ve push istedi. Koyu antrasit zemin korunarak marka, düğme, bağlantı, seçili satır ve favicon vurguları turuncuya taşındı. Ana düğmede beyaz yazı/#c2410c kontrastı 5.18:1; açık vurgu/#10131b kontrastı 11.01:1. Masaüstü ve dar mobil önizleme incelendi. Bu karar şartnamedeki mor vurgu tercihinin yerini alır. Kullanıcı aynı talimatla Faz 8 sağlamlaştırmayı başlattı; production yayını Faz 9 kapsamındadır.

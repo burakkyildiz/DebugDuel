@@ -110,3 +110,6 @@ Kullanıcı uygulama verisi yedeğini onayladı, Auth verisini hariç tuttu. Uza
 
 
 Faz 8 son uzak ölçüm: 20 maç/40 hesap/40 private kanal, üç tur, 20 settlement/40 ledger geçti. Command p95 3614ms, state p95 2382ms; 80 leaderboard burst p95 13820ms (60 başarılı/20 limit). Source son kontrolde 0 load/probe hesabı, 0 aktif maç, 0 sentetik maç/ledger ve health ready=true. Gerçek kullanıcı verisi korundu. Kalan: altı callback URL'sini Save için açık onay ve e-posta giriş/recovery kullanıcı sonucu. Auth verisinin yedek dışında kalması kullanıcı kararıdır, tekrar dump denenmez.
+
+
+Callback onayı geldi: altı kesin localhost URL'si kaydedilip 6/6 panelden doğrulandı. Gerçek e-posta/parola giriş kaydı doğrulandı. Kalan tek kullanıcı kontrolü, aynı tarayıcıda parola kurtarma ve yeni parolayla giriş; metadata'da recovery isteği henüz yok. Faz 8 bu son kontrol sonuçlanmadan tam kapatılmaz.

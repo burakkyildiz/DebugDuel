@@ -48,3 +48,10 @@ http://localhost:3000/auth/confirm
 5. GitHub butonuyla gerçek hesaptan giriş, yenileme ve çıkışı dene. Uzak e-posta doğrulama/recovery'yi izin verilen gerçek test adresiyle tamamla. Ücretsiz SMTP limitleri ve alıcı kısıtları nedeniyle halka açık e-posta gönderimini test etmeden hazır ilan etme; ücretli SMTP veya plan ekleme.
 
 Resmî kaynaklar: [GitHub Auth](https://supabase.com/docs/guides/auth/social-sign-in/auth-github), [e-posta/parola](https://supabase.com/docs/guides/auth/passwords), [resend](https://supabase.com/docs/reference/javascript/auth-resend).
+
+
+## Faz 8 gerçek uzak kontrol — 7 Kasım 2026
+
+Email/GitHub etkin, Confirm email açık. Minimum parola uzunluğu panelde 12 olarak kaydedildi ve yeniden açılan panelde doğrulandı. Custom SMTP yok; mevcut ücretsiz varsayılan göndericiyle kullanıcının test e-postası gerçekten ulaştı ve hesap doğrulandı. Kullanıcı maili farklı tarayıcı/profilde açtığı için PKCE otomatik oturum dönüşü başarısız oldu; bu, doğrulamanın yapılmadığı anlamına gelmez. Parola ile giriş ve recovery kullanıcı adımları henüz sonuçlanmadı; parolalar/bağlantılar sohbete veya repo'ya alınmaz.
+
+URL Configuration panelinin redirect listesi boş bulundu. Yukarıdaki altı kesin localhost URL'si forma girildi; Save otomatik incelemede ayrıca açık onay gerektiği için reddedildi. Somut liste/ekran görüntüsüyle kullanıcıya onay soruldu; kayıt henüz yapılmadı. Onay geldikten sonra kaydet, yeniden panelden ve gerçek recovery dönüşünden doğrula. Varsayılan Auth login 30 istek/5dk ve diğer korumalar değiştirilmedi. Public SMTP teslim garantisi ve üretim URL/SMTP/OAuth yapılandırması Faz 9'un ayrı kontrolleridir.

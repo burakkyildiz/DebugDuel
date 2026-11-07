@@ -40,7 +40,8 @@ test("guest selects by keyboard, survives refresh, sees solution and starts next
   expect(restored.endsAt).toBe(active.endsAt);
   const line = correctLine(active.question.code);
   await page.getByLabel("Line 1", { exact: true }).focus();
-  await page.keyboard.press("Space");
+  await page.keyboard.press("Enter");
+  await expect(page.getByLabel("Line 1", { exact: true })).toBeChecked();
   for (let index = 1; index < line; index++) await page.keyboard.press("ArrowDown");
   await expect(page.getByLabel(`Line ${line}`, { exact: true })).toBeChecked();
   await page.getByRole("button", { name: "Submit Answer", exact: true }).click();

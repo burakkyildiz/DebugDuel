@@ -2,6 +2,8 @@ import "server-only";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { seal, unseal } from "@/lib/security/sealed";
+import { headers } from "next/headers";
+import { admitPublicRead } from "@/lib/security/public-read";
 
 const position = z.object({ time: z.iso.datetime({ offset: true }), id: z.uuid() }).strict();
 const leaderboardPosition = position.extend({
@@ -51,9 +53,10 @@ export async function readHistory(client: Client, token: unknown, limit = pageSi
   };
 }
 
-export async function readLeaderboard(client: Client, token: unknown, limit = pageSize) {
+export async function readLeaderboard(client: Client, token: unknown, limit = pageSize, requestHeaders?: Headers) {
   const purpose = "debug-duel:leaderboard-cursor:v1";
   const cursor = readCursor(token, purpose, leaderboardPosition);
+  await admitPublicRead(requestHeaders ?? await headers(), "leaderboard");
   let query = client.from("profiles").select("id,created_at,username,avatar_seed,xp,wins,losses,draws")
     .not("onboarding_completed_at", "is", null).gt("matches_played", 0);
   if (cursor) {

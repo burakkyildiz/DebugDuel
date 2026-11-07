@@ -3,7 +3,7 @@ import { siteOrigin } from "@/lib/env";
 import { copy } from "@/content/copy.en";
 
 export function json(data: unknown, status = 200) {
-  return NextResponse.json(data, { status, headers: { "Cache-Control": "private, no-store" } });
+  return NextResponse.json(data, { status, headers: { "Cache-Control": "private, no-store", "X-Request-ID": crypto.randomUUID() } });
 }
 
 export async function mutationBody(request: Request): Promise<unknown> {
@@ -26,5 +26,8 @@ export async function mutationBody(request: Request): Promise<unknown> {
 }
 
 export function failure(code = "INVALID_REQUEST", status = 400, message: string = copy.auth.genericFailure) {
-  return json({ error: { code, message }, requestId: crypto.randomUUID() }, status);
+  const requestId = crypto.randomUUID();
+  const response = json({ error: { code, message }, requestId }, status);
+  response.headers.set("X-Request-ID", requestId);
+  return response;
 }

@@ -58,5 +58,6 @@ jobs:
       - run: pnpm test:auth:local
       - run: pnpm test:practice:local
       - run: pnpm test:match:local
+      - run: pnpm test:load:local
       - if: always()
         run: pnpm exec supabase stop

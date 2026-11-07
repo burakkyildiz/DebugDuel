@@ -15,6 +15,14 @@ function query(sql) {
   if (result.status !== 0) throw new Error("Local fixture query failed (SQL details suppressed).");
   return result.stdout.trim();
 }
+function concurrentQuery(sql) {
+  return new Promise((resolve, reject) => {
+    const child = spawn(containers[0], containers.slice(1), { stdio: ["pipe", "ignore", "ignore"] });
+    child.once("error", reject);
+    child.once("exit", code => code === 0 ? resolve() : reject(new Error("Concurrent settlement query failed.")));
+    child.stdin.end(sql);
+  });
+}
 function command(actor, action, match = "null", round = "null", line = "null", ready = "null", hash = "null") {
   return `set local role authenticated; select set_config('request.jwt.claims','${JSON.stringify({ sub: actor, role: "authenticated" })}',true); select public.match_command('${action}',${match},'${randomUUID()}',${ready},${round},${line},${hash},${action === "create" ? "encode(convert_to('opaque-local-cipher','UTF8'),'base64')" : "null"}); reset role;`;
 }
@@ -79,6 +87,22 @@ try {
   const settlement = query("select count(*) || ':' || (select count(*) from private.xp_ledger where match_id=" + quote(mid) + ") from private.match_settlements where match_id=" + quote(mid) + ";");
   if (settlement !== "1:2") throw new Error("Final timeout did not settle exactly once for both participants.");
   console.log("PASS: post-lock DB clock rejects a late answer, settles the final timeout once, and preserves the result on retry.");
+  // Isolate the settlement trigger: six pending historical outcomes share one pair.
+  // Active-seat enforcement is covered above/E2E; these inactive admin fixtures
+  // deliberately exercise profile/quota locks across different match row locks.
+  const pending = Array.from({ length: 6 }, () => randomUUID());
+  const beforeDraws = Number(query(`select draws from public.profiles where id='${actors[0]}';`));
+  query(`begin;${pending.map((id, i) => {
+    const host = actors[i % 2], guest = actors[1 - i % 2];
+    return `insert into public.matches(id,host_user_id,guest_user_id,status,engine_stage,current_round_number,started_at,created_at) values('${id}','${host}','${guest}','between_rounds',6,3,clock_timestamp(),clock_timestamp());
+      insert into public.match_players(match_id,user_id,slot,is_active) values('${id}','${host}',1,false),('${id}','${guest}',2,false);`;
+  }).join("\n")}commit;`);
+  await Promise.all(pending.map(id => concurrentQuery(`update public.matches set status='finished',outcome_type='draw',ended_reason='completed',finished_at=clock_timestamp() where id='${id}';`)));
+  const inList = pending.map(quote).join(",");
+  if (query(`select count(*)||':'||count(*) filter(where reward_eligible) from private.match_settlements where match_id in(${inList});`) !== "6:5") throw new Error("Concurrent settlements exceeded the daily pair quota.");
+  if (Number(query(`select draws from public.profiles where id='${actors[0]}';`)) !== beforeDraws + 6) throw new Error("Concurrent settlements lost profile increments.");
+  if (query(`select count(*) from private.xp_ledger where match_id in(${inList});`) !== "12") throw new Error("Concurrent settlements did not write one ledger row per player.");
+  console.log("PASS: six concurrent settlement triggers (reversed host order) share five reward slots and preserve every profile increment and ledger row.");
 } finally {
   if (holder) { holder.child.kill(); await holder.completion.catch(() => {}); }
   const ids = actors.map(quote).join(",");

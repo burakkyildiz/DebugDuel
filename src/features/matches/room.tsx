@@ -175,7 +175,8 @@ export function MatchRoom({ initial }: { initial: MatchState }) {
       <div className="practice-actions"><button className="button button-primary" type="button" disabled={busy} onClick={() => run("ready", { ready: !own?.ready })}>{own?.ready ? text.notReady : text.ready}</button></div>
     </section>}
     {state.status === "countdown" && <p className="match-countdown" role="status">{seconds || copy.practice.waiting}</p>}
-    {between && <section className={`practice-result ${state.round.winnerId ? ownRoundWinner ? "result-correct" : "result-incorrect" : "result-timeout"}`} role="status"><div><h2>{roundResult}</h2>{roundReason && <p>{roundReason}</p>}<p>{text.nextRound}: {seconds} {text.seconds}</p></div></section>}
+    <div className="sr-only" role="status">{state.status === "playing" && seconds <= 10 ? copy.practice.lastSeconds : ""}</div>
+    {between && <section className={`practice-result ${state.round.winnerId ? ownRoundWinner ? "result-correct" : "result-incorrect" : "result-timeout"}`}><div><div role="status"><h2>{roundResult}</h2>{roundReason && <p>{roundReason}</p>}</div><p>{text.nextRound}: {seconds} {text.seconds}</p></div></section>}
     {state.question && <section className="practice-question"><div className="practice-status"><div>
       {state.question.difficulty && <p className="eyebrow">Python · {text.difficulties[state.question.difficulty]}</p>}
       <h2>{state.question.title}</h2></div>{!terminal && !between && <strong className="practice-timer">{seconds}s</strong>}

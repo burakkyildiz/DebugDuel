@@ -55,3 +55,39 @@ Advance `1 second`, maintenance UTC `0 0 * * *`; uygulama GET `/api/health` 200/
 Cron'u durdurmak oyun saatini durdurmaz: >5 saniye yeni oda/başlangıç engeli, >10 saniye aktif maçlarda infrastructure abort beklenir. Planlı bakımda yeni başlangıçları kapatıp aktif maçları güvenli bitir; kayıp pencere için geriye dönük forfeit/galibiyet hesaplama. Job'ı tekrar etkinleştirince health ve abort nedenlerini denetle. Salt uygulama rollback'i DB migration'larını geri almaz; stage-5 uyumluluk yolu ve normal terminal idempotency korunur.
 
 Bakım yalnız expired teknik kayıtları ve Debug Duel'in iki job'ının yedi günden eski çalışma kayıtlarını siler; maç/ledger geçmişi silinmez. Ciphertext temizlense de receipt expired tombstone'u kalır. Sırları, SQL hata detail'larını veya ham davet URL'lerini loga basma. Ayrıntılar [Faz 6 raporunda](PHASE_6_REPORT.md).
+
+## Güncel Faz 8 — 7 Kasım 2026
+
+Yukarıdaki Faz 4–6 eksik listeleri tarihsel kayıttır. Uzak geliştirme ortamı Faz 7'nin 20 migration'ındadır. Yeni Faz 8 migration'ı `20261107105016_public_read_admission.sql` yalnız yerelde uygulanmıştır. Production yoktur. Yeni uygulama health/leaderboard okumaları bu migration'a bağımlıdır: yetkilendirilmiş ortamda önce migration, ardından uygulama yayını gerekir. Eski uygulama bu eklemeyle uyumludur. Uzak ortamın migration'ını bu rapor uygulanmış saymaz.
+
+Kalıcı ağ sayaçları: leaderboard sayfası ve API aynı HMAC kovasında 60/dakika; health ayrı 120/dakika. Vercel dışı hostlar güvenilmeyen forwarding header yerine ortak kova kullanır. Başka proxy'ye geçilirse güvenilir IP adaptörü ayrıca tasarlanıp doğrulanmalıdır. Public Data API'nin mevcut profil okuma yetkisi bu HTTP sınırına dahil değildir; bu sınır DDoS koruması veya Supabase doğrudan erişim kotası olarak sunulmaz. Anon profil erişimi ürünün public leaderboard sözleşmesidir; private maç ve çözüm yetkisi açılmaz.
+
+CSP her istekte nonce üretir, script çalışmasını bu nonce'a bağlar; Supabase HTTPS/WSS bağlantıları yalnız yapılandırılmış origin'e açıktır. React style attribute'ları için `style-src 'unsafe-inline'` korunur; production script politikasında `unsafe-inline`/`unsafe-eval` yoktur. HTML yanıtları private/no-store; nonce'lu HTML ortak cache'e konulmaz. Yerel fontlar kullanılır. Vercel preview toolbar/script eklenirse politika gevşetilmeden önce gerekliliği ayrıca değerlendirilir.
+
+### Gözlem ve olay inceleme
+
+Uygulama komutları stdout'a JSON `api_request` olayları yazar: sunucunun ürettiği requestId, sabit operation, status, doğrulanmış hata kodu, durationMs. Response `X-Request-ID` hata gövdesindeki ID ile aynıdır. Body, query, davet URL'si, cookie, JWT, parola ve ham IP loglanmaz. Next development request logu token'lı invite yolunu dışlar. Platform erişim loglarının URL saklama davranışı yayın öncesi ayrıca denetlenir; uygulama filtresi platform logunu değiştirmez.
+
+İnceleme sırası: health 200/ready → private engine_health / cron.job_run_details → gecikmiş maç sayısı → abort/forfeit dağılımı → settlement tutarlılığı. Admin sorgularını kullanıcı DTO'suna veya public health'e ekleme:
+
+```sql
+select count(*) as due_matches from public.matches
+where status in ('waiting','countdown','playing','between_rounds')
+  and next_transition_at < clock_timestamp()-interval '2 seconds';
+select ended_reason,count(*) from public.matches
+where finished_at>clock_timestamp()-interval '1 day' group by ended_reason;
+select s.match_id from private.match_settlements s
+left join private.xp_ledger l on l.match_id=s.match_id
+group by s.match_id having count(l.user_id)<>2;
+select l.user_id from private.xp_ledger l join public.match_players p
+  on p.match_id=l.match_id and p.user_id=l.user_id
+where p.xp_earned<>l.amount;
+```
+
+429, bozuk input veya dependency kesintisi gerçek sonuç/XP'yi geri almaz. Health 503 ise önce Cron ve DB erişimi onarılır; tick kaybında engine'in infrastructure abort kuralı korunur. Dışarıya hata ayrıntısı, çözüm veya SQL logu açılmaz.
+
+### Rollback ve yedekten dönüş kapısı
+
+Uygulama hatasında son doğrulanmış deployment'a dön; yeni admission migration'ını ve ledger'ı silme. DB hatasında yeni başlangıçları bakım penceresinde durdur, aktif maçları güvenli kapat, snapshot ve migration listesini koru. İzin genişleten veya sonuçları silen acil SQL uygulama. Düzeltmeyi ileri migration ile dosyala, önce ayrı yerel/staging hedefte doğrula.
+
+Free planın otomatik backup/PITR sağladığı varsayılmaz. Yayın öncesinde platformun güncel ücretsiz yedek seçeneklerini doğrula, resmî CLI ile güvenli konuma roles/schema/data dump al; sırları ve Auth verisini Git dışında erişimi kısıtlı sakla. Geri yüklemeyi mevcut geliştirme/production üzerine yapma: ayrı boş yerel/staging hedefte belgelenen sırayla roles → schema → data yükle, migration geçmişi/ACL/RLS/ledger ve health'i karşılaştır, sonra gerçek Auth/iki oturum smoke'u çalıştır. Storage nesneleri, platform Auth sağlayıcı ayarları ve secret'lar SQL dump ile otomatik geri gelmez. Temiz migration+seed testi bir veri yedeğini geri yükleme testi değildir. Hosted staging geri yükleme tatbikatı henüz yapılmadı; üretim kapısı açık kalır.

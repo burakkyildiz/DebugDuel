@@ -6,6 +6,7 @@ import { guestSubject, GUEST_COOKIE, subjectHash } from "@/lib/security/guest-to
 import { failure, json, mutationBody } from "@/lib/security/http";
 import { emptyPracticeBody, practiceAnswerBody, practiceStateSchema, uuid } from "@/features/practice/contracts";
 import { copy } from "@/content/copy.en";
+import { observed } from "@/lib/security/telemetry";
 
 type Action = "create" | "get" | "answer" | "reveal";
 export function practiceSecrets() {
@@ -23,6 +24,9 @@ function errorResponse(code: string, action?: Action) {
 }
 
 export async function practiceRequest(request: Request, action: Action, sessionId?: string) {
+  return observed(`practice.${action}`, () => executePracticeRequest(request, action, sessionId));
+}
+async function executePracticeRequest(request: Request, action: Action, sessionId?: string) {
   let selectedLine: number | null = null;
   let key: string | null = null;
   if (action !== "get") {

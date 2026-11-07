@@ -9,6 +9,7 @@ import { createPrivilegedClient } from "@/lib/supabase/privileged";
 import { siteOrigin } from "@/lib/env";
 import { answerBody, inviteCookieSchema, inviteTokenSchema, matchEmptyBody, matchIdSchema, matchReceiptSchema, matchStateSchema, readyBody } from "@/features/matches/contracts";
 import { copy } from "@/content/copy.en";
+import { observed } from "@/lib/security/telemetry";
 export const INVITE_COOKIE = "dd_pending_invite";
 export const invitePurpose = "debug-duel:pending-invite:v1";
 type Action = "create" | "join" | "invite" | "ready" | "heartbeat" | "sync" | "get" | "answer" | "leave" | "active";
@@ -21,6 +22,9 @@ export function matchError(code: string) {
   return response;
 }
 export async function matchRequest(request: Request, action: Action, matchId?: string) {
+  return observed(`match.${action}`, () => executeMatchRequest(request, action, matchId));
+}
+async function executeMatchRequest(request: Request, action: Action, matchId?: string) {
   let key: string | undefined;
   let body: unknown = {};
   if (!['get', 'active'].includes(action)) {

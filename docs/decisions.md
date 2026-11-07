@@ -63,3 +63,9 @@ Kullanıcı isteğiyle düello arayüzündeki Explanation ve Previous rounds yal
 ## 7 Kasım 2026 — turuncu vurgu
 
 Kullanıcı turuncu denemesini kabul etti ve push istedi. Koyu antrasit zemin korunarak marka, düğme, bağlantı, seçili satır ve favicon vurguları turuncuya taşındı. Ana düğmede beyaz yazı/#c2410c kontrastı 5.18:1; açık vurgu/#10131b kontrastı 11.01:1. Masaüstü ve dar mobil önizleme incelendi. Bu karar şartnamedeki mor vurgu tercihinin yerini alır. Kullanıcı aynı talimatla Faz 8 sağlamlaştırmayı başlattı; production yayını Faz 9 kapsamındadır.
+
+## 7 Kasım 2026 — Faz 8 public okuma ve tarayıcı sınırı
+
+Public leaderboard sayfası/API ortak 60/dakika HMAC ağ sayacını, health ayrı 120/dakika sayacını kullanır. Yeni minimum izinli admission rolü yalnız bu iki action'a RLS erişir; RPC service_role dışında kapalıdır. Vercel dışındaki güvenilmeyen IP başlıkları ortak kovaya düşer. DB erişim hatasında fail-closed 503, kota dolunca Retry-After'lı 429 verilir. Yeni migration önce hedefe uygulanmadan uygulama yayımlanmaz.
+
+CSP nonce'ları private/no-store dinamik HTML ile taşınır. Production script-src unsafe-inline/eval almaz; React style attribute ihtiyacı için style-src unsafe-inline bırakılır. Yalnız yapılandırılmış Supabase HTTPS/WSS origin'i ve yerel dev HMR açılır. İstek logları body/URL/headers/raw error yerine sabit alan allowlist'i kullanır. Ayrıntı ve kalan dış doğrulamalar Faz 8 raporundadır.

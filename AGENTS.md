@@ -1,5 +1,12 @@
 # Debug Duel — çalışma yönergeleri
 
+## Güncel çalışma — Faz 8, 7 Kasım 2026
+
+- Kullanıcı turuncu arayüzü kabul edip push ve sonraki fazı açıkça istedi. Turuncu vurgu `4807787` ile uzak main'e gönderildi; Faz 8 başladı. Production/Faz 9 bu yetkiye dahil değildir.
+- Faz 8 yerel sağlamlaştırma: kalıcı public okuma admission, CSP nonce, güvenli komut ölçümleri ve klavye/ekran okuyucu düzeltmeleri. Güncel kanıt ve kalan çıkış kapıları `docs/PHASE_8_REPORT.md` içinde tutulur.
+- Kullanıcı Faz 8'i bitirme talimatıyla uzak uygulama ve commit/push dahil kalan teslim işlerini yetkilendirdi. `20261107105016_public_read_admission.sql` resmî CLI ile uzak geliştirmeye uygulandı (21 sürüm). Auth minimum parola 12 olarak kaydedildi, e-posta doğrulama açık. Nihai teslim/CI ve diğer kontrollerin son kaynağı Faz 8 raporudur. Önceden var olan next-env.d.ts ve tsconfig.json preview değişikliklerini koru.
+- Test hesabı/XP temizliği yayın öncesine ertelendi; bu kararı değiştirme. Ücretli kaynak açma.
+
 ## Güncel çalışma — Faz 7, 6 Kasım 2026
 
 - Kullanıcı “tamam faz7 ye baslayabiliriz” diyerek Faz 7’yi başlattı. Yerel kapsam ve doğrulamalar `docs/PHASE_7_REPORT.md` içinde. Faz 6 teslimi `4b55d8b` ve [başarılı CI](https://github.com/burakkyildiz/DebugDuel/actions/runs/42214847641) ile GitHub `main` dalında.

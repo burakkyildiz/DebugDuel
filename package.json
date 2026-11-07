@@ -27,7 +27,8 @@
     "practice:local": "node scripts/practice-local.mjs",
     "test:match:local": "node scripts/match-local.mjs --test",
     "match:local": "node scripts/match-local.mjs",
-    "test:engine:local": "node scripts/test-engine-concurrency.mjs"
+    "test:engine:local": "node scripts/test-engine-concurrency.mjs",
+    "test:load:local": "node scripts/match-local.mjs --load"
   },
   "dependencies": {
     "@fontsource-variable/geist": "5.3.0",

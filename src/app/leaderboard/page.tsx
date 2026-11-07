@@ -4,6 +4,7 @@ import { PageHeading } from "@/components/ui/shell";
 import { createClient } from "@/lib/supabase/server";
 import { readLeaderboard } from "@/lib/progression/server";
 import { copy } from "@/content/copy.en";
+import { PublicReadLimited } from "@/lib/security/public-read";
 
 export const metadata = { title: "Leaderboard" };
 
@@ -12,13 +13,14 @@ export default async function Leaderboard({ searchParams }: {
 }) {
   const { cursor } = await searchParams;
   const supabase = await createClient();
-  const result = supabase ? await readLeaderboard(supabase, cursor).catch(() => null) : null;
+  let limited = false;
+  const result = supabase ? await readLeaderboard(supabase, cursor).catch(error => { limited = error instanceof PublicReadLimited; return null; }) : null;
   const text = copy.leaderboard;
   return <section className="container page-container">
     <PageHeading eyebrow={text.eyebrow} title={text.title} body={text.body} />
     <div className="leaderboard-shell">
       <div className="leaderboard-heading"><Trophy size={18} className="syntax-amber" aria-hidden="true" />{text.xp}</div>
-      {!result ? <div className="empty-state"><p role="alert">{text.error}</p></div>
+      {!result ? <div className="empty-state"><p role="alert">{limited ? copy.auth.rateLimit : text.error}</p></div>
         : result.items.length === 0 ? <div className="empty-state">
           <span className="icon-box amber"><Trophy size={24} aria-hidden="true" /></span><h2>{text.emptyTitle}</h2><p>{text.emptyBody}</p>
         </div>

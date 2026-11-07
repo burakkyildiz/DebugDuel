@@ -35,3 +35,21 @@ test("auth rejects cross-origin mutations and unknown fields", async ({ request 
   const injected = await request.post("/api/auth/login", { headers: { Origin: "http://localhost:3000" }, data: { email: "a@example.com", password: "x", xp: 100 } });
   expect(injected.status()).toBe(400);
 });
+
+test("per-request CSP allows hydration and keyboard navigation", async ({ page, request }) => {
+  const violations: string[] = [];
+  page.on("console", message => { if (message.type() === "error" && /content security policy/i.test(message.text())) violations.push(message.text()); });
+  const response = await page.goto("/");
+  const policy = response?.headers()["content-security-policy"] ?? "";
+  const nonce = policy.match(/'nonce-([^']+)'/)?.[1];
+  expect(nonce).toBeTruthy();
+  const another = await request.get("/");
+  expect(another.headers()["content-security-policy"]).not.toContain(`'nonce-${nonce}'`);
+  expect(policy).toContain("frame-ancestors 'none'");
+  expect(await page.locator("script").evaluateAll(nodes => nodes.every(node => node.nonce.length > 0))).toBe(true);
+  await page.keyboard.press("Tab");
+  await expect(page.getByRole("link", { name: "Skip to content" })).toBeFocused();
+  await page.goto("/login/email");
+  await expect(page.getByLabel("Email address")).toBeVisible();
+  expect(violations).toEqual([]);
+});

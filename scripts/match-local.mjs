@@ -11,7 +11,8 @@ const url = config.API_URL;
 const key = config.PUBLISHABLE_KEY ?? config.ANON_KEY;
 const secret = config.SECRET_KEY ?? config.SERVICE_ROLE_KEY;
 if (!url || !key || !secret || !["127.0.0.1", "localhost"].includes(new URL(url).hostname)) throw new Error("Match launcher requires a local Supabase URL and server key.");
-const testing = process.argv.includes("--test");
+const loading = process.argv.includes("--load");
+const testing = process.argv.includes("--test") || loading;
 const port = testing ? "3005" : "3006";
 const configure = spawnSync("docker", ["exec", "supabase_db_debug-duel", "psql", "-U", "supabase_admin", "-d", "postgres", "-c", "update _realtime.tenants set private_only=true where external_id='realtime-dev';"], { encoding: "utf8", timeout: 10000 });
 if (configure.status !== 0) throw new Error("Cannot enforce private-only on the local Realtime tenant.");
@@ -60,7 +61,9 @@ try {
   if (!ready) throw new Error("Match server or its one-second Cron did not become ready. Check local Supabase and engine health.");
   for (const path of generatedFiles) afterStartup.set(path, readFileSync(path, "utf8"));
   if (testing) {
-    const tests = spawn("node_modules/.bin/playwright", ["test", "tests/e2e/foundation.spec.ts", "tests/e2e/match.local.spec.ts", "--project=desktop", "--workers=1", ...process.argv.slice(2).filter(arg => arg !== "--test")], { env, stdio: ["ignore", "pipe", "pipe"] });
+    const tests = loading
+      ? spawn(process.execPath, ["scripts/test-load-local.mjs"], { env, stdio: ["ignore", "pipe", "pipe"] })
+      : spawn("node_modules/.bin/playwright", ["test", "tests/e2e/foundation.spec.ts", "tests/e2e/match.local.spec.ts", "--project=desktop", "--workers=1", ...process.argv.slice(2).filter(arg => arg !== "--test")], { env, stdio: ["ignore", "pipe", "pipe"] });
     // Playwright failure logs can include cookie headers; redact before relaying.
     const relay = stream => {
       let pending = "";

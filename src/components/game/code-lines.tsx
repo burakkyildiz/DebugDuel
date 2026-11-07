@@ -19,7 +19,7 @@ export function CodeLines({ code, selected, onSelect, disabled = false, correctL
         const isWrong = correctLine !== undefined && selected === number && !isCorrect;
         const result = isCorrect ? `${copy.practice.correctLine}${selected === number ? ` · ${copy.practice.yourAnswer}` : ""}` : isWrong ? copy.practice.yourAnswer : null;
         return <label key={index} className={`game-code-line ${isCorrect ? "correct-line" : isWrong ? "incorrect-line" : selected === number ? "selected" : ""}`}>
-          <input type="radio" name="faulty-line" aria-label={`${copy.practice.lineLabel} ${number}`} aria-describedby={result ? `line-result-${number}` : undefined} checked={selected === number} disabled={disabled} onChange={() => onSelect(number)} />
+          <input type="radio" name="faulty-line" aria-label={`${copy.practice.lineLabel} ${number}`} aria-describedby={result ? `line-result-${number}` : undefined} checked={selected === number} disabled={disabled} onChange={() => onSelect(number)} onKeyDown={event => { if (event.key === "Enter") { event.preventDefault(); onSelect(number); } }} />
           <span className="game-line-number" aria-hidden="true">{number}</span><code>{highlight(line || " ")}</code>
           {result && <span className="game-line-result" id={`line-result-${number}`}>{isCorrect ? "✓" : "✕"} {result}</span>}
         </label>;

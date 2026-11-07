@@ -157,6 +157,9 @@ isOneToOne: false
 "practice_guest":
 { Args: { "p_action": string,"p_guest_hash": string,"p_ip_hash": string,"p_key"?: string,"p_selected_line"?: number,"p_session_id"?: string }; Returns: Json
                            },
+"public_read_admission":
+{ Args: { "p_action": string,"p_subject": string }; Returns: boolean
+                           },
 "update_profile":
 { Args: { "p_avatar_seed": string,"p_display_name": string,"p_username": string }; Returns: {
               "avatar_seed": string,

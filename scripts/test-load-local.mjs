@@ -6,6 +6,8 @@ import { setTimeout as delay } from 'node:timers/promises';
 import { createClient } from '@supabase/supabase-js';
 import { createServerClient } from '@supabase/ssr';
 import { request } from '@playwright/test';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 const origin = process.env.PLAYWRIGHT_BASE_URL;
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
 for (const target of [origin,url]) if (!target || !['localhost','127.0.0.1'].includes(new URL(target).hostname)) throw new Error('Load probe requires localhost.');
@@ -120,7 +122,7 @@ try {
     values.sort((a,b)=>a-b);return [name,{count:values.length,p50Ms:Math.round(values[Math.floor(values.length*.5)]),p95Ms:Math.round(values[Math.floor(values.length*.95)]),maxMs:Math.round(values.at(-1))}];
   }));
   const report={environment:'local production build / local Supabase',rooms:20,players:40,privateChannels:channels.length,activeSeconds,settlements:20,ledgerRows:40,leaderboard:{accepted,denied},stats};
-  writeFileSync('/private/tmp/debug-duel-phase8-load.json',JSON.stringify(report,null,2));
+  writeFileSync(join(tmpdir(),'debug-duel-phase8-load.json'),JSON.stringify(report,null,2));
   console.log(JSON.stringify(report));
 } finally {
   if(heartbeat) clearInterval(heartbeat);

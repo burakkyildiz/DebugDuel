@@ -28,7 +28,7 @@ try {
     .replace(/543(\d\d)/g, "553$1");
   if (!config.includes(`project_id = "${projectId}"`)) throw new Error("Could not isolate the test project ID.");
   writeFileSync(join(workdir, "supabase/config.toml"), config);
-  for (const path of ["migrations", "tests", "seed.sql"]) {
+  for (const path of ["migrations", "tests", "templates", "seed.sql"]) {
     cpSync(join(root, "supabase", path), join(workdir, "supabase", path), { recursive: true });
   }
   console.log(`Starting disposable local DB ${projectId} on port 55322.`);

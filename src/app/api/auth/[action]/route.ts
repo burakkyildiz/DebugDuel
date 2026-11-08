@@ -36,7 +36,15 @@ export async function POST(request: Request, context: { params: Promise<{ action
       const input = loginSchema.safeParse(body);
       if (!input.success) return failure();
       const { error } = await supabase.auth.signInWithPassword({ email: input.data.email, password: input.data.password });
-      if (error) return failure("SIGN_IN_FAILED", 400, copy.auth.loginFailure);
+      if (error) {
+        if (error.status === 429 || error.code === "over_request_rate_limit") {
+          const response = failure("RATE_LIMITED", 429, copy.auth.rateLimit);
+          response.headers.set("Retry-After", "60");
+          return response;
+        }
+        if (!error.status || error.status >= 500) return failure("AUTH_UNAVAILABLE", 503, copy.auth.unavailable);
+        return failure("SIGN_IN_FAILED", 400, copy.auth.loginFailure);
+      }
       const profile = await supabase.rpc("ensure_profile");
       if (profile.error) return failure("PROFILE_UNAVAILABLE", 503, copy.profile.unavailable);
       return json({ redirect: safeRedirect(input.data.next) });

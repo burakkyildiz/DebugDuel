@@ -2,6 +2,10 @@
 
 Ana plan ve çıkış koşulları: `DEBUG_DUEL_PROJECT_SPEC.md`, bölüm 22.
 
+## Güncel kayıt — güvenlik düzeltmeleri, 8 Kasım 2026
+
+İnceleme sonrası iki doğrulanmış bulgu yerelde giderildi: geçersiz doğrudan join RPC istekleri hesap hız sınırını tüketir; login429/5xx doğru sınıflandırılır.92 unit,599 DB, ayrı temiz kurulum/seed tekrarı, gerçek Auth E2E, engine yarışları ve production build başarılı. Yeni22. migration yalnız yerelde; uzak ortamlar/canlı37fb henüz değiştirilmedi. [Kanıt ve açık doğrulama sınırı](SECURITY_REVIEW_2026-11-08.md).
+
 ## Güncel kayıt — Faz 9 kapanışı, 8 Kasım 2026
 
 Ücretsiz pilot [canlıda](https://debug-duel-burakkyildiz.vercel.app). Kod `37fb0d3`, [CI42454840514](https://github.com/burakkyildiz/DebugDuel/actions/runs/42454840514) tüm quality/database/Auth/Practice/match/load adımlarında başarılı. Ayrı üretim DB21 migration/30 soru/590 rollback testi; yalnız Production7 env, private-only Realtime ve aktif Cron. Gerçek GitHub refresh/logout/tekrar giriş, guest Practice, e-posta teslim/doğrulama ve kullanıcıca yeni recovery/yeni parola girişi geçti. Bilgisayar+telefon üç tur smoke'u: timeout,284–0,1 settlement/2 ledger,70/20 XP; kayıtlar korundu. Faz9/AC-21 pilot smoke tamamlandı. Gmail düşük hacimli pilot; Vercel40 oyuncu/SLA, Auth restore ve kapalı Preview-dev entegrasyonu tamamlandı iddiası yok. [Kanıt ve sınırlar](PHASE_9_REPORT.md). Aşağıdaki eski faz kayıtları tarihseldir.

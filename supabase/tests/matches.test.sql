@@ -16,7 +16,7 @@ insert into match_test_results values(ok(not has_function_privilege('debug_duel_
 insert into match_test_results values(ok(not has_column_privilege('debug_duel_game_engine','public.profiles','xp','update'),'no premature XP write'));
 insert into match_test_results values(ok(not has_function_privilege('authenticated','private.match_notify(uuid)','execute'),'clients cannot invoke privileged broadcast bridge'));
 insert into match_test_results values(ok(not has_function_privilege('service_role','private.match_notify(uuid)','execute'),'service key cannot emit arbitrary game notifications'));
-insert into match_test_results values(ok(not has_function_privilege('authenticated','public.match_join_admission(text)','execute'),'browser cannot bypass network admission boundary'));
+insert into match_test_results values(ok(not has_function_privilege('authenticated','public.match_join_admission(text)','execute'),'browser cannot call the server-only network admission helper'));
 insert into match_test_results values(ok(not has_function_privilege('anon','public.match_join_admission(text)','execute'),'anonymous cannot consume server admission RPC'));
 insert into match_test_results values(ok(has_function_privilege('service_role','public.match_join_admission(text)','execute'),'server can check network admission'));
 insert into match_test_results values(is(public.match_join_admission('invalid'),false,'malformed network subject rejected'));
@@ -66,7 +66,7 @@ insert into match_test_results values(is((select value->>'matchId' from match_te
 insert into match_test_results values(is((public.match_command('join',null,gen_random_uuid(),null,null,null,repeat('a',64),null)->>'matchId'),((select (value->>'matchId')::uuid from match_test_data where name='created'))::text,'repeat join by same guest keeps the seat'));
 select set_config('request.jwt.claims','{"sub":"f3000000-0000-4000-8000-000000000003","role":"authenticated"}',true);
 insert into match_test_results values(throws_ok('select public.match_command(''join'',null,gen_random_uuid(),null,null,null,repeat(''a'',64),null)','P0001','ROOM_FULL','third guest rejected'));
-insert into match_test_results values(throws_ok('select public.match_command(''join'',null,gen_random_uuid(),null,null,null,repeat(''c'',64),null)','P0001','ROOM_UNAVAILABLE','invalid token rejected'));
+insert into match_test_results values(is(public.match_command('join',null,gen_random_uuid(),null,null,null,repeat('c',64),null)->>'commandError','ROOM_UNAVAILABLE','invalid token rejected without rolling back account admission'));
 select set_config('request.jwt.claims','{"sub":"f3000000-0000-4000-8000-000000000001","role":"authenticated"}',true);
 select public.match_command('ready',(select (value->>'matchId')::uuid from match_test_data where name='created'),'a3000000-0000-4000-8000-000000000001'::uuid,true,null,null,null,null);
 insert into match_test_results values(throws_ok('select public.match_command(''ready'',(select (value->>''matchId'')::uuid from match_test_data where name=''created''),''a3000000-0000-4000-8000-000000000001''::uuid,false,null,null,null,null)','P0001','IDEMPOTENCY_CONFLICT','same ready key cannot change intent'));
@@ -118,7 +118,7 @@ update public.matches set engine_stage=5 where id=(select (value->>'matchId')::u
 set local role authenticated;
 select public.match_command('invite',(select (value->>'matchId')::uuid from match_test_data where name='created'),gen_random_uuid(),null,null,null,repeat('c',64),encode(convert_to('opaque-fixture','UTF8'),'base64'));
 select set_config('request.jwt.claims','{"sub":"f3000000-0000-4000-8000-000000000002","role":"authenticated"}',true);
-insert into match_test_results values(throws_ok('select public.match_command(''join'',null,gen_random_uuid(),null,null,null,repeat(''b'',64),null)','P0001','ROOM_UNAVAILABLE','rotated token cannot be reused'));
+insert into match_test_results values(is(public.match_command('join',null,gen_random_uuid(),null,null,null,repeat('b',64),null)->>'commandError','ROOM_UNAVAILABLE','rotated token cannot be reused'));
 select public.match_command('join',null,gen_random_uuid(),null,null,null,repeat('c',64),null);
 select public.match_command('ready',(select (value->>'matchId')::uuid from match_test_data where name='created'),gen_random_uuid(),true,null,null,null,null);
 select set_config('request.jwt.claims','{"sub":"f3000000-0000-4000-8000-000000000001","role":"authenticated"}',true);

@@ -1,5 +1,12 @@
 # Debug Duel — çalışma yönergeleri
 
+## Güncel çalışma — güvenlik düzeltmeleri, 8 Kasım 2026
+
+- Kullanıcı güvenlik incelemesindeki iki doğrulanmış bulguyu düzeltmeyi istedi. Kullanıcı sonrasında “Evet, push et ve canlıya uygula” diyerek commit/push, başarılı CI sonrası geliştirme+üretim migration ve Vercel yayınına açık onay verdi. Bu teslim sürüyor; aynı kapsam için tekrar onay sorma. Güncel kanıt `docs/SECURITY_REVIEW_2026-11-08.md` üst bölümünde. Eski Faz9 kapanışı mevcut canlı37fb sürümünün kanıtıdır.
+- CLI ile oluşturulan22. migration `20261108075236_persist_failed_match_join_admission.sql`, missing invite join sonucunu exception yerine commandError yapar; doğrudan RPC'de hesap sayacı korunur/11. istek engellenir. En son host-ready tanımını korur; signature/owner/ACL aynı. Yeni public tip yok; veri/XP temizliği yok.
+- Login429/over_request_rate_limit →429 + Retry-After60,5xx/transport →503; credential hatası nötr400. Yeni10 unit/9 DB regresyon önce eski kodda bulguları yakaladı, sonradan geçti. Nihai92 unit/599 DB/temiz kurulum+seed tekrarı599+599/gerçek Auth E2E/engine concurrency/build başarılı; security advisor boş. Lint0 hata, Git dışı eski backup scriptinde1 önceden var olan warning.
+- Temiz DB runner config'in Auth template content_path bağımlılığı için templates dizinini de kopyalar. Rastgele geçici DB kaldırıldı; geliştirici DB korunur. İki önceki preview dosyasını koru, teslim commit'ine katma. Ortak Auth IP kotasının gerçek Vercel etkisi henüz ölçülmedi; güvenliği gevşeterek veya production'da istek bombardımanıyla test etme.
+
 ## Güncel çalışma — Faz 9 kapanışı, 8 Kasım 2026
 
 - Ücretsiz pilot yayın kapsamı tamamlandı. Güncel kaynak `docs/PHASE_9_REPORT.md`; eski fazların bekleme kayıtları tarihseldir. Canlı: https://debug-duel-burakkyildiz.vercel.app . Uygulama kodu `37fb0d30da2986833c1910417d3faaecf0100bc4`, deployment `dpl_xftmNGCcc7JMgSABXpbozLu3g8Qu`; CI 42454840514 quality/database/Auth/Practice/match/load tümü başarılı.

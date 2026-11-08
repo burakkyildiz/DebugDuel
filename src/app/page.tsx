@@ -5,11 +5,11 @@ import { createClient } from "@/lib/supabase/server";
 import { copy } from "@/content/copy.en";
 
 const snippet = [
-  <><span className="syntax-purple">def</span> <span className="syntax-blue">sum_numbers</span>(numbers):</>,
-  <>    total = <span className="syntax-amber">0</span></>,
-  <>    <span className="syntax-purple">for</span> number <span className="syntax-purple">in</span> numbers:</>,
-  <>        total = number</>,
-  <>    <span className="syntax-purple">return</span> total</>,
+  <><span className="syntax-purple">def</span> <span className="syntax-blue">sum_numbers</span>(<span className="syntax-green">numbers</span>):</>,
+  <>    <span className="syntax-yellow">total</span> = <span className="syntax-amber">0</span></>,
+  <>    <span className="syntax-purple">for</span> <span className="syntax-green">number</span> <span className="syntax-purple">in</span> <span className="syntax-green">numbers</span>:</>,
+  <>        <span className="syntax-yellow">total</span> = <span className="syntax-green">number</span></>,
+  <>    <span className="syntax-purple">return</span> <span className="syntax-yellow">total</span></>,
 ];
 
 export default async function Home() {

@@ -3,8 +3,8 @@
 import { copy } from "@/content/copy.en";
 
 function highlight(line: string) {
-  return line.split(/(#.*$|'[^']*'|"[^"]*"|\b(?:def|return|if|else|elif|for|while|in|not|and|or|True|False|None|from|import)\b|\b\d+\b)/g)
-    .map((part, index) => <span key={index} className={part.startsWith("#") ? "syntax-comment" : /^["']/.test(part) ? "syntax-amber" : /^\d+$/.test(part) ? "syntax-blue" : /^(def|return|if|else|elif|for|while|in|not|and|or|True|False|None|from|import)$/.test(part) ? "syntax-purple" : undefined}>{part}</span>);
+  return line.split(/(#.*$|'(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*"|\b(?:def|return|if|else|elif|for|while|in|not|and|or|True|False|None|from|import)\b|\b\d+(?:\.\d+)?\b|\b[A-Za-z_]\w*(?=\s*\())/g)
+    .map((part, index) => <span key={index} className={part.startsWith("#") ? "syntax-comment" : /^["']/.test(part) ? "syntax-string" : /^\d/.test(part) ? "syntax-number" : /^(def|return|if|else|elif|for|while|in|not|and|or|True|False|None|from|import)$/.test(part) ? "syntax-keyword" : /^[A-Za-z_]\w*$/.test(part) ? "syntax-function" : undefined}>{part}</span>);
 }
 
 export function CodeLines({ code, selected, onSelect, disabled = false, correctLine }: {

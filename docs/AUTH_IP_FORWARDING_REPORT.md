@@ -2,7 +2,7 @@
 
 ## Durum
 
-Kullanıcı ücretsiz planda düzeltmeyi yapmayı istedi. Yerel uygulama, güvenlik testleri ve gerçek geliştirme iki-ağ doğrulaması başarılı. Üretim henüz değiştirilmedi; yeni commit/push yapılmadı. Önceki ortak kota deneyi [ayrı raporda](AUTH_IP_QUOTA_TEST_2026-11-08.md).
+Kullanıcı ücretsiz planda düzeltmeyi yapmayı istedi. Yerel uygulama, güvenlik testleri ve gerçek geliştirme iki-ağ doğrulaması başarılı. Düzeltme dfc3340 ile main’e gönderildi; CI42480035067 quality/database tamamen başarılı ve üretim dpl_G7XXZMjgWBWe6AhDAdUD2JJsCWmy ile ana adreste. Son kullanıcı yeniden giriş/profil kontrolü başarılı; kullanıcı XP’nin aynı kaldığını doğruladı. Önceki ortak kota deneyi [ayrı raporda](AUTH_IP_QUOTA_TEST_2026-11-08.md).
 
 ## Tasarım ve sınırlar
 
@@ -48,4 +48,15 @@ Kullanıcı test projesini test için geçici dış erişime açıp sonrasında 
 - Kota testin hemen ardından150'ye döndürüldü ve resmî CLI sparse diff ile doğrulandı. Watchdog da alreadyRestored=true/quota150 ile tamamlandı.
 - Yeni rastgele sentetik dev hesabıyla gerçek uygulama HTTP oturum zinciri:login200 (ensure_profile RPC dahil), cookie ile profile200, logout200, sonra history401. Parola/key/cookie yazdırılmadı. Auth API silme, profil foreign key kısıtı nedeniyle fixture'ı silemedi; yalnız exact sentetik UUID+e-posta guard'ı ve sıfır maç katılımı kontrolüyle profile_write_limits/profile/Auth sıralı transaction temizliği yapıldı. İlk connector onayı zaman aşımına uğradı, tekrarında işlem başarılı; remaining_fixture0. Gerçek hesap/XP değişmedi.
 - Test projesi SSO tekrar all; anonim test/login HTTP302→vercel.com/sso-api. Otomatik build ignore exit0. Test anahtarı yalnız dev/test projesinde, asıl üretim değişmedi.
-- Son değişiklik incelemesinde doğrulanmış yeni güvenlik bulgusu bulunmadı:kimlik JWT'si, DB/RPC public key, Auth endpoint allowlist, platform-IP güveni, redirect, request izolasyonu ve cookie secret ayrımı incelendi. Üretim ayarı ve canlı oturum doğrulaması henüz yapılmadı.
+- Son değişiklik incelemesinde doğrulanmış yeni güvenlik bulgusu bulunmadı:kimlik JWT'si, DB/RPC public key, Auth endpoint allowlist, platform-IP güveni, redirect, request izolasyonu ve cookie secret ayrımı incelendi. Bu geliştirmenin o andaki sınırı üretim ayarı/canlı oturumdu; aşağıdaki üretim yayın sonucu bunların tamamlandığını kaydeder.
+
+## Üretim yayını — 8 Kasım 2026
+
+- Kullanıcının açık “Evet, push et ve canlıya uygula” onayı sonrası dfc33405435f134ab4333745f3856a0c40068907 main’e gönderildi. [CI42480035067](https://github.com/burakkyildiz/DebugDuel/actions/runs/42480035067) quality ve database success; unit/types/lint/build/foundation E2E, DB/engine/Auth/Practice/match/load adımları geçti. gh CLI mevcut olmadığından işler GitHub connector üzerinden okundu.
+- Kullanıcı yeni SUPABASE_AUTH_SECRET_KEY değerini Vercel ana projesinde sensitive/yalnız Production olarak kendisi kaydetti; yalnız metadata doğrulandı, değer okunmadı. CI sonrasında Supabase üretim IP forwarding açık kaydedildi; reload sonrası switch1/Save disabled. Token150/verify30/signup30 mevcut kotaları korunur. AUTH_IP_FORWARDING_ENABLED=true yalnız Production olarak kaydedildi; Preview’a üretim erişimi verilmedi.
+- GitHub exact SHA kaynağından yeni env’lerle dpl_G7XXZMjgWBWe6AhDAdUD2JJsCWmy build’i READY (~47s), Node24/fra1. Aynı build promote edildi; ilk canonical sorgu kısa propagasyon sırasında eski7e05 build’ini gösterdi; sonraki canonical sorgu yeni deployment+dfc3340 SHA’sını doğruladı.
+- Ana HTTPS salt okunur smoke:home/login/Practice200; health200/ready=true; guest history401. Private/no-store/nosniff ve HTML nonce CSP korundu. Üretimde kota tüketme veya yeni sentetik hesap oluşturma yapılmadı; mevcut hesap/XP değişmedi. Kullanıcı gerçek üretim hesabından çıkış/yeniden giriş ve Profile kontrolünü başarılı, XP aynı olarak doğruladı.
+- Üretim security advisor yalnız önceden bilinen auth_leaked_password_protection WARN döndürüyor, yeni DDL/RLS bulgusu yok. Özellik Pro+ olduğundan sıfır bütçe kapsamında açılmadı. Hiçbir ücretli kaynak açılmadı. Bu kapsamda sıfır açık/gelecekte kesintisizlik garantisi verilmez.
+- Rollback:önceki7e05 build’ine promote edilebilir; o build yeni flag’i içermez/kullanmaz. Gerekirse flag false ile yeniden build yapılır. Auth forwarding’in açık kalması public-key istemcilerin normal davranışını değiştirmez; SQL/XP şeması bu yayında değişmedi.
+
+Son kapanış:Üretim runtime error son1 saat taraması temiz. Kullanıcı gerçek yeniden giriş/profil ve değişmeyen XP sonucunu doğruladı. Yerel iki preview kullanıcı dosyası korunur; bu yayında migration, hesap/XP temizliği veya ücretli kaynak yok. Gözden geçirilen düzeltme kapsamındaki işlemler tamamlandı.

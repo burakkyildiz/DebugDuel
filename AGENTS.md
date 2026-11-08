@@ -3,7 +3,7 @@
 ## Güncel çalışma — Profil sadeleştirme ve avatarlar
 
 - Kullanıcı username ve display name yerine tek username, mavi/sarı/yeşil/kırmızı/turuncu/mor/beyaz/siyah avatar istedi. Profil formu yalnız username gösterir; kaydederken display_name uyumlu olarak username değerine eşitlenir. Mevcut hesap verileri topluca değiştirilmedi. Sekiz avatar, eski dört seed ile uyumlu CSS ve erişilebilir renk isimleriyle gösterilir.
-- `20261108201629_neon_profile_avatars.sql` yerelde ve yalnız geliştirme `hvqklcqyjqjwwwcsioch` ortamında uygulandı; CLI dry-run yalnız bu migration'ı gösterdi, seed/rol/Vault yok. Production henüz uygulanmadı. Yerel 604 DB, 121 unit, typecheck ve hedefli ESLint geçti. Kod/migration henüz commit/push/canlıda değil. Production yayını kullanıcı talimatıyla, önce migration güvenle uygulanarak yapılır.
+- `20261108201629_neon_profile_avatars.sql` yerelde ve yalnız geliştirme `hvqklcqyjqjwwwcsioch` ortamında uygulandı; CLI dry-run yalnız bu migration'ı gösterdi, seed/rol/Vault yok. Kullanıcı isteğiyle production migration uygulandı ve 3d86069 uygulama build’i dpl_29Qqyk6rob1642zPthum1B3i13Cd ana adrese alındı. CI 42519743406 quality/database başarılı; yerel 604 DB, 121 unit ve gerçek Auth/profil E2E geçti. Production avatar kısıtı sekiz seçeneği doğruladı; health ready, runtime hata taraması temiz.
 
 ## Güncel çalışma — Auth IP düzeltmesi canlıda, 8 Kasım 2026
 

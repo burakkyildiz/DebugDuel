@@ -1,10 +1,10 @@
 # Faz 8 — yerel sağlamlaştırma
 
-## Güncel durum — 7 Kasım 2026
+## Güncel durum — 8 Kasım 2026
 
 Kod teslimi `5e7032d` main'de; [CI](https://github.com/burakkyildiz/DebugDuel/actions/runs/42370343800) başarılı. Hosted 21 migration eşleşir. 20 maç/40 hesap/40 private kanal uzak Free ölçümü ve uygulama yedeğinin 590 testli ayrı restore'u geçti; sentetik dolu round-trip profil/maç/ledger fingerprint'i eşleşti. Kaynak son kontrolünde sentetik hesap/maç/ledger kalmadı ve health ready=true.
 
-**Açık kullanıcı adımı:** aynı tarayıcıda gerçek parola kurtarma ve yeni parolayla giriş sonucu. Altı kesin localhost callback adresi, kullanıcının listeye açık onayı sonrası kaydedildi ve panelde Total URLs: 6 ile doğrulandı. Gerçek e-posta/parola girişinin başarılı olduğu sign-in metadata'sıyla doğrulandı; kurtarma isteği henüz metadata'da görünmüyor. Kullanıcının Auth yedeğini hariç tutma kararı korunur. Bu son adım bitmeden Faz 8'in tüm çıkış koşulları tamamlandı sayılmaz. Vercel/production/Faz 9 başlamadı. Aşağıdaki ilk bölüm tarihsel yerel teslimdir; son uzak kanıtlar belgenin devamındadır.
+**Faz 8 kapandı (geliştirme kapsamı).** Kullanıcı 8 Kasım'da parola sıfırlamayı yaptığını ve yeni parolayla tekrar giriş yaptığını açıkça doğruladı. Son başarılı sign-in sunucu metadata'sında 8 Kasım 04:58:54 UTC olarak görüldü. Recovery'nin tamamlanma kanıtı kullanıcı tarafından yapılan manuel testtir; `recovery_sent_at` null olduğu için bu alan bağımsız kurtarma kanıtı olarak kullanılmaz. Parola veya bağlantı alınmadı. Altı kesin localhost callback adresi kaydedilip panelde 6/6 doğrulandı. Kullanıcının Auth yedeğini hariç tutma kararı korunur. Vercel/production/Faz 9 başlamadı; üretim URL/SMTP/OAuth, platform logları ve iki fiziksel cihaz canlı smoke ayrı yayın kontrolleridir. Aşağıdaki bölümler tarihsel uygulama ve doğrulama kaydıdır; güncel sonuç bu bölüm ve kapanış kaydıdır.
 
 
 7 Kasım 2026. Kullanıcı turuncu arayüzü kabul ederek push ve sonraki faza geçiş istedi. Başlangıç `4807787`; turuncu teslim uzak main'de ve [CI başarılı](https://github.com/burakkyildiz/DebugDuel/actions/runs/42365570641) (quality 1m31s, database 12m54s). Aşağıdaki Faz 8 değişiklikleri henüz commit/push edilmedi; uzak geliştirme veya production değişmedi.
@@ -91,3 +91,10 @@ Yavaş hesap hazırlığıyla son Free geliştirme koşusu geçti: 20 maç, 40 d
 
 
 7 Kasım sonraki kullanıcı onayı: altı callback URL'sinin tamamı açıkça onaylandı. Save uygulandı; panelde her altı tam adres ve Total URLs: 6 görüldü. Test hesabı confirmed=true ve başarılı last_sign_in kaydı mevcut; kullanıcı “tamam oldu galiba” dediği için kurtarma ayrıca incelendi, recovery_sent_at null bulundu. Kurtarma ve yeni parolayla giriş tamamlandı varsayılmadı; kullanıcıya son adım bırakıldı. Parola veya token alınmadı.
+
+
+## Kapanış — 8 Kasım 2026
+
+Kullanıcı testi yeniden yaptı ve “evet reset password islemini yaptim” diyerek yeni parolayla giriş sonucunu doğruladı. Salt okunur sunucu kontrolünde hesap doğrulanmış ve son giriş günceldir; test hesabında 0 maç ve 0 XP ledger kaydı bulundu. Bu hesapta 0 XP görünmesi maç oynanmamasıyla uyumludur; bu kontrol eski oyun hesaplarının XP'sinin silindiği anlamına gelmez. Veriye veya parolaya müdahale edilmedi.
+
+Faz 8 geliştirme teslimi, başarılı kod CI'sı, hosted migration/yük ve Auth hariç uygulama restore kanıtlarıyla kapatıldı. Bu kapanış yalnız belge değişikliğidir; kod testleri yeniden çalıştırılmadı, `5e7032d` üzerindeki başarılı CI kanıtı korunur. Auth restore kapsam dışıdır; Free leaderboard burst gecikmesi ve önceki yeniden üretilemeyen 401 koşusu yukarıdaki sınırlamalarla korunur. Kullanıcının gerçek hesap/XP temizliği yayın öncesine ertelenmiştir. Faz 9/production için yeni talimat gerekir.

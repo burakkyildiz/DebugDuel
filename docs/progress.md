@@ -2,6 +2,10 @@
 
 Ana plan ve çıkış koşulları: `DEBUG_DUEL_PROJECT_SPEC.md`, bölüm 22.
 
+## Güncel kayıt — Faz 8 kapanışı, 8 Kasım 2026
+
+Faz 8 geliştirme kapsamı tamamlandı. Kod `5e7032d` main'de ve CI başarılı; 21 hosted migration, 20 maç/40 hesap yük testi ve Auth hariç uygulama yedeğinin 590 testli restore'u doğrulandı. Altı localhost callback kaydedildi. Kullanıcı parola sıfırlama ve yeni parolayla yeniden giriş testini açıkça doğruladı; son giriş metadata'sı güncel, recovery sonucu manuel kullanıcı kanıtıdır. Ayrıntılar ve Free kapasite/restore sınırları [Faz 8 raporunda](PHASE_8_REPORT.md). Faz 9/production başlamadı; kullanıcı talimatı beklenir. Önceki bekleme kayıtları tarihseldir.
+
 ## Güncel kayıt — Faz 7, 6 Kasım 2026
 
 Faz 7 maç kapanışında tek XP ve istatistik işlemini, özel maç geçmişini ve sayfalı XP liderlik tablosunu içeriyor. `2df6df4` GitHub `main` dalında ve CI başarılı. Uzak geliştirme projesine Faz 7 migration’ı uygulandı. Yerel ve uzak 20 sürüm eşleşiyor. [Faz 7 raporu](PHASE_7_REPORT.md)

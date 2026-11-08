@@ -58,3 +58,8 @@ URL Configuration panelinin redirect listesi boş bulundu. Yukarıdaki altı kes
 
 
 Güncelleme: kullanıcı altı kesin callback adresinin kaydına açık onay verdi; tamamı kaydedildi ve panelde 6/6 doğrulandı. Gerçek e-posta/parola girişi last_sign_in kaydıyla doğrulandı. Recovery isteği metadata'da henüz yok; kullanıcıdan aynı tarayıcıda gerçek kurtarma ve yeni parolayla giriş sonucu bekleniyor. Önceki kayıt/izin bekleme notları tarihseldir.
+
+
+## Kapanış — 8 Kasım 2026
+
+Kullanıcı aynı tarayıcıda parola kurtarma testini tekrarladı; yeni parolayı kaydedip yeniden giriş yaptığını ve reset password işlemini yaptığını açıkça doğruladı. Sunucuda confirmed=true ve last_sign_in_at=2026-11-08 04:58:54 UTC görüldü. `recovery_sent_at` null kaldığından bağımsız kurtarma kanıtı olarak kullanılmadı; uzak recovery sonucu manuel kullanıcı doğrulamasıdır. Parola/token alınmadı. Geliştirme Auth kontrolü kapandı; önceki bekleme notları tarihseldir. Üretim URL/SMTP/OAuth ve halka açık gönderim kontrolleri Faz 9'dadır.

@@ -1,13 +1,13 @@
 # Debug Duel — çalışma yönergeleri
 
-## Güncel çalışma — Faz 8, 7 Kasım 2026
+## Güncel çalışma — Faz 8 kapanışı, 8 Kasım 2026
 
 - Kullanıcı turuncu arayüzü kabul edip push ve sonraki fazı açıkça istedi. Turuncu vurgu `4807787` ile uzak main'e gönderildi; Faz 8 başladı. Production/Faz 9 bu yetkiye dahil değildir.
 - Faz 8 yerel sağlamlaştırma: kalıcı public okuma admission, CSP nonce, güvenli komut ölçümleri ve klavye/ekran okuyucu düzeltmeleri. Güncel kanıt ve kalan çıkış kapıları `docs/PHASE_8_REPORT.md` içinde tutulur.
 - Kullanıcı Faz 8'i bitirme talimatıyla uzak uygulama ve commit/push dahil kalan teslim işlerini yetkilendirdi. `20261107105016_public_read_admission.sql` resmî CLI ile uzak geliştirmeye uygulandı (21 sürüm). Auth minimum parola 12 olarak kaydedildi, e-posta doğrulama açık. Nihai teslim/CI ve diğer kontrollerin son kaynağı Faz 8 raporudur. Önceden var olan next-env.d.ts ve tsconfig.json preview değişikliklerini koru.
 - Faz 8 kodu `4f6b175`, taşınabilir load raporu düzeltmesi `5e7032d` main'de. [CI 42370343800](https://github.com/burakkyildiz/DebugDuel/actions/runs/42370343800) başarılı; önceki 4f6 CI yalnız rapor yazma yolunda Linux ENOENT ile kapandı.
 - Kullanıcı gerçek uygulama yedeğine açık onay verdi, Auth verisini özellikle hariç tuttu. `.local-backups/phase8-20261107` Git dışında ve korumalıdır. Uygulama yedeği ayrı yerel DB'ye yüklenip 590 testle doğrulandı; Auth geri yükleme kanıtı değildir. Mevcut ortamlara restore/reset yapılmaz.
-- Uzak e-posta gerçek gelen kutusunda doğrulandı; kullanıcı maili başka tarayıcıda açtığı için PKCE oturum dönüşü başarısız oldu. Giriş/recovery kullanıcı adımı sürer. Supabase URL panelindeki altı kesin localhost callback adresi, kullanıcının listeye açık onayı sonrası kaydedildi ve Total URLs: 6 ile doğrulandı. Kullanıcının gerçek e-posta/parola girişi son sign-in kaydıyla doğrulandı; recovery_sent_at henüz null, parola kurtarma kullanıcı adımı açık. Auth dump reddinden sonra kullanıcı Auth hariç kararı verdi; Auth yedeği alma.
+- Faz 8 geliştirme kapsamı kapandı. Gerçek e-posta doğrulaması, altı localhost callback'in 6/6 kaydı ve e-posta girişi doğrulandı. Kullanıcı 8 Kasım'da reset password işlemini ve yeni parolayla yeniden girişi açıkça doğruladı; son sign-in metadata'sı 2026-11-08 04:58:54 UTC. recovery_sent_at null olduğu için recovery kanıtı manuel kullanıcı doğrulamasıdır; metadata ile bağımsız ispat edildiği iddia edilmez. Parola/token alınmadı. Auth yedeği alma. Faz 9/production yalnız yeni kullanıcı talimatıyla başlar.
 - Uzak Free yükün son yavaş hazırlık koşusu geçti: 20 maç/40 hesap/40 private kanal, üç tur, 20 settlement/40 ledger. Command p95 3614ms; leaderboard 80 burst p95 13820ms, 60 kabul/20 limit. Önceki 429/401 denemeleri ayrı başarısız kanıttır; Vercel kapasitesi veya SLA iddiası yok. Sentetik test temizliği yalnız ilgili dd-phase8load/probe UUID'leriyle sınırlandırılır; gerçek iki hesap/XP'nin yayın öncesi temizliği kararı ayrı kalır. Ücretli kaynak açma.
 
 ## Güncel çalışma — Faz 7, 6 Kasım 2026

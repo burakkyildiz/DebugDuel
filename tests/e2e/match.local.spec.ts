@@ -96,7 +96,6 @@ test("invite survives sign-in and onboarding; two browsers complete three real p
     await expect(b.page).toHaveURL(origin + "/invite");
     await b.page.getByRole("link", { name: "Complete profile", exact: true }).click();
     await b.page.getByLabel("Username", { exact: true }).fill(b.username);
-    await b.page.getByLabel("Display name", { exact: true }).fill("Local Duel B");
     await b.page.getByRole("button", { name: "Save profile", exact: true }).click();
     await expect(b.page).toHaveURL(origin + "/invite");
     await b.page.getByRole("button", { name: "Join Match", exact: true }).click();

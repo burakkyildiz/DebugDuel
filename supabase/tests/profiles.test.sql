@@ -5,7 +5,7 @@ create temp table profile_test_results (line text);
 grant all on profile_test_results to anon, authenticated;
 grant usage on schema extensions to anon, authenticated;
 
-insert into profile_test_results values (plan(25));
+insert into profile_test_results values (plan(30));
 insert into profile_test_results values (ok((select relrowsecurity from pg_class where oid = 'public.profiles'::regclass), 'profiles enforce RLS'));
 insert into profile_test_results values (ok(not has_table_privilege('anon','public.profiles','insert'), 'anonymous profile inserts forbidden'));
 insert into profile_test_results values (ok(not has_table_privilege('authenticated','public.profiles','update'), 'direct statistic and profile edits forbidden'));
@@ -37,10 +37,15 @@ select set_config('request.jwt.claims','{"sub":"f0000000-0000-4000-8000-00000000
 select public.ensure_profile();
 insert into profile_test_results values (throws_ok($$select public.update_profile('profiletester_a','Player B','mint')$$, '23505', null, 'username uniqueness is case insensitive'));
 insert into profile_test_results values (is((select display_name from public.profiles where id='f0000000-0000-4000-8000-000000000001'), 'Player A', 'B cannot modify A by choosing a matching username'));
+insert into profile_test_results values (is((public.update_profile('ProfileTester_B','ProfileTester_B','cyan')).avatar_seed, 'cyan', 'white avatar can be saved'));
+insert into profile_test_results values (is((public.update_profile('ProfileTester_B','ProfileTester_B','lime')).avatar_seed, 'lime', 'black avatar can be saved'));
+insert into profile_test_results values (is((public.update_profile('ProfileTester_B','ProfileTester_B','blue')).avatar_seed, 'blue', 'blue avatar can be saved'));
+insert into profile_test_results values (is((public.update_profile('ProfileTester_B','ProfileTester_B','coral')).avatar_seed, 'coral', 'orange avatar can be saved'));
+insert into profile_test_results values (throws_ok($$select public.update_profile('ProfileTester_B','ProfileTester_B','unknown')$$, '22023', 'INVALID_PROFILE', 'unknown avatar is rejected'));
 
 set local role anon;
 select set_config('request.jwt.claims','{}',true);
-insert into profile_test_results values (is((select count(*) from public.profiles where id in ('f0000000-0000-4000-8000-000000000001','f0000000-0000-4000-8000-000000000002','f0000000-0000-4000-8000-000000000003')), 1::bigint, 'anonymous sees only completed fixture profiles'));
+insert into profile_test_results values (is((select count(*) from public.profiles where id in ('f0000000-0000-4000-8000-000000000001','f0000000-0000-4000-8000-000000000002','f0000000-0000-4000-8000-000000000003')), 2::bigint, 'anonymous sees only completed fixture profiles'));
 
 set local role authenticated;
 select set_config('request.jwt.claims','{"sub":"f0000000-0000-4000-8000-000000000003","role":"authenticated"}',true);

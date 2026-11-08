@@ -1,5 +1,10 @@
 # Debug Duel — çalışma yönergeleri
 
+## Güncel çalışma — Profil sadeleştirme ve avatarlar
+
+- Kullanıcı username ve display name yerine tek username, mavi/sarı/yeşil/kırmızı/turuncu/mor/beyaz/siyah avatar istedi. Profil formu yalnız username gösterir; kaydederken display_name uyumlu olarak username değerine eşitlenir. Mevcut hesap verileri topluca değiştirilmedi. Sekiz avatar, eski dört seed ile uyumlu CSS ve erişilebilir renk isimleriyle gösterilir.
+- `20261108201629_neon_profile_avatars.sql` yerelde ve yalnız geliştirme `hvqklcqyjqjwwwcsioch` ortamında uygulandı; CLI dry-run yalnız bu migration'ı gösterdi, seed/rol/Vault yok. Production henüz uygulanmadı. Yerel 604 DB, 121 unit, typecheck ve hedefli ESLint geçti. Kod/migration henüz commit/push/canlıda değil. Production yayını kullanıcı talimatıyla, önce migration güvenle uygulanarak yapılır.
+
 ## Güncel çalışma — Auth IP düzeltmesi canlıda, 8 Kasım 2026
 
 - Kullanıcı ücretsiz düzeltmeyi, tüm güvenlik işlerini bitirmeyi ve açık “Evet, push et ve canlıya uygula” yanıtıyla commit/push+başarılı CI sonrası üretim ayarı/yayını onayladı. Teslim uygulama commit'i dfc33405435f134ab4333745f3856a0c40068907. CI42480035067 quality/database tamamen success:121 unit, DB/engine/Auth/Practice/match/load ve foundation E2E. Yeni SQL/migration yok.

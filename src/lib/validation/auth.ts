@@ -10,5 +10,5 @@ export const oauthSchema = z.object({ next: z.string().optional() }).strict();
 export const profileSchema = z.object({
   username: z.string().regex(/^[a-zA-Z0-9_]{3,20}$/),
   displayName: z.string().trim().min(1).max(40),
-  avatarSeed: z.enum(["violet", "mint", "amber", "rose"]),
+  avatarSeed: z.enum(["violet", "mint", "amber", "rose", "cyan", "lime", "blue", "coral"]),
 }).strict();

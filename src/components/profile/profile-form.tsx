@@ -17,7 +17,7 @@ export function ProfileForm({ profile, next }: { profile: Tables<"profiles">; ne
     setPending(true); setError(""); setSaved(false);
     const form = new FormData(event.currentTarget);
     try {
-      const response = await fetch("/api/me/profile", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ username: form.get("username"), displayName: form.get("displayName"), avatarSeed: form.get("avatarSeed") }) });
+      const response = await fetch("/api/me/profile", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ username: form.get("username"), displayName: form.get("username"), avatarSeed: form.get("avatarSeed") }) });
       const data = await response.json();
       if (!response.ok) { setError(data.error?.message ?? text.unavailable); return; }
       setSaved(true);
@@ -27,8 +27,7 @@ export function ProfileForm({ profile, next }: { profile: Tables<"profiles">; ne
   }
   return <form className="form-stack" onSubmit={submit}>
     <label className="field"><span id="username-label">{text.username}</span><input name="username" aria-labelledby="username-label" required minLength={3} maxLength={20} pattern="[a-zA-Z0-9_]{3,20}" defaultValue={profile.username ?? ""} autoComplete="username" disabled={pending} aria-describedby="username-hint" /><small id="username-hint">{text.usernameHint}</small></label>
-    <label className="field">{text.displayName}<input name="displayName" required maxLength={40} defaultValue={profile.display_name} autoComplete="nickname" disabled={pending} /></label>
-    <fieldset disabled={pending} className="field" style={{ border: 0, padding: 0 }}><legend style={{ marginBottom: 12 }}>{text.avatar}</legend><div className="avatar-choices">{["violet", "mint", "amber", "rose"].map(seed => <label className="avatar-option" key={seed}><input type="radio" name="avatarSeed" value={seed} defaultChecked={profile.avatar_seed === seed} aria-label={seed} /><span className={`avatar-chip avatar-${seed}`}><Bug size={24} aria-hidden="true" /></span></label>)}</div></fieldset>
+    <fieldset disabled={pending} className="field" style={{ border: 0, padding: 0 }}><legend style={{ marginBottom: 12 }}>{text.avatar}</legend><div className="avatar-choices">{[{ seed: "blue", color: "Blue" }, { seed: "amber", color: "Yellow" }, { seed: "mint", color: "Green" }, { seed: "rose", color: "Red" }, { seed: "coral", color: "Orange" }, { seed: "violet", color: "Purple" }, { seed: "cyan", color: "White" }, { seed: "lime", color: "Black" }].map(({ seed, color }) => <label className="avatar-option" key={seed}><input type="radio" name="avatarSeed" value={seed} defaultChecked={profile.avatar_seed === seed} aria-label={color} /><span className={`avatar-chip avatar-${seed}`}><Bug size={24} aria-hidden="true" /></span></label>)}</div></fieldset>
     {error ? <p className="form-error" role="alert">{error}</p> : null}{saved ? <p className="notice success" role="status">{text.saved}</p> : null}
     <button className="button button-primary" type="submit" disabled={pending}>{pending ? copy.common.pending : text.save}<Check size={16} aria-hidden="true" /></button>
   </form>;

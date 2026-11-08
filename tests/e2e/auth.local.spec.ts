@@ -64,11 +64,13 @@ test("real local signup, confirmation, profile, refresh, logout and password rec
   await page.goto(await emailLink(request, email, "signup"));
   await expect(page.getByLabel("Username", { exact: true })).toBeVisible();
   await page.getByLabel("Username", { exact: true }).fill(username);
-  await page.getByLabel("Display name", { exact: true }).fill("Local Auth Test");
+  await expect(page.getByText(email, { exact: true })).toBeVisible();
+  await page.locator("label.avatar-option").filter({ has: page.getByRole("radio", { name: "Blue" }) }).click();
   await page.getByRole("button", { name: "Save profile" }).click();
   await expect(page.getByRole("status").filter({ hasText: "Profile updated." })).toBeVisible();
   await page.reload();
   await expect(page.getByLabel("Username", { exact: true })).toHaveValue(username);
+  await expect(page.getByRole("radio", { name: "Blue" })).toBeChecked();
   await logout(page);
   await login(page, email, password);
   await expect(page.getByLabel("Username", { exact: true })).toHaveValue(username);

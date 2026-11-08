@@ -1,5 +1,19 @@
 # Debug Duel — çalışma yönergeleri
 
+## Güncel çalışma — Auth IP düzeltmesi, 8 Kasım 2026
+
+- Kullanıcı ücretsiz düzeltmeyi ve ardından “güvenlikle ilgili işlemlerin tamamını bitirelim” dedi. server-only adaptör/server/proxy hazır; varsayılan flag false, yalnız Vercel trusted IP ve Auth'a özel SUPABASE_AUTH_SECRET_KEY. SQL/RPC public key+user JWT korunur; admin/diğer origin/redirect yükseltilmez. Privileged client/browser değişmedi.
+- 121 unit,29 Auth forwarding testi, types/ESLint, yerel Auth E2E ve build geçti. docs/AUTH_IP_FORWARDING_REPORT.md son kaynak. Migration yok. Mevcut next-env.d.ts/tsconfig.json kullanıcı değişikliklerini koru, commit/upload'a alma.
+- Kullanıcı dev key'i Vercel test projesine kendisi girdi ve dev IP forwarding'i kaydetti; panel reload switch1, token150/verify30/signup30. Test build dpl_EDWr7duBUb7U83brEXhAJwnH7qjB başarılı. Kontrollü150→1 kotada bilgisayar31. istekte429 alırken telefon mobil veri normal400 kaldı; iki ağ ayrışması geçti. Kota150'ye döndü/CLI diff ve watchdog doğruladı.
+- Sentetik dev gerçek HTTP login200/profile200/logout200/sonra401 geçti. Auth API delete profil FK nedeniyle durdu; exact fixture UUID/e-posta, sıfır maç guard'ı ile transaction temizlendi, remaining_fixture0. Gerçek hesap/XP değişmedi. Test SSO all geri yüklendi, anonymous302→VercelSSO doğrulandı; future build ignore exit0.
+- Kullanıcı “Evet, push et ve canlıya uygula” diyerek bu düzeltmenin commit/push, başarılı CI sonrası üretim IP forwarding/flag ve yayınına açık onay verdi. Üretim Auth secret giriş/kaydı kullanıcı adımı sürüyor; değerini okuma. CI ve canlı oturum kontrolü tamamlanmadan teslim tamamlandı sayma. Yeni credential değerlerini alma/okuma/yazdırma. Önceki deney kayıtları tarihseldir.
+
+## Güncel çalışma — Auth ortak IP deneyi, 8 Kasım 2026
+
+- Kullanıcı ayrı test ortamında iki ağlı kontrollü deneyi istedi. Ayrı ücretsiz Vercel `debug-duel-auth-check-20261108` / `prj_V8px8G7zNsQ07OOaAfWHz8NSv5NI`, dev Supabase hvq..., yalnız3 public env, private/prod secret yok. Sourcece54/deploymentdpl_5FaUbC7ZCpXjDJrBhBfop2c1RgXY, Node24/fra1; asıl üretim değiştirilmedi.
+- Dev token kotası150→1 geçici değişti;31. bilgisayar isteği429 aldı, telefon mobil veride de kota hatası gördü; aynı B girdisiyle doğrudan dev Auth kontrolü400 kaldı. Kota150'ye döndü/sparse diff update0 ve kullanıcı telefonda normal giriş hatasına döndüğünü doğruladı; üç dakikalık watchdog alreadyRestored150 diye sonlandı. Gerçek hesap/parola veya e-posta gönderimi yok. Üretimde varsayılan kotada olay sıklığı ölçülmedi, ancak ortak SSR kota davranışı dev'de doğrulandı. Kanıt docs/AUTH_IP_QUOTA_TEST_2026-11-08.md.
+- Test projesinde future build ignore exit0/Preview disabled ayarlı. İlk ssoProtection.deploymentType=all isteği auto-review tarafından ayrıca açık onay istediği için reddedildi; kullanıcı “Evet, yalnız test bağlantısını kapat” dedikten sonra yalnız test projesine uygulandı. Anonim test URL302 ile Vercel oturum korumasına yönlenir; kapanış tamamlandı. Asıl production SSO/env değiştirilmez. Ürün düzeltmesi henüz yetkilendirilmiş/uygulanmış değildir; sırları genel oyun SSR client'ına taşıma. Bu deney belgeleri henüz commit/push edilmedi; mevcut iki preview dosyasını koru.
+
 ## Güncel çalışma — güvenlik düzeltmeleri canlıda, 8 Kasım 2026
 
 - Kullanıcı iki bulguyu düzeltmeyi, ardından “Evet, push et ve canlıya uygula” yanıtıyla commit/push, başarılı CI sonrası geliştirme+üretim migration ve Vercel yayınına açık onay verdi. Teslim tamamlandı; güncel kanıt `docs/SECURITY_REVIEW_2026-11-08.md`. Önceki Faz9 kapanışı37fb sürümünün tarihsel kanıtıdır.

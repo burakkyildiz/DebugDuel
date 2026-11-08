@@ -10,7 +10,7 @@ Kullanıcının düzeltme ve ardından açık push/yayın onayıyla iki doğrula
 - Sonuç:92 unit,599 yerel pgTAP,599 temiz migration/seed kurulumu ve599 seed tekrarı; gerçek yerel Auth E2E1/1 (signup/confirmation/profile/refresh/logout/recovery), gerçek paralel engine/deadline/settlement yarışları ve ayrı production build başarılı. Lint0 hata; yalnız Git dışı eski restore scriptinin önceden var olan unused-import uyarısı var. Security advisor warn/error sonucu boş.
 - Temiz-kurulum aracı config'te referans verilen Auth şablonlarını geçici projeye kopyalamıyordu; templates dizini de kopyalanarak temiz kurulum doğrulandı. Geçici test DB kaldırıldı; mevcut DB korunur.
 - Son güvenlik incelemesi: mevcut actor gate/RLS/EXECUTE sınırları, commandError HTTP eşlemesi, kota transaction'ı, kimlik hatası gizliliği ve geçerli giriş incelendi; bu düzeltme kapsamında doğrulanmış yeni bulgu yok. Yerel metadata owner=debug_duel_game_engine, security_definer=true, search_path boş, anon/authenticated internal EXECUTE=false, relay EXECUTE=true, client XP UPDATE=false gösterdi.
-- Ortak SSR Auth IP kotası ihtimali aşağıdaki Needs verification bölümünde kalır. Yerel testler gerçek Vercel egress dağılımını kanıtlamaz; bu ihtimal giderildi veya üretimde ölçüldü diye sunulmaz. Sırf bunu denemek için canlıda rate-limit oluşturulmadı; oyun JWT client'ına secret key eklenmedi.
+- Ortak SSR Auth IP kotası ilk bakım sırasında doğrulanmamıştı; sonraki kontrollü geliştirme deneyi aşağıda kayıtlıdır. Yerel testler gerçek Vercel egress dağılımını kanıtlamaz; bu ihtimal giderildi veya üretimde ölçüldü diye sunulmaz. Sırf bunu denemek için canlıda rate-limit oluşturulmadı; oyun JWT client'ına secret key eklenmedi.
 - Önceden var olan next-env.d.ts ve tsconfig.json preview değişiklikleri korundu. Geçici build çıktısı kaldırıldı. Yerel, geliştirme ve üretim22 migration sürümündedir; iki hosted son dry-run upToDate=true, migrations/seeds/roles boş.
 
 ## Kapsam ve yöntem
@@ -54,9 +54,9 @@ Konum: `src/app/api/auth/[action]/route.ts:38`.
 
 **Düzeltme ve regresyon:** Gerçek invalid_credentials hatasını genel400 olarak koru;429 için RATE_LIMITED/Retry-After ve provider5xx için AUTH_UNAVAILABLE/503 kullan. Üç hata sınıfını ayrı route testleriyle doğrula; UI nötr hata metinleri hesap varlığını sızdırmamalı.
 
-## Needs verification
+## Sonraki doğrulama — ortak SSR Auth kotası
 
-**SSR Auth trafiğinin ortak sunucu IP kotasına yığılması.** `src/lib/supabase/server.ts:11` publishable key kullanıyor ve son kullanıcı IP'sini Auth'a iletmiyor. [Supabase resmî rate-limit belgesi](https://supabase.com/docs/guides/auth/rate-limits#ip-address-forwarding), proxy/SSR isteklerinin sunucu IP'siyle sınırlandırılabileceğini; güvenilir forwarding için ayrı ayar ve yeni secret key gerektiğini açıklıyor. Vercel'in gerçek egress dağılımı ve farklı kullanıcıların aynı kotayı ne ölçüde paylaştığı bu incelemede ölçülmedi. Bu nedenle production genelinde kilitlenme doğrulanmış bulgu olarak sunulmuyor. Dev/staging'de iki sentetik kullanıcı/IP ile kontrollü test yapılmalı; gerekiyorsa Auth'a özel, güvenilir platform IP'si ve dar secret adapter tasarlanmalı. Mevcut kullanıcı JWT'li oyun client'ını service-role client'a çevirmek güvenli bir düzeltme değildir.
+İlk incelemede doğrulanmamış olan ortak IP kotası davranışı,8 Kasım'da ayrı geliştirme Vercel yayını ve mobil veri kullanan ikinci cihazla kontrollü olarak doğrulandı. Bilgisayar kotayı tüketince telefon429 mesajı aldı; doğrudan geliştirme Auth kontrolü400 kaldı; kota150'ye geri alınınca telefon normal400 mesajına döndü. Üretim ayarları değiştirilmedi. Üretimde varsayılan ayar altında olay sıklığı/tüm egress dağılımı henüz ölçülmedi. [Deney, geri alma ve sınırlar](AUTH_IP_QUOTA_TEST_2026-11-08.md). Davranış için ürün kodu düzeltmesi henüz uygulanmadı; Auth'a özel trusted-IP adapter ve ayrı dev doğrulaması gerekir.
 
 ## Olumlu kontroller ve sınırlar
 
@@ -83,4 +83,4 @@ Konum: `src/app/api/auth/[action]/route.ts:38`.
 
 ## Kalan platform sınırları
 
-Uzak development ve production security advisor taraması `auth_leaked_password_protection` WARN bildirdi; DDL/RLS bulgusu yok. Bu, önceki yerel advisor'ın boş sonucundan farklı platform Auth kontrolüdür. [Resmî belge](https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection) bu özelliği Pro ve üstüyle sınırlıyor. Kullanıcının sıfır bütçe kararıyla plan yükseltilmedi; bu kontrol açık olmadığı için tüm parola tehditlerinin önlendiği iddia edilmez. Ortak SSR Auth IP kotasının gerçek Vercel etkisi Needs verification kapsamında kalır; bu bakım onu ölçüldü/giderildi diye sunmaz.
+Uzak development ve production security advisor taraması `auth_leaked_password_protection` WARN bildirdi; DDL/RLS bulgusu yok. Bu, önceki yerel advisor'ın boş sonucundan farklı platform Auth kontrolüdür. [Resmî belge](https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection) bu özelliği Pro ve üstüyle sınırlıyor. Kullanıcının sıfır bütçe kararıyla plan yükseltilmedi; bu kontrol açık olmadığı için tüm parola tehditlerinin önlendiği iddia edilmez. İlk bakım bu konuyu gidermedi; sonraki ayrı geliştirme deneyi ortak kota davranışını doğruladı. Üretimde varsayılan kotada olay sıklığı ölçülmedi; düzeltme henüz uygulanmadı.

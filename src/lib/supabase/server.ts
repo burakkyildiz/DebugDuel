@@ -1,7 +1,8 @@
 import "server-only";
 import { createServerClient } from "@supabase/ssr";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { publicSupabaseEnv } from "@/lib/env";
+import { authForwardingEnabled, authForwardingFetch } from "@/lib/supabase/auth-forwarding";
 import type { Database } from "@/types/database.generated";
 
 export async function createClient() {
@@ -9,6 +10,7 @@ export async function createClient() {
   if (!env) return null;
   const store = await cookies();
   return createServerClient<Database>(env.url, env.key, {
+    global: { fetch: authForwardingFetch(env, authForwardingEnabled() ? await headers() : new Headers()) },
     cookies: {
       getAll: () => store.getAll(),
       setAll(values) {

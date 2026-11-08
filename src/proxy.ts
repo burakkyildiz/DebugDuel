@@ -4,6 +4,7 @@ import { seal } from "@/lib/security/sealed";
 import { inviteTokenSchema } from "@/features/matches/contracts";
 import { publicSupabaseEnv } from "@/lib/env";
 import { contentSecurityPolicy } from "@/lib/security/csp";
+import { authForwardingFetch } from "@/lib/supabase/auth-forwarding";
 
 export async function proxy(request: NextRequest) {
   const csp = contentSecurityPolicy(Buffer.from(crypto.randomUUID()).toString("base64"));
@@ -33,6 +34,7 @@ export async function proxy(request: NextRequest) {
   const env = publicSupabaseEnv();
   if (!env) return response;
   const supabase = createServerClient(env.url, env.key, {
+    global: { fetch: authForwardingFetch(env, request.headers) },
     cookies: {
       getAll: () => request.cookies.getAll(),
       setAll(values, headers) {

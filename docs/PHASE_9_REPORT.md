@@ -1,5 +1,9 @@
 # Faz 9 — üretim yayını
 
+## Sonraki güvenlik bakımı — 8 Kasım 2026
+
+Pilot kapanışından sonra iki doğrulanmış bulgu onaylı7e05ca2 yayınıyla giderildi; CI42461139758 başarılı, iki ortam22 migration ve9/9 rollback testi. [Güncel güvenlik/yayın kaydı](SECURITY_REVIEW_2026-11-08.md). Aşağıdaki Faz9 kapanış tablosu önceki37fb tesliminin tarihsel kanıtıdır; güncel canlı deployment dpl_6m3Zm9yLPN5Hp3N7teQyZAEFckm8.
+
 ## Kapanış — 8 Kasım 2026
 
 Faz 9 ücretsiz pilot yayın kapsamı tamamlandı. [Canlı uygulama](https://debug-duel-burakkyildiz.vercel.app) ayrı üretim veritabanını kullanır. Kullanıcı gerçek iki cihaz maçını ve son yeni parola ile giriş testini başarılı olarak doğruladı. Ücretli kaynak açılmadı; gerçek hesaplar ve XP korunur.

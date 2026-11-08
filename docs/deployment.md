@@ -2,7 +2,7 @@
 
 ## Güncel üretim — 8 Kasım 2026
 
-Faz9 ücretsiz pilot yayını tamamlandı; [kanıt ve sınırlar](PHASE_9_REPORT.md). [Canlı adres](https://debug-duel-burakkyildiz.vercel.app), kod `37fb0d30da2986833c1910417d3faaecf0100bc4`, deployment `dpl_xftmNGCcc7JMgSABXpbozLu3g8Qu`, [başarılı CI](https://github.com/burakkyildiz/DebugDuel/actions/runs/42454840514). Vercel Hobby/Node24/fra1; proje `prj_d67hDYIsOi8QR7swowQObAMJ33AP`. Üretim Supabase `debug-duel-prod` / `nvpqjmwurmeupkbhozrn`,21 migration/30 soru; geliştirme ayrı kalır.
+Faz9 ücretsiz pilot yayını tamamlandı; [kanıt ve sınırlar](PHASE_9_REPORT.md). [Canlı adres](https://debug-duel-burakkyildiz.vercel.app), güncel bakım kodu `7e05ca2182f02381a0e5f119834c420b0fe5eba4`, deployment `dpl_6m3Zm9yLPN5Hp3N7teQyZAEFckm8`, [başarılı CI](https://github.com/burakkyildiz/DebugDuel/actions/runs/42461139758). Vercel Hobby/Node24/fra1; proje `prj_d67hDYIsOi8QR7swowQObAMJ33AP`. Üretim Supabase `debug-duel-prod` / `nvpqjmwurmeupkbhozrn`,22 migration/30 soru; geliştirme ayrı kalır.
 
 Yedi env yalnız Production; kullanıcı private değerleri panelden girdi. Preview otomatik deploy kapalı ve production erişimi yoktur. Otomatik domain ataması kapalıdır; sonraki build'ler kontrollerden sonra yetki kapsamında promote edilir. GitHub, e-posta teslim/doğrulama/yeni recovery, Practice ve iki fiziksel cihaz maçı geçti. Gmail SMTP düşük hacimli pilottur; Auth restore ve Vercel40 oyuncu kapasitesi kanıtlanmadı. Eski99cf deployment yeni e-posta şablonlarıyla tek başına rollback hedefi değildir; aşağıdaki uyum sırasını izle.
 
@@ -116,3 +116,10 @@ Ayrı boş-hedef kurulumuna ek olarak dolu sentetik round-trip de geçti: yalnı
 E-posta callback düzeltmesinde önce yeni callback kodu yayınlanır; eski `.ConfirmationURL` şablonları bu kodla da çalışır. Ancak token_hash şablonları uygulanınca önceki code-only deployment'a tek başına rollback yapılmaz: ya token_hash destekli son iyi sürüm korunur ya da iki şablon `.ConfirmationURL` yoluna geri çevrilip kaydedildiği doğrulandıktan sonra eski uygulamaya dönülür. Açık ve kullanılmamış e-posta bağlantılarının eski/yeni biçimleri rollback sırasında ayrıca değerlendirilir. Yeni sürüm her iki yolu da kabul ettiğinden en güvenli uygulama dönüş noktası bu uyumlu sürümdür. Hesap/XP/ledger silinmez.
 
 CLI 2.122 config diff bu çalışmada yalnız subject farklarını gösterdi; content_path kaynaklı uzak gövde farkı görünmedi. Bu yüzden gövde dağıtımı CLI sonucu üzerinden varsayılmaz. Confirm sign up ve Reset password panel Source alanları repository'deki HTML ile kaydedilip sayfa yeniden açılarak doğrulanır; ardından gerçek teslim/kurtarma yapılır. SMTP kullanıcı adı/parolası bu şablon işlemlerinde değiştirilmez.
+
+
+## Güvenlik bakım yayını — 8 Kasım 2026
+
+7e05ca2 uygulaması ve20261108075236 migration'ı kullanıcı onayı ve CI42461139758 başarısı sonrası yayınlandı. Geliştirme/üretim22 migration, ayrı9/9 rollback testi, son dry-run güncel. [Ayrıntılı kanıt](SECURITY_REVIEW_2026-11-08.md). Yeni mutation API veya public schema/tip/izin açılmadı. SMTP/OAuth/env değişmedi; kullanıcı verisi/XP silinmedi. Canonical health200/ready ve oturumsuz history401 doğrulandı. Runtime error1 saat taraması temiz; kalıcı harici hata tracking/drain bu bakımda kurulmadı.
+
+Uygulama geri dönüşünde token_hash uyumlu37fb korunabilir;22. migration eski uygulamayla uyumludur ve geri silinmez.99cf code-only sürümünün e-posta şablonu uyum sınırı geçerlidir. Ücretsiz planda leaked-password detection kapalı uyarısı vardır (Pro+); plan yükseltilmez. Ortak Auth IP kotası ölçümü ayrı açık doğrulama sınırıdır.

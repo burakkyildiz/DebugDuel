@@ -1,8 +1,8 @@
 # Güvenlik ve kullanıcı etkisi incelemesi — 8 Kasım 2026
 
-## Güncel düzeltme durumu — yerelde tamamlandı
+## Güncel düzeltme durumu — canlıda tamamlandı
 
-Kullanıcının “bu problemleri de çözelim” talimatıyla iki doğrulanmış bulgu yerelde giderildi. Aşağıdaki inceleme bulguları düzeltme öncesi kanıttır; canlı sürüm henüz güncellenmedi. Kullanıcı sonrasında commit/push, başarılı CI ardından geliştirme/üretim migration ve aynı Vercel projesinde yayını açıkça onayladı. Uygulama sonuçları aşağıya kaydedilecek.
+Kullanıcının düzeltme ve ardından açık push/yayın onayıyla iki doğrulanmış bulgu giderildi. `7e05ca2` canlıda; [CI42461139758](https://github.com/burakkyildiz/DebugDuel/actions/runs/42461139758) tüm quality/database/Auth/Practice/match/load adımlarında başarılı. Aşağıdaki ilk inceleme bulguları düzeltme öncesi kanıttır; yayın sonucu son bölümde kayıtlıdır.
 
 - `20261108075236_persist_failed_match_join_admission.sql`: missing invitation sonucu kontrollü commandError döner;10 geçersiz davet denemesi sayacı korunur,11. istek ve tekrarları RATE_LIMITED alır. Güncel host-ready davranışı, imza, owner/ACL/search_path ve atomik oyun yazımları korunur. Tablolar/veriler/XP değişmez; yalnız fonksiyon gövdesi değiştiğinden generated public API tiplerinde değişiklik yok.
 - Login provider429/over_request_rate_limit →429 RATE_LIMITED + Retry-After60;5xx ve transport hatası →503 AUTH_UNAVAILABLE; credential/kimlik hataları nötr400 SIGN_IN_FAILED olarak kalır.
@@ -11,7 +11,7 @@ Kullanıcının “bu problemleri de çözelim” talimatıyla iki doğrulanmı�
 - Temiz-kurulum aracı config'te referans verilen Auth şablonlarını geçici projeye kopyalamıyordu; templates dizini de kopyalanarak temiz kurulum doğrulandı. Geçici test DB kaldırıldı; mevcut DB korunur.
 - Son güvenlik incelemesi: mevcut actor gate/RLS/EXECUTE sınırları, commandError HTTP eşlemesi, kota transaction'ı, kimlik hatası gizliliği ve geçerli giriş incelendi; bu düzeltme kapsamında doğrulanmış yeni bulgu yok. Yerel metadata owner=debug_duel_game_engine, security_definer=true, search_path boş, anon/authenticated internal EXECUTE=false, relay EXECUTE=true, client XP UPDATE=false gösterdi.
 - Ortak SSR Auth IP kotası ihtimali aşağıdaki Needs verification bölümünde kalır. Yerel testler gerçek Vercel egress dağılımını kanıtlamaz; bu ihtimal giderildi veya üretimde ölçüldü diye sunulmaz. Sırf bunu denemek için canlıda rate-limit oluşturulmadı; oyun JWT client'ına secret key eklenmedi.
-- Önceden var olan next-env.d.ts ve tsconfig.json preview değişiklikleri korundu. Geçici build çıktısı kaldırıldı. Yeni migration yalnız yerelde22. sürümdür; geliştirme/üretim hâlâ21 sürümdedir.
+- Önceden var olan next-env.d.ts ve tsconfig.json preview değişiklikleri korundu. Geçici build çıktısı kaldırıldı. Yerel, geliştirme ve üretim22 migration sürümündedir; iki hosted son dry-run upToDate=true, migrations/seeds/roles boş.
 
 ## Kapsam ve yöntem
 
@@ -68,4 +68,19 @@ Konum: `src/app/api/auth/[action]/route.ts:38`.
 - Safe redirect allowlist, token type/proof kontrolleri, nonce CSP ve dar telemetri alanları incelendi; bu kapsamda doğrulanmış kritik/yüksek bulgu bulunmadı.
 - Bu bir tam penetration test, formal proof, tüm paket kaynaklarının denetimi veya production platform ayarlarının yeniden sertifikasyonu değildir. Gmail gönderim kapasitesi, production üçüncü hesap Realtime denemesi,40 oyuncu Vercel yükü ve Auth restore önceki raporlardaki sınırlarıyla kalır.
 
-İnceleme sonucu:1 orta ve1 düşük doğrulanmış bulgu. Kod/DB/config düzeltmesi, commit, push veya deploy yapılmadı. Mevcut kullanıcı next-env.d.ts/tsconfig.json değişiklikleri korundu.
+İlk inceleme sonucu:1 orta ve1 düşük doğrulanmış bulgu. İlk inceleme sırasında kod/DB/config düzeltmesi, commit, push veya deploy yapılmadı; sonraki onaylı düzeltme/yayın sonucu aşağıdadır. Mevcut kullanıcı next-env.d.ts/tsconfig.json değişiklikleri korundu.
+
+
+## Yayın sonucu — 8 Kasım 2026
+
+- Uygulama commit'i `7e05ca2182f02381a0e5f119834c420b0fe5eba4` main'de. [CI42461139758](https://github.com/burakkyildiz/DebugDuel/actions/runs/42461139758) quality ve database dahil success; Auth, Practice, maç ve20 maç/40 oyuncu load adımları geçti.
+- CI başarılı olduktan sonra resmî CLI2.122.0 ile önce geliştirme `hvqklcqyjqjwwwcsioch`, sonra üretim `nvpqjmwurmeupkbhozrn` güncellendi. Yalnız `20261108075236` uygulandı; seed, rol veya Vault push edilmedi. Her iki ortam22 sürüm, fixApplied/joinFixPresent=true; son dry-run upToDate=true. Ön kontrollerde aktif maç0 ve health ready idi; sonrasında da Cron sağlıklı.
+- Her hosted ortamda aynı9 assertion transaction/ROLLBACK içinde geçti. İlk CLI test hedefi için --linked gerekti; ilk asıl test koşusu geçici CLI rolünün extensions GRANT yetki bağlamında durdu ve rollback edildi. Testin yalnız başlangıç/reset idari rol bağlamı açık postgres olarak sarıldı, assertion/iş mantığı değiştirilmedi; ardından geliştirme9/9 ve üretim9/9 başarılı. Geçici harness `/private/tmp/debug-duel-hosted-join-admission.test.sql`, sır veya gerçek kullanıcı verisi içermez. Son salt okunur kontrol fixture Auth/profil sayısı0, internal authenticated EXECUTE=false ve client XP UPDATE=false gösterdi. Kalıcı izin genişletilmedi.
+- `dpl_6m3Zm9yLPN5Hp3N7teQyZAEFckm8`, `debug-duel-78ufch244-burakkyildiz.vercel.app`, READY/Production/fra1; build yaklaşık53 saniye. Aynı test edilmiş build ana adrese promote edildi; canonical deployment sorgusu7e05ca2 SHA'sını doğruladı. Yeniden uygulama build'i yapılmadı.
+- Kimliksiz HTTPS smoke: `/`, `/login/email`, `/practice`200; `/api/health`200/ready=true; `/api/me/history`401. Yanıtlar private/no-store, HTML nonce CSP ve nosniff korundu. Python'un yerel CA paketi eksik olduğundan ilk HTTP denemesi sertifika doğrulamada durdu; TLS doğrulaması kapatılmadan sistem curl ile kontroller geçti.
+- Son Vercel1 saat runtime error taraması sonuçsuz/temiz. Bu sınırlı gözlem, tüm gelecekteki hataların veya açıkların yokluğu garantisi değildir. Yeni canlı gerçek iki cihaz maçı/kullanıcı parola kurtarması bu küçük bakımda tekrarlanmadı; gerçek Auth/oyun regresyonları CI'da geçti, önceki manuel pilot kanıtı Faz9 raporundadır.
+- Bu yayın SMTP/OAuth credential'larını veya e-posta şablonlarını değiştirmez. Uygulama rollback'inde token_hash uyumlu37fb sürümü kullanılabilir;22. DB migration'ı/XP ledger silinmez. Eski99cf code-only sürümüne yeni token_hash şablonlarıyla tek başına dönülmez.
+
+## Kalan platform sınırları
+
+Uzak development ve production security advisor taraması `auth_leaked_password_protection` WARN bildirdi; DDL/RLS bulgusu yok. Bu, önceki yerel advisor'ın boş sonucundan farklı platform Auth kontrolüdür. [Resmî belge](https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection) bu özelliği Pro ve üstüyle sınırlıyor. Kullanıcının sıfır bütçe kararıyla plan yükseltilmedi; bu kontrol açık olmadığı için tüm parola tehditlerinin önlendiği iddia edilmez. Ortak SSR Auth IP kotasının gerçek Vercel etkisi Needs verification kapsamında kalır; bu bakım onu ölçüldü/giderildi diye sunmaz.

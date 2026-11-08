@@ -2,9 +2,9 @@
 
 Ana plan ve çıkış koşulları: `DEBUG_DUEL_PROJECT_SPEC.md`, bölüm 22.
 
-## Güncel kayıt — güvenlik düzeltmeleri, 8 Kasım 2026
+## Güncel kayıt — güvenlik düzeltmeleri canlıda, 8 Kasım 2026
 
-İnceleme sonrası iki doğrulanmış bulgu yerelde giderildi: geçersiz doğrudan join RPC istekleri hesap hız sınırını tüketir; login429/5xx doğru sınıflandırılır.92 unit,599 DB, ayrı temiz kurulum/seed tekrarı, gerçek Auth E2E, engine yarışları ve production build başarılı. Yeni22. migration yalnız yerelde; uzak ortamlar/canlı37fb henüz değiştirilmedi. [Kanıt ve açık doğrulama sınırı](SECURITY_REVIEW_2026-11-08.md).
+İki bulgu giderildi ve onayla yayınlandı: geçersiz doğrudan join RPC istekleri hesap hız sınırını tüketir; login429/5xx doğru sınıflandırılır. Canlı kod7e05ca2, [CI42461139758](https://github.com/burakkyildiz/DebugDuel/actions/runs/42461139758) tümü başarılı. Yerel92 unit/599 DB/temiz kurulum+seed tekrarı/gerçek Auth E2E/engine yarışları/build başarılı; geliştirme ve üretimde22 migration ve9/9 odaklı rollback testi. Canonical aynı SHA, health ready, public sayfalar200/private history401, runtime taraması temiz. Gerçek hesap/XP verisi korunur. Leaked-password kontrolü Free planda kapalı; ortak Auth IP etkisi ölçülmedi. [Kanıt ve sınırlar](SECURITY_REVIEW_2026-11-08.md).
 
 ## Güncel kayıt — Faz 9 kapanışı, 8 Kasım 2026
 

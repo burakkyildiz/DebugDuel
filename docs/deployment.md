@@ -1,10 +1,12 @@
 # Ücretsiz kurulum ve yayın hazırlığı
 
-## Güncel üretim hazırlığı — 8 Kasım 2026
+## Güncel üretim — 8 Kasım 2026
 
-Faz 8 kapandı, Faz 9 başladı. Önceki eksik/yetki bekleme bölümleri tarihsel; güncel durum [Faz 9 raporunda](PHASE_9_REPORT.md). Üretim `debug-duel-prod` / `nvpqjmwurmeupkbhozrn`, geliştirme eski projede kalır. Yeni üretime 21 migration/30 soru uygulandı; DB doğrulamaları rollback içinde geçti. Vercel projesi `prj_d67hDYIsOi8QR7swowQObAMJ33AP`, Hobby, Node 24.x, Frankfurt; HTTPS hedefi `https://debug-duel-burakkyildiz.vercel.app`. `99cf58b` / `dpl_8PGPpMsptDQ1aq1y3mtSkzdu3t9x` READY ve kullanıcı onayıyla bu adreste canlı. Yedi production değişkeni kullanıcıca kaydedildi; preview'a üretim DB erişimi verilmez. Auth Site URL/6 kesin HTTPS callback ve private-only Realtime kaydedildi. Gerçek GitHub callback ve guest Practice geçti; SMTP/email, onboarding/refresh/logout ve iki cihaz tam maç smoke açık; AC-21 tamamlanmadı.
+Faz9 ücretsiz pilot yayını tamamlandı; [kanıt ve sınırlar](PHASE_9_REPORT.md). [Canlı adres](https://debug-duel-burakkyildiz.vercel.app), kod `37fb0d30da2986833c1910417d3faaecf0100bc4`, deployment `dpl_xftmNGCcc7JMgSABXpbozLu3g8Qu`, [başarılı CI](https://github.com/burakkyildiz/DebugDuel/actions/runs/42454840514). Vercel Hobby/Node24/fra1; proje `prj_d67hDYIsOi8QR7swowQObAMJ33AP`. Üretim Supabase `debug-duel-prod` / `nvpqjmwurmeupkbhozrn`,21 migration/30 soru; geliştirme ayrı kalır.
 
-Bu dosya runbook başlangıcıdır; henüz deployment yapılmadı. Bütçe 0: ücretli plan, ücretli branch, ek compute, SMTP veya alan adı satın alınmaz. Servislerin ücretsiz kotaları aşılırsa ölçek veya özellik açılışı durdurulur; otomatik ücretli geçiş yapılmaz.
+Yedi env yalnız Production; kullanıcı private değerleri panelden girdi. Preview otomatik deploy kapalı ve production erişimi yoktur. Otomatik domain ataması kapalıdır; sonraki build'ler kontrollerden sonra yetki kapsamında promote edilir. GitHub, e-posta teslim/doğrulama/yeni recovery, Practice ve iki fiziksel cihaz maçı geçti. Gmail SMTP düşük hacimli pilottur; Auth restore ve Vercel40 oyuncu kapasitesi kanıtlanmadı. Eski99cf deployment yeni e-posta şablonlarıyla tek başına rollback hedefi değildir; aşağıdaki uyum sırasını izle.
+
+Bütçe0: ücretli plan/branch/compute/SMTP/domain satın alınmaz. Aşağıdaki ilk kurulum maddeleri runbook ve tarihsel hazırlıktır; güncel uygulanmış durum üstteki rapordadır. Üretimde Auth Site URL canonical HTTPS, altı kesin callback, parola12/doğrulama açık, GitHub etkin; custom Gmail SMTP ve iki token_hash şablonu kaydedilmiştir.
 
 ## Supabase hedefi
 
@@ -94,7 +96,7 @@ where p.xp_earned<>l.amount;
 
 Uygulama hatasında son doğrulanmış deployment'a dön; yeni admission migration'ını ve ledger'ı silme. DB hatasında yeni başlangıçları bakım penceresinde durdur, aktif maçları güvenli kapat, snapshot ve migration listesini koru. İzin genişleten veya sonuçları silen acil SQL uygulama. Düzeltmeyi ileri migration ile dosyala, önce ayrı yerel/staging hedefte doğrula.
 
-Free planın otomatik backup/PITR sağladığı varsayılmaz. Yayın öncesinde platformun güncel ücretsiz yedek seçeneklerini doğrula, resmî CLI ile güvenli konuma roles/schema/data dump al; sırları ve Auth verisini Git dışında erişimi kısıtlı sakla. Geri yüklemeyi mevcut geliştirme/production üzerine yapma: ayrı boş yerel/staging hedefte belgelenen sırayla roles → schema → data yükle, migration geçmişi/ACL/RLS/ledger ve health'i karşılaştır, sonra gerçek Auth/iki oturum smoke'u çalıştır. Storage nesneleri, platform Auth sağlayıcı ayarları ve secret'lar SQL dump ile otomatik geri gelmez. Temiz migration+seed testi bir veri yedeğini geri yükleme testi değildir. Hosted staging geri yükleme tatbikatı henüz yapılmadı; üretim kapısı açık kalır.
+Free planın otomatik backup/PITR sağladığı varsayılmaz. Yayın öncesinde platformun güncel ücretsiz yedek seçeneklerini doğrula, resmî CLI ile güvenli konuma roles/schema/data dump al; sırları ve Auth verisini Git dışında erişimi kısıtlı sakla. Geri yüklemeyi mevcut geliştirme/production üzerine yapma: ayrı boş yerel/staging hedefte belgelenen sırayla roles → schema → data yükle, migration geçmişi/ACL/RLS/ledger ve health'i karşılaştır, sonra gerçek Auth/iki oturum smoke'u çalıştır. Storage nesneleri, platform Auth sağlayıcı ayarları ve secret'lar SQL dump ile otomatik geri gelmez. Temiz migration+seed testi bir veri yedeğini geri yükleme testi değildir. Hosted tam Auth geri yükleme tatbikatı yapılmadı; ücretsiz pilot kapanışı bunu doğrulanmış saymaz.
 
 ### Faz 8 geri yükleme tatbikatından doğrulanan ayrıntılar
 
@@ -107,3 +109,10 @@ Hedefin varsayılan tablo ve fonksiyon izinleri kaynakla aynı olmayabilir. Şem
 Realtime `match_broadcast_read`/`match_presence_write` politikaları ve iki Cron işi, public/private dump dışında kalan platform yapılandırmasıdır; tekrar kurup gerçek izin testleriyle doğrula. Cron advance 1 saniye, maintenance UTC günlük; history retention SQL'i repository'den alınır. Auth hariç tatbikatta sadece ayrı DB'de FK'leri tamamlayan, parolası olmayan sentetik placeholder kimlikler kullanıldı. Bunlar gerçek hesap yedeği veya giriş kanıtı değildir. Test pgTAP uzantısı yalnız geçici doğrulama hedefinde kuruldu.
 
 Ayrı boş-hedef kurulumuna ek olarak dolu sentetik round-trip de geçti: yalnız restore test DB'sinde 16 maç/11 cevap/20 ledger oluşturulup public/private data dump alındı, yine yalnız bu geçici hedef temizlenerek veri geri yüklendi. Profil/maç/ledger fingerprint eşitliği doğrulandı. Böylece uzak ortamda o anda maç/ledger sıfır olmasının test boşluğu da sentetik veriyle sınandı. Auth verisi hiçbir dump'a dahil edilmedi.
+
+
+## E-posta token_hash yayını ve uyumlu rollback
+
+E-posta callback düzeltmesinde önce yeni callback kodu yayınlanır; eski `.ConfirmationURL` şablonları bu kodla da çalışır. Ancak token_hash şablonları uygulanınca önceki code-only deployment'a tek başına rollback yapılmaz: ya token_hash destekli son iyi sürüm korunur ya da iki şablon `.ConfirmationURL` yoluna geri çevrilip kaydedildiği doğrulandıktan sonra eski uygulamaya dönülür. Açık ve kullanılmamış e-posta bağlantılarının eski/yeni biçimleri rollback sırasında ayrıca değerlendirilir. Yeni sürüm her iki yolu da kabul ettiğinden en güvenli uygulama dönüş noktası bu uyumlu sürümdür. Hesap/XP/ledger silinmez.
+
+CLI 2.122 config diff bu çalışmada yalnız subject farklarını gösterdi; content_path kaynaklı uzak gövde farkı görünmedi. Bu yüzden gövde dağıtımı CLI sonucu üzerinden varsayılmaz. Confirm sign up ve Reset password panel Source alanları repository'deki HTML ile kaydedilip sayfa yeniden açılarak doğrulanır; ardından gerçek teslim/kurtarma yapılır. SMTP kullanıcı adı/parolası bu şablon işlemlerinde değiştirilmez.

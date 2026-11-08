@@ -6,9 +6,9 @@ Ana kaynak: [proje şartnamesi](docs/DEBUG_DUEL_PROJECT_SPEC.md). Çalışma yö
 
 ## Mevcut durum
 
-Başlangıç temeli hazır: Next.js iskeleti, koyu/mor responsive ana sayfa, giriş/kayıt/recovery ekranları ve Auth handler'ları, gerçek Supabase profil tablosu ve kontrollü profil güncelleme fonksiyonları. Leaderboard ilk 25 gerçek kaydı okur; henüz maç olmadığından doğal boş durum gösterir.
+[Ücretsiz pilot canlıda](https://debug-duel-burakkyildiz.vercel.app). Misafir Practice, GitHub/e-posta hesabı, davetli üç turluk düello, özel Realtime/Cron, XP/istatistik/geçmiş ve gerçek leaderboard çalışır. Koyu arayüz turuncu vurgu kullanır. İki fiziksel cihaz maçı ve yeni parola kurtarma/giriş kullanıcıca doğrulandı; kod `37fb0d3` için CI başarılı.
 
-**Practice yerelde oynanabilir.** Özel düello henüz hazırlık durumundadır. Yerel Practice için `pnpm practice:local` çalıştırıp `http://localhost:3002/practice` aç. Uzak geliştirme ortamına migration/seed uygulandı, server secret key yapılandırıldı ve migration geçmişi resmî repair ile eşleştirildi; [Faz 4 raporuna](docs/PHASE_4_REPORT.md) bak. 30 soruluk özel banka ve oyun şeması yerelde hazırdır. Practice akışı, üç turluk atomik motor, özel Realtime, Cron ve XP settlement sonraki fazlardır. Faz 3 kanıtları ve hosted ortam sınırı [Faz 3 raporundadır](docs/PHASE_3_REPORT.md). Mevcut Auth kodu gerçek sağlayıcı smoke testleri tamamlanmadan üretime hazır sayılmaz.
+Geliştirme ve üretim Supabase projeleri ayrıdır. Gmail SMTP düşük hacimli pilot içindir; kapasite/SLA ve Auth restore garantisi verilmez. Kanıtlar, ortam sınırları ve rollback sırası [Faz9 raporunda](docs/PHASE_9_REPORT.md) ve [yayın rehberinde](docs/deployment.md). Yerel iki hesaplı oyun için `pnpm match:local` → `http://localhost:3006`; yerel Practice için `pnpm practice:local` → `http://localhost:3002/practice`.
 
 ## Gereksinimler
 
@@ -24,7 +24,7 @@ pnpm install --frozen-lockfile
 cp .env.example .env.local
 ```
 
-`.env.local` içine kendi ortamının değerlerini koy; var olan dosyayı bu komutla ezme. Secret'ları sohbet veya Git üzerinden paylaşma. Bu çalışma alanında oluşturulan `.env.local` zaten ayrı Debug Duel projesinin URL/publishable key değerlerini ve üç rastgele uygulama secret'ını içerir. Sunucu Supabase secret key'i henüz ekli değildir; Auth/profil için gerekli değildir, guest Practice fazında gerekli olacaktır.
+`.env.local` içine kendi ortamının değerlerini koy; var olan dosyayı bu komutla ezme. Secret'ları sohbet veya Git üzerinden paylaşma. URL/publishable key, sunucu Supabase secret key ve üç uygulama secret'ı için `.env.example` alanlarını kullan. Üretim anahtarlarını yerel geliştirme veya Preview ortamına taşıma.
 
 ```sh
 pnpm dev

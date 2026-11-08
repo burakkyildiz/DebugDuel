@@ -2,9 +2,9 @@
 
 Ana plan ve çıkış koşulları: `DEBUG_DUEL_PROJECT_SPEC.md`, bölüm 22.
 
-## Güncel kayıt — Faz 9 canlı aday, 8 Kasım 2026
+## Güncel kayıt — Faz 9 kapanışı, 8 Kasım 2026
 
-Kullanıcının ayrı build/promotion onaylarıyla `99cf58b`, [ana HTTPS adresinde](https://debug-duel-burakkyildiz.vercel.app) canlı. Vercel Hobby/Node24/fra1; production DB ayrı ücretsiz `nvpqjmwurmeupkbhozrn` (21 migration/30 soru/590 rollback DB kontrolü). 7 production env kullanıcıca kaydedildi; private-only Realtime, Auth12/doğrulama/kesin HTTPS callback ayarları doğrulandı. Canlı HTTP/CSP/cache, gerçek guest Practice doğru cevap/reload ve kullanıcı onaylı GitHub consent/callback geçti. Açık: onboarding/refresh/logout, Gmail SMTP kurulumu ve gerçek email zinciri, iki fiziksel cihazla tam maç/ledger/Cron ve dev'e bağlı preview. Faz 9/AC-21 henüz tamamlanmadı. [Güncel rapor](PHASE_9_REPORT.md).
+Ücretsiz pilot [canlıda](https://debug-duel-burakkyildiz.vercel.app). Kod `37fb0d3`, [CI42454840514](https://github.com/burakkyildiz/DebugDuel/actions/runs/42454840514) tüm quality/database/Auth/Practice/match/load adımlarında başarılı. Ayrı üretim DB21 migration/30 soru/590 rollback testi; yalnız Production7 env, private-only Realtime ve aktif Cron. Gerçek GitHub refresh/logout/tekrar giriş, guest Practice, e-posta teslim/doğrulama ve kullanıcıca yeni recovery/yeni parola girişi geçti. Bilgisayar+telefon üç tur smoke'u: timeout,284–0,1 settlement/2 ledger,70/20 XP; kayıtlar korundu. Faz9/AC-21 pilot smoke tamamlandı. Gmail düşük hacimli pilot; Vercel40 oyuncu/SLA, Auth restore ve kapalı Preview-dev entegrasyonu tamamlandı iddiası yok. [Kanıt ve sınırlar](PHASE_9_REPORT.md). Aşağıdaki eski faz kayıtları tarihseldir.
 
 ## Güncel kayıt — Faz 8 kapanışı, 8 Kasım 2026
 
@@ -42,24 +42,24 @@ Kullanıcının açık Faz 5 talimatıyla özel oda/tek tur dikey akış gelişt
 - Uzak Auth ayarlarında e-posta açık ve doğrulama zorunlu. Ürün sahibi GitHub secret/sağlayıcı kurulumunu tamamladı; kamuya açık ayarlardan GitHub'ın etkin olduğu doğrulandı. Ücretli servis eklenmedi. Kullanıcı 2 Kasım 2026'da bu Faz 2 değişikliklerinin commit/push edilmesini istedi.
 - Kullanıcı onayıyla oluşturulan OAuth uygulaması: `https://github.com/settings/applications/3985598`. Gerçek GitHub girişinde yalnızca `user:email` kapsamı istendi ve kullanıcı onayladı. Uzak Supabase callback → yerel `/profile`, yenileme, çıkış, korunan profile red ve tekrar giriş geçti. Kullanıcı adı/görünen ad kullanıcıya bırakıldı.
 
-## Fazlar
+## Fazların güncel durumu
 
 | Faz | Durum |
 | --- | --- |
-| 0 — Hazırlık | Temel kurulum hazır; Vercel/üretim hedefi yayın fazında |
-| 1 — Tasarım ve iskelet | Ana sayfa ve hesap ekranları hazır; oyun/lobi/sonuç ilgili dikey akışlarda eklenecek |
-| 2 — Auth ve profil | Geliştirme akışları doğrulandı: yerel e-posta/profil/recovery, temiz DB ve gerçek GitHub OAuth; uzak/üretim e-posta teslimi ayrıca bekliyor |
-| 3 — DB ve soru bankası | Yerelde tamamlandı: 13 oyun tablosu, RLS/GRANT, 30 soru, 81 içerik vakası, 369 DB testi ve temiz kurulum; hosted uygulama yapılmadı |
-| 4 — Practice | Yerel akış uygulandı; doğrulama kaydı docs/PHASE_4_REPORT.md |
-| 5 — Özel oda, tek tur | Yerel dikey akış tamamlandı; iki gerçek oturum/özel Realtime ve yarış testleri; hosted uygulama bekliyor |
-| 6 — Tam motor | Yerel üç tur/Cron/kopma akışı ve gerçek yarış/E2E kanıtları tamamlandı; hosted uygulama bekler |
-| 7 — İlerleme | Bekliyor |
-| 8 — Sağlamlaştırma | Bekliyor |
-| 9 — Üretim | Bekliyor |
+| 0 — Hazırlık | Tamamlandı; ayrı ücretsiz geliştirme/üretim |
+| 1 — Tasarım ve iskelet | Tamamlandı; kabul edilen turuncu vurgu |
+| 2 — Auth ve profil | Geliştirme ve canlı pilot akışları doğrulandı |
+| 3 — DB ve soru bankası | 30 soru/81 içerik vakası; üretime uygulandı |
+| 4 — Practice | Gerçek yerel/CI/canlı guest akışı doğrulandı |
+| 5 — Özel oda, tek tur | Tamamlandı; üç tur motoruna taşındı |
+| 6 — Tam motor | Üç tur/Cron/kopma akışı; yerel/CI ve canlı smoke |
+| 7 — İlerleme | XP settlement/ledger/istatistik/geçmiş doğrulandı |
+| 8 — Sağlamlaştırma | Kapanış ve sınırlar PHASE_8_REPORT.md içinde |
+| 9 — Üretim | Ücretsiz pilot yayını ve iki cihaz smoke'u tamamlandı |
 
-AC-18 içerik koşulu yerelde doğrulandı (30 soru / 81 davranış vakası). Diğer AC maddeleri, özellikle oynanabilir akışlar ve yayın, tam tamamlandı değildir.
+Her kabul koşulunun ortam ve kanıt sınırı ilgili faz raporundadır; bu tablo kapasite/SLA veya Auth restore garantisi değildir.
 
-## Sıradaki uygulama adımları
+## Tarihsel uygulama adımları
 
 **Güncel:** Kullanıcı 2 Kasım 2026’da “Faz 3’e geçelim” dedi. Faz 3 yerel şema/soru/test kapsamı tamamlandı; [rapor](PHASE_3_REPORT.md). Faz 4 için yeni talimat beklenir. Aşağıdaki devir bilgisi önceki oturumun tarihsel kaydıdır.
 

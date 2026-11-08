@@ -63,3 +63,10 @@ Güncelleme: kullanıcı altı kesin callback adresinin kaydına açık onay ver
 ## Kapanış — 8 Kasım 2026
 
 Kullanıcı aynı tarayıcıda parola kurtarma testini tekrarladı; yeni parolayı kaydedip yeniden giriş yaptığını ve reset password işlemini yaptığını açıkça doğruladı. Sunucuda confirmed=true ve last_sign_in_at=2026-11-08 04:58:54 UTC görüldü. `recovery_sent_at` null kaldığından bağımsız kurtarma kanıtı olarak kullanılmadı; uzak recovery sonucu manuel kullanıcı doğrulamasıdır. Parola/token alınmadı. Geliştirme Auth kontrolü kapandı; önceki bekleme notları tarihseldir. Üretim URL/SMTP/OAuth ve halka açık gönderim kontrolleri Faz 9'dadır.
+
+
+## Üretim pilot kapanışı — 8 Kasım 2026
+
+Ayrı production GitHub user:email consent/callback/profil, canlı37fb sürümünde refresh/logout/private maç login yönlendirmesi/tekrar giriş geçti. Gmail custom SMTP ile gerçek signup e-postası ulaştı ve hesap doğrulandı; ilk otomatik callback hatası37fb token_hash desteği ve iki hosted şablonla giderildi. Verifier cookie olmadan signup/recovery gerçek yerel Auth E2E'de geçti; CI42454840514 başarılı.
+
+Kullanıcı yeni production recovery e-postasıyla yeni parolayı kaydedip tekrar girişini “tamam basarili” diye doğruladı. Son sign-in06:59:00 UTC, profil70 XP/1 maç ve ledger70 korundu. recovery_sent_at null olduğu için bağımsız recovery kanıtı sayılmadı; parola/hash/token alınmadı. Düzeltme sonrası yeni üçüncü production signup otomatik oturumu ayrıca denenmedi. [Faz9 raporu](PHASE_9_REPORT.md) kanıt kapsamını ve Gmail pilot sınırlarını kaydeder.

@@ -17,6 +17,7 @@ async function emailLink(request: APIRequestContext, email: string, kind: "signu
   for (const [, raw] of hrefs) {
     const value = raw.replaceAll("&amp;", "&");
     const url = new URL(value);
+    if (url.origin === new URL(process.env.PLAYWRIGHT_BASE_URL!).origin && url.pathname === "/auth/callback" && url.searchParams.has("token_hash") && url.searchParams.get("type") === (kind === "signup" ? "email" : "recovery")) return value;
     if (["127.0.0.1", "localhost"].includes(url.hostname) && url.pathname === "/auth/v1/verify" && url.searchParams.get("type") === kind) return value;
   }
   throw new Error("Expected local verification link was not found.");
@@ -58,6 +59,8 @@ test("real local signup, confirmation, profile, refresh, logout and password rec
   await page.getByRole("button", { name: "Create account", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Check your inbox" })).toBeVisible();
   await expect(page.getByRole("button", { name: "Resend confirmation email" })).toBeVisible();
+  // Simulate opening the email in another browser: no PKCE verifier survives.
+  await page.context().clearCookies();
   await page.goto(await emailLink(request, email, "signup"));
   await expect(page.getByLabel("Username", { exact: true })).toBeVisible();
   await page.getByLabel("Username", { exact: true }).fill(username);
@@ -74,6 +77,7 @@ test("real local signup, confirmation, profile, refresh, logout and password rec
   await page.getByLabel("Email address").fill(email);
   await page.getByRole("button", { name: "Send reset link" }).click();
   await expect(page.getByRole("heading", { name: "Check your inbox" })).toBeVisible();
+  await page.context().clearCookies();
   await page.goto(await emailLink(request, email, "recovery"));
   await expect(page.getByRole("heading", { name: "Choose a new password." })).toBeVisible();
   await page.getByLabel("Password", { exact: true }).fill(replacement);

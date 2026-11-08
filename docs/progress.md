@@ -2,6 +2,10 @@
 
 Ana plan ve çıkış koşulları: `DEBUG_DUEL_PROJECT_SPEC.md`, bölüm 22.
 
+## Güncel kayıt — Faz 9 canlı aday, 8 Kasım 2026
+
+Kullanıcının ayrı build/promotion onaylarıyla `99cf58b`, [ana HTTPS adresinde](https://debug-duel-burakkyildiz.vercel.app) canlı. Vercel Hobby/Node24/fra1; production DB ayrı ücretsiz `nvpqjmwurmeupkbhozrn` (21 migration/30 soru/590 rollback DB kontrolü). 7 production env kullanıcıca kaydedildi; private-only Realtime, Auth12/doğrulama/kesin HTTPS callback ayarları doğrulandı. Canlı HTTP/CSP/cache, gerçek guest Practice doğru cevap/reload ve kullanıcı onaylı GitHub consent/callback geçti. Açık: onboarding/refresh/logout, Gmail SMTP kurulumu ve gerçek email zinciri, iki fiziksel cihazla tam maç/ledger/Cron ve dev'e bağlı preview. Faz 9/AC-21 henüz tamamlanmadı. [Güncel rapor](PHASE_9_REPORT.md).
+
 ## Güncel kayıt — Faz 8 kapanışı, 8 Kasım 2026
 
 Faz 8 geliştirme kapsamı tamamlandı. Kod `5e7032d` main'de ve CI başarılı; 21 hosted migration, 20 maç/40 hesap yük testi ve Auth hariç uygulama yedeğinin 590 testli restore'u doğrulandı. Altı localhost callback kaydedildi. Kullanıcı parola sıfırlama ve yeni parolayla yeniden giriş testini açıkça doğruladı; son giriş metadata'sı güncel, recovery sonucu manuel kullanıcı kanıtıdır. Ayrıntılar ve Free kapasite/restore sınırları [Faz 8 raporunda](PHASE_8_REPORT.md). Faz 9/production başlamadı; kullanıcı talimatı beklenir. Önceki bekleme kayıtları tarihseldir.

@@ -1,5 +1,9 @@
 # Ücretsiz kurulum ve yayın hazırlığı
 
+## Güncel üretim hazırlığı — 8 Kasım 2026
+
+Faz 8 kapandı, Faz 9 başladı. Önceki eksik/yetki bekleme bölümleri tarihsel; güncel durum [Faz 9 raporunda](PHASE_9_REPORT.md). Üretim `debug-duel-prod` / `nvpqjmwurmeupkbhozrn`, geliştirme eski projede kalır. Yeni üretime 21 migration/30 soru uygulandı; DB doğrulamaları rollback içinde geçti. Vercel projesi `prj_d67hDYIsOi8QR7swowQObAMJ33AP`, Hobby, Node 24.x, Frankfurt; HTTPS hedefi `https://debug-duel-burakkyildiz.vercel.app`. `99cf58b` / `dpl_8PGPpMsptDQ1aq1y3mtSkzdu3t9x` READY ve kullanıcı onayıyla bu adreste canlı. Yedi production değişkeni kullanıcıca kaydedildi; preview'a üretim DB erişimi verilmez. Auth Site URL/6 kesin HTTPS callback ve private-only Realtime kaydedildi. Gerçek GitHub callback ve guest Practice geçti; SMTP/email, onboarding/refresh/logout ve iki cihaz tam maç smoke açık; AC-21 tamamlanmadı.
+
 Bu dosya runbook başlangıcıdır; henüz deployment yapılmadı. Bütçe 0: ücretli plan, ücretli branch, ek compute, SMTP veya alan adı satın alınmaz. Servislerin ücretsiz kotaları aşılırsa ölçek veya özellik açılışı durdurulur; otomatik ücretli geçiş yapılmaz.
 
 ## Supabase hedefi

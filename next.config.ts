@@ -3,7 +3,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   distDir: process.env.NEXT_DIST_DIR ?? ".next",
   poweredByHeader: false,
-  logging: { incomingRequests: { ignore: [/\/invite\/[^/?]+/] } },
+  logging: { incomingRequests: { ignore: [/\/invite\/[^/?]+/, /\/auth\/(?:callback|confirm)(?:[/?]|$)/] } },
   async headers() {
     return [{
       source: "/:path*",

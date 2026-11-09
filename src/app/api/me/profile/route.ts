@@ -14,6 +14,7 @@ export async function PATCH(request: Request) {
   if (!auth.user?.email_confirmed_at) return failure("AUTH_REQUIRED", 401);
   const { data, error } = await supabase.rpc("update_profile", { p_username: input.data.username, p_display_name: input.data.displayName, p_avatar_seed: input.data.avatarSeed });
   if (error?.code === "23505") return failure("USERNAME_TAKEN", 409, copy.profile.taken);
+  if (error?.message === "PROFILE_LOCKED") return failure("PROFILE_LOCKED", 409, copy.profile.locked);
   if (error?.message === "RATE_LIMITED") { const response = failure("RATE_LIMITED", 429, copy.auth.rateLimit); response.headers.set("Retry-After", "60"); return response; }
   if (error) return failure("PROFILE_UNAVAILABLE", 503, copy.profile.unavailable);
   return json({ profile: data });

@@ -5,7 +5,7 @@ create temp table profile_test_results (line text);
 grant all on profile_test_results to anon, authenticated;
 grant usage on schema extensions to anon, authenticated;
 
-insert into profile_test_results values (plan(30));
+insert into profile_test_results values (plan(31));
 insert into profile_test_results values (ok((select relrowsecurity from pg_class where oid = 'public.profiles'::regclass), 'profiles enforce RLS'));
 insert into profile_test_results values (ok(not has_table_privilege('anon','public.profiles','insert'), 'anonymous profile inserts forbidden'));
 insert into profile_test_results values (ok(not has_table_privilege('authenticated','public.profiles','update'), 'direct statistic and profile edits forbidden'));
@@ -19,7 +19,9 @@ insert into profile_test_results values (ok(not has_table_privilege('authenticat
 insert into auth.users(id, email, email_confirmed_at) values
  ('f0000000-0000-4000-8000-000000000001','profile-test-a@example.invalid',now()),
  ('f0000000-0000-4000-8000-000000000002','profile-test-b@example.invalid',now()),
- ('f0000000-0000-4000-8000-000000000003','profile-test-c@example.invalid',null);
+ ('f0000000-0000-4000-8000-000000000003','profile-test-c@example.invalid',null),
+ ('f0000000-0000-4000-8000-000000000004','profile-test-d@example.invalid',now());
+insert into private.profile_write_limits(user_id,window_start,request_count) values ('f0000000-0000-4000-8000-000000000004', date_trunc('minute', clock_timestamp()), 10);
 
 set local role anon;
 insert into profile_test_results values (throws_ok('select public.ensure_profile()', '42501', null, 'anonymous command rejected'));
@@ -38,9 +40,9 @@ select public.ensure_profile();
 insert into profile_test_results values (throws_ok($$select public.update_profile('profiletester_a','Player B','mint')$$, '23505', null, 'username uniqueness is case insensitive'));
 insert into profile_test_results values (is((select display_name from public.profiles where id='f0000000-0000-4000-8000-000000000001'), 'Player A', 'B cannot modify A by choosing a matching username'));
 insert into profile_test_results values (is((public.update_profile('ProfileTester_B','ProfileTester_B','cyan')).avatar_seed, 'cyan', 'white avatar can be saved'));
-insert into profile_test_results values (is((public.update_profile('ProfileTester_B','ProfileTester_B','lime')).avatar_seed, 'lime', 'black avatar can be saved'));
-insert into profile_test_results values (is((public.update_profile('ProfileTester_B','ProfileTester_B','blue')).avatar_seed, 'blue', 'blue avatar can be saved'));
-insert into profile_test_results values (is((public.update_profile('ProfileTester_B','ProfileTester_B','coral')).avatar_seed, 'coral', 'orange avatar can be saved'));
+insert into profile_test_results values (throws_ok($$select public.update_profile('ProfileTester_B','ProfileTester_B','lime')$$, 'P0001', 'PROFILE_LOCKED', 'avatar cannot change after onboarding'));
+insert into profile_test_results values (throws_ok($$select public.update_profile('DifferentName','ProfileTester_B','cyan')$$, 'P0001', 'PROFILE_LOCKED', 'username cannot change after onboarding'));
+insert into profile_test_results values (is((public.update_profile('ProfileTester_B','Changed display name','cyan')).display_name, 'ProfileTester_B', 'same selection retry does not change profile'));
 insert into profile_test_results values (throws_ok($$select public.update_profile('ProfileTester_B','ProfileTester_B','unknown')$$, '22023', 'INVALID_PROFILE', 'unknown avatar is rejected'));
 
 set local role anon;
@@ -50,9 +52,10 @@ insert into profile_test_results values (is((select count(*) from public.profile
 set local role authenticated;
 select set_config('request.jwt.claims','{"sub":"f0000000-0000-4000-8000-000000000003","role":"authenticated"}',true);
 insert into profile_test_results values (throws_ok('select public.ensure_profile()', '42501', 'AUTH_REQUIRED', 'unverified email cannot create profile'));
+select set_config('request.jwt.claims','{"sub":"f0000000-0000-4000-8000-000000000004","role":"authenticated"}',true);
+insert into profile_test_results values (throws_ok($$select public.update_profile('ProfileTester_D','Player D','violet')$$, 'P0001', 'RATE_LIMITED', 'first profile save obeys write rate limit'));
 select set_config('request.jwt.claims','{"sub":"f0000000-0000-4000-8000-000000000001","role":"authenticated"}',true);
-do $$ begin for i in 1..9 loop perform public.update_profile('ProfileTester_A','Player A','violet'); end loop; end $$;
-insert into profile_test_results values (throws_ok($$select public.update_profile('ProfileTester_A','Player A','violet')$$, 'P0001', 'RATE_LIMITED', 'direct RPC obeys write rate limit'));
+insert into profile_test_results values (throws_ok($$select public.update_profile('ProfileTester_A','Player A','amber')$$, 'P0001', 'PROFILE_LOCKED', 'direct RPC cannot change locked avatar'));
 
 reset role;
 insert into profile_test_results values (is((select xp from public.profiles where id='f0000000-0000-4000-8000-000000000001'), 0::bigint, 'all commands leave XP unchanged'));

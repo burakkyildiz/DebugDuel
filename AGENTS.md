@@ -1,5 +1,23 @@
 # Debug Duel — çalışma yönergeleri
 
+## Devir — 9 Kasım 2026
+
+- Kullanıcı yerel profil ve Practice değişikliklerinin canlıya alınmasını, yerel sunucunun kapatılmasını ve devir kayıtlarının güncellenmesini istedi. Bu bölüm eski faz notlarından önceliklidir; aşağıdaki eski bekleme bilgileri tarihseldir.
+- Production Supabase `nvpqjmwurmeupkbhozrn` üzerinde `20261109085250_lock_profile_identity` ve `20261109091005_expand_practice_questions` migration'ları CLI ile uygulandı. Yayın ve CI durumunu Git ve Vercel üzerinden doğrula; bu not tek başına uygulama yayınının tamamlandığının kanıtı değildir.
+- Practice 30, düello 15 soru; aynı düelloda soru tekrarlanmaz, farklı maçlarda tekrar mümkündür. Kullanıcı adı ve avatar ilk profil kaydından sonra kilitlidir; mevcut profiller mevcut seçimleriyle kilitlenir. Beş avatar rengi ve profil düzeni yerel değişikliklere dahildir.
+- 9 Kasım kontrolü: 45 soru/114 vaka, lint (yedek dosyasında bir uyarı), typecheck, 121 unit, 605 DB testi ve production build başarılı. `next-env.d.ts` ve `tsconfig.json` önceden var olan yerel preview değişiklikleridir; koru.
+- Gelecek için fikirler: seçilebilir tur sayısı ve Python dışında diller, oyuncular arasında sınırlı emoji tepkileri. Bunlar uygulanmış değildir. Sıfır bütçe geçerli; `debugduel.net` satın alınmadı.
+
+## Güncel çalışma — Practice soru havuzu
+
+- Kullanıcı Practice havuzunu en az 30 soruya çıkarmak istedi. 15 yeni özgün soru eklendi; Practice 30 (10 kolay/10 orta/10 zor), düello 15 (her zorluktan 5). `20261109091005_expand_practice_questions.sql` yerelde ve geliştirme hvqklcqyjqjwwwcsioch ortamında uygulandı; production henüz uygulanmadı, commit/push yapılmadı.
+- 45 soru/114 davranış vakası, 121 unit, 605 DB, temiz ayrı DB kurulum/seed tekrarı başarılı. Aynı düellonun turlarında soru tekrarlanmaz; farklı düellolarda ve Practice denemelerinde tekrar mümkündür. Önceki profil kilidi ve görsel değişiklikler de yereldedir.
+
+## Güncel çalışma — Tek seferlik profil seçimi
+
+- Kullanıcı username ve avatarın ilk profil kaydından sonra değişmemesini istedi. İlk kayıt formunda açık onay gerekir, tamamlanmış profil salt okunur; API 409 PROFILE_LOCKED döndürür. DB yazıcısı satır kilidiyle ilk kaydı atomik yapar ve aynı seçimle tekrarı zararsız kabul eder. Mevcut tamamlanmış hesaplar mevcut değerleriyle kilitlenir.
+- `20261109085250_lock_profile_identity.sql` yerel ve yalnız geliştirme hvqklcqyjqjwwwcsioch ortamında uygulandı; production henüz uygulanmadı. GitHub push/yayın yapılmadı. Yerel 605 DB,121 unit, gerçek Auth E2E ve iki paralel ilk seçimde 1 başarı/1 PROFILE_LOCKED geçti. Kullanıcının önceki beş avatar rengi değişikliği de henüz yerelde; production'a geçiş ayrı talimat bekler.
+
 ## Güncel çalışma — Profil sadeleştirme ve avatarlar
 
 - Kullanıcı username ve display name yerine tek username, mavi/sarı/yeşil/kırmızı/turuncu/mor/beyaz/siyah avatar istedi. Profil formu yalnız username gösterir; kaydederken display_name uyumlu olarak username değerine eşitlenir. Mevcut hesap verileri topluca değiştirilmedi. Sekiz avatar, eski dört seed ile uyumlu CSS ve erişilebilir renk isimleriyle gösterilir.

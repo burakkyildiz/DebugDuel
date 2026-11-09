@@ -649,5 +649,323 @@
       "assert peak_jobs([(1, 4), (2, 5)]) == 2",
       "assert peak_jobs([]) == 0"
     ]
+  },
+  {
+    "slug": "positive-sum",
+    "version": 1,
+    "pool": "practice",
+    "language": "python",
+    "difficulty": "easy",
+    "title": "Sum positives",
+    "prompt": "Return the sum of strictly positive values.",
+    "code": "def positive_sum(values):\n    total = 0\n    for value in values:\n        if value < 0:\n            total += value\n    return total",
+    "line_count": 6,
+    "correct_line": 4,
+    "explanation": "Only positive values should contribute to the total.",
+    "corrected_code": "def positive_sum(values):\n    total = 0\n    for value in values:\n        if value > 0:\n            total += value\n    return total",
+    "tags": [
+      "practice"
+    ],
+    "tests": [
+      "assert positive_sum([1,-2,3]) == 4",
+      "assert positive_sum([0,-5]) == 0"
+    ]
+  },
+  {
+    "slug": "count-vowels",
+    "version": 1,
+    "pool": "practice",
+    "language": "python",
+    "difficulty": "easy",
+    "title": "Count lowercase vowels",
+    "prompt": "Count lowercase vowels in a string.",
+    "code": "def count_vowels(text):\n    count = 0\n    for char in text:\n        if char not in \"aeiou\":\n            count += 1\n    return count",
+    "line_count": 6,
+    "correct_line": 4,
+    "explanation": "Count the characters that are vowels.",
+    "corrected_code": "def count_vowels(text):\n    count = 0\n    for char in text:\n        if char in \"aeiou\":\n            count += 1\n    return count",
+    "tags": [
+      "practice"
+    ],
+    "tests": [
+      "assert count_vowels(\"hello\") == 2",
+      "assert count_vowels(\"\") == 0"
+    ]
+  },
+  {
+    "slug": "last-item",
+    "version": 1,
+    "pool": "practice",
+    "language": "python",
+    "difficulty": "easy",
+    "title": "Last item",
+    "prompt": "Return the last element of a nonempty list.",
+    "code": "def last_item(items):\n    last = items[0]\n    for item in items:\n        last = items[0]\n    return last",
+    "line_count": 5,
+    "correct_line": 4,
+    "explanation": "Update the result with the current item.",
+    "corrected_code": "def last_item(items):\n    last = items[0]\n    for item in items:\n        last = item\n    return last",
+    "tags": [
+      "practice"
+    ],
+    "tests": [
+      "assert last_item([1,2,3]) == 3",
+      "assert last_item([7]) == 7"
+    ]
+  },
+  {
+    "slug": "count-long-words",
+    "version": 1,
+    "pool": "practice",
+    "language": "python",
+    "difficulty": "easy",
+    "title": "Count long words",
+    "prompt": "Count words with at least four characters.",
+    "code": "def count_long(words):\n    count = 0\n    for word in words:\n        if len(word) > 4:\n            count += 1\n    return count",
+    "line_count": 6,
+    "correct_line": 4,
+    "explanation": "The threshold includes words with exactly four characters.",
+    "corrected_code": "def count_long(words):\n    count = 0\n    for word in words:\n        if len(word) >= 4:\n            count += 1\n    return count",
+    "tags": [
+      "practice"
+    ],
+    "tests": [
+      "assert count_long([\"four\",\"three\",\"a\"]) == 2",
+      "assert count_long([]) == 0"
+    ]
+  },
+  {
+    "slug": "reverse-list-copy",
+    "version": 1,
+    "pool": "practice",
+    "language": "python",
+    "difficulty": "easy",
+    "title": "Reverse a list",
+    "prompt": "Return a new list in reverse order without changing the input.",
+    "code": "def reversed_copy(items):\n    result = []\n    for item in items:\n        result.append(item)\n    return result",
+    "line_count": 5,
+    "correct_line": 4,
+    "explanation": "Insert each new item at the start to reverse the order.",
+    "corrected_code": "def reversed_copy(items):\n    result = []\n    for item in items:\n        result.insert(0, item)\n    return result",
+    "tags": [
+      "practice"
+    ],
+    "tests": [
+      "assert reversed_copy([1,2,3]) == [3,2,1]",
+      "assert reversed_copy([]) == []"
+    ]
+  },
+  {
+    "slug": "first-negative",
+    "version": 1,
+    "pool": "practice",
+    "language": "python",
+    "difficulty": "medium",
+    "title": "First negative index",
+    "prompt": "Return the index of the first negative number, or -1 if none exists.",
+    "code": "def first_negative(values):\n    found = -1\n    for index, value in enumerate(values):\n        if value < 0:\n            found = index\n    return found",
+    "line_count": 6,
+    "correct_line": 5,
+    "explanation": "Return immediately when the first negative number is found.",
+    "corrected_code": "def first_negative(values):\n    found = -1\n    for index, value in enumerate(values):\n        if value < 0:\n            return index\n    return found",
+    "tags": [
+      "practice"
+    ],
+    "tests": [
+      "assert first_negative([2,-1,-3]) == 1",
+      "assert first_negative([1,2]) == -1"
+    ]
+  },
+  {
+    "slug": "running-max",
+    "version": 1,
+    "pool": "practice",
+    "language": "python",
+    "difficulty": "medium",
+    "title": "Running maximum",
+    "prompt": "Return a list containing the greatest value seen so far at each position. Input is nonempty.",
+    "code": "def running_max(values):\n    best = values[0]\n    result = []\n    for value in values:\n        best = value\n        result.append(best)\n    return result",
+    "line_count": 7,
+    "correct_line": 5,
+    "explanation": "Keep the greater of the current value and the previous maximum.",
+    "corrected_code": "def running_max(values):\n    best = values[0]\n    result = []\n    for value in values:\n        best = max(best, value)\n        result.append(best)\n    return result",
+    "tags": [
+      "practice"
+    ],
+    "tests": [
+      "assert running_max([3,1,4,2]) == [3,3,4,4]",
+      "assert running_max([-2,-5]) == [-2,-2]"
+    ]
+  },
+  {
+    "slug": "common-unique",
+    "version": 1,
+    "pool": "practice",
+    "language": "python",
+    "difficulty": "medium",
+    "title": "Unique common elements",
+    "prompt": "Return the set of values present in both lists.",
+    "code": "def common_unique(left, right):\n    result = set()\n    for value in left:\n        if value not in right:\n            result.add(value)\n    return result",
+    "line_count": 6,
+    "correct_line": 4,
+    "explanation": "Add values that occur in both inputs.",
+    "corrected_code": "def common_unique(left, right):\n    result = set()\n    for value in left:\n        if value in right:\n            result.add(value)\n    return result",
+    "tags": [
+      "practice"
+    ],
+    "tests": [
+      "assert common_unique([1,2,2],[2,3]) == {2}",
+      "assert common_unique([], [1]) == set()"
+    ]
+  },
+  {
+    "slug": "prefix-length",
+    "version": 1,
+    "pool": "practice",
+    "language": "python",
+    "difficulty": "medium",
+    "title": "Matching prefix length",
+    "prompt": "Count matching elements from the start of both lists until the first mismatch.",
+    "code": "def prefix_length(left, right):\n    count = 0\n    for a, b in zip(left, right):\n        if a != b:\n            continue\n        count += 1\n    return count",
+    "line_count": 7,
+    "correct_line": 5,
+    "explanation": "Stop counting as soon as the first pair differs.",
+    "corrected_code": "def prefix_length(left, right):\n    count = 0\n    for a, b in zip(left, right):\n        if a != b:\n            break\n        count += 1\n    return count",
+    "tags": [
+      "practice"
+    ],
+    "tests": [
+      "assert prefix_length([1,2,3],[1,9,3]) == 1",
+      "assert prefix_length([1],[1,2]) == 1"
+    ]
+  },
+  {
+    "slug": "frequency-count",
+    "version": 1,
+    "pool": "practice",
+    "language": "python",
+    "difficulty": "medium",
+    "title": "Count occurrences",
+    "prompt": "Return a dictionary mapping each value to its count.",
+    "code": "def frequencies(values):\n    counts = {}\n    for value in values:\n        counts[value] = 1\n    return counts",
+    "line_count": 5,
+    "correct_line": 4,
+    "explanation": "Increment the previous count for every occurrence.",
+    "corrected_code": "def frequencies(values):\n    counts = {}\n    for value in values:\n        counts[value] = counts.get(value, 0) + 1\n    return counts",
+    "tags": [
+      "practice"
+    ],
+    "tests": [
+      "assert frequencies([1,1,2]) == {1:2,2:1}",
+      "assert frequencies([]) == {}"
+    ]
+  },
+  {
+    "slug": "longest-run",
+    "version": 1,
+    "pool": "practice",
+    "language": "python",
+    "difficulty": "hard",
+    "title": "Longest equal run",
+    "prompt": "Return the length of the longest consecutive run of equal values, or zero for an empty list.",
+    "code": "def longest_run(values):\n    best = 0\n    run = 0\n    previous = None\n    for value in values:\n        if value == previous:\n            run += 1\n        else:\n            run = 0\n        best = max(best, run)\n        previous = value\n    return best",
+    "line_count": 12,
+    "correct_line": 9,
+    "explanation": "A new run starts at length one.",
+    "corrected_code": "def longest_run(values):\n    best = 0\n    run = 0\n    previous = None\n    for value in values:\n        if value == previous:\n            run += 1\n        else:\n            run = 1\n        best = max(best, run)\n        previous = value\n    return best",
+    "tags": [
+      "practice"
+    ],
+    "tests": [
+      "assert longest_run([1,1,2,2,2]) == 3",
+      "assert longest_run([]) == 0",
+      "assert longest_run([9]) == 1"
+    ]
+  },
+  {
+    "slug": "balanced-parentheses",
+    "version": 1,
+    "pool": "practice",
+    "language": "python",
+    "difficulty": "hard",
+    "title": "Balanced parentheses",
+    "prompt": "Return whether a string of parentheses is balanced, with no closing bracket before its opening bracket.",
+    "code": "def balanced(text):\n    depth = 0\n    for char in text:\n        if char == \"(\":\n            depth += 1\n        else:\n            depth -= 1\n        if depth < 0:\n            return False\n    return depth >= 0",
+    "line_count": 10,
+    "correct_line": 10,
+    "explanation": "A balanced sequence must finish at depth zero.",
+    "corrected_code": "def balanced(text):\n    depth = 0\n    for char in text:\n        if char == \"(\":\n            depth += 1\n        else:\n            depth -= 1\n        if depth < 0:\n            return False\n    return depth == 0",
+    "tags": [
+      "practice"
+    ],
+    "tests": [
+      "assert balanced(\"(()\") is False",
+      "assert balanced(\"(())\") is True",
+      "assert balanced(\")(\") is False"
+    ]
+  },
+  {
+    "slug": "first-unique",
+    "version": 1,
+    "pool": "practice",
+    "language": "python",
+    "difficulty": "hard",
+    "title": "First unique character",
+    "prompt": "Return the first character occurring exactly once, or None when there is none.",
+    "code": "def first_unique(text):\n    counts = {}\n    for char in text:\n        counts[char] = counts.get(char, 0) + 1\n    for char in text:\n        if counts[char] > 1:\n            return char\n    return None",
+    "line_count": 8,
+    "correct_line": 6,
+    "explanation": "A unique character has a frequency of exactly one.",
+    "corrected_code": "def first_unique(text):\n    counts = {}\n    for char in text:\n        counts[char] = counts.get(char, 0) + 1\n    for char in text:\n        if counts[char] == 1:\n            return char\n    return None",
+    "tags": [
+      "practice"
+    ],
+    "tests": [
+      "assert first_unique(\"aabc\") == \"b\"",
+      "assert first_unique(\"aabb\") is None"
+    ]
+  },
+  {
+    "slug": "merge-sorted",
+    "version": 1,
+    "pool": "practice",
+    "language": "python",
+    "difficulty": "hard",
+    "title": "Merge sorted lists",
+    "prompt": "Merge two ascending lists into one ascending list, preserving duplicates.",
+    "code": "def merge_sorted(left, right):\n    result = []\n    i = j = 0\n    while i < len(left) and j < len(right):\n        if left[i] < right[j]:\n            result.append(left[i]); i += 1\n        else:\n            result.append(right[j]); j += 1\n    return result + left[i:]",
+    "line_count": 9,
+    "correct_line": 9,
+    "explanation": "Append the remaining elements from both lists.",
+    "corrected_code": "def merge_sorted(left, right):\n    result = []\n    i = j = 0\n    while i < len(left) and j < len(right):\n        if left[i] < right[j]:\n            result.append(left[i]); i += 1\n        else:\n            result.append(right[j]); j += 1\n    return result + left[i:] + right[j:]",
+    "tags": [
+      "practice"
+    ],
+    "tests": [
+      "assert merge_sorted([1],[2,3]) == [1,2,3]",
+      "assert merge_sorted([1,3],[2]) == [1,2,3]",
+      "assert merge_sorted([],[]) == []"
+    ]
+  },
+  {
+    "slug": "unique-in-order",
+    "version": 1,
+    "pool": "practice",
+    "language": "python",
+    "difficulty": "hard",
+    "title": "Keep first appearances",
+    "prompt": "Return each distinct value once, preserving its first occurrence order.",
+    "code": "def unique_order(values):\n    seen = set()\n    result = []\n    for value in values:\n        if value not in seen:\n            seen.add(value)\n        result.append(value)\n    return result",
+    "line_count": 8,
+    "correct_line": 7,
+    "explanation": "Append only when the value has not been seen before.",
+    "corrected_code": "def unique_order(values):\n    seen = set()\n    result = []\n    for value in values:\n        if value not in seen:\n            seen.add(value)\n            result.append(value)\n    return result",
+    "tags": [
+      "practice"
+    ],
+    "tests": [
+      "assert unique_order([2,1,2,3,1]) == [2,1,3]",
+      "assert unique_order([]) == []"
+    ]
   }
 ]

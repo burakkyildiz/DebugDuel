@@ -293,3 +293,28 @@ th, td { border-color: #24464e; } td:nth-child(3) { color: #e9d8a6; }
 .profile-email { margin-bottom: 24px; padding-bottom: 22px; border-bottom: 1px solid var(--border); }
 .profile-email span { display: block; margin-bottom: 7px; color: var(--muted); font-size: 12px; }
 .profile-email p { color: var(--text); font-size: 14px; overflow-wrap: anywhere; }
+
+/* Avatar palette: navy, red, orange, gold and cream. */
+.avatar-chip.avatar-blue, .avatar-chip.avatar-violet, .avatar-chip.avatar-mint { background: #003049; color: #eae2b7; }
+.avatar-chip.avatar-rose { background: #d62828; color: #fff; }
+.avatar-chip.avatar-coral { background: #f77f00; color: #001219; }
+.avatar-chip.avatar-amber { background: #fcbf49; color: #001219; }
+.avatar-chip.avatar-cyan, .avatar-chip.avatar-lime { background: #eae2b7; color: #003049; }
+.avatar-option input:checked+.avatar-chip { border-color: #fff; outline: 2px solid #00798c; outline-offset: 3px; }
+.profile-confirm { display: flex; align-items: flex-start; gap: 10px; color: var(--text); font-size: 12px; line-height: 1.6; }
+.profile-confirm input { margin-top: 3px; accent-color: #ee9b00; }
+
+/* Profile statistics: overview first, match results together. */
+.stats-grid { display: flex; flex-direction: column; gap: 1px; }
+.stats-row { display: grid; gap: 1px; }
+.stats-overview { grid-template-columns: repeat(4,minmax(0,1fr)); }
+.stats-results { grid-template-columns: repeat(3,minmax(0,1fr)); }
+@media (max-width: 767px) { .stats-overview { grid-template-columns: repeat(2,minmax(0,1fr)); }.stats-results .stat { padding: 16px 12px; }.stats-results .stat strong { font-size: 22px; } }
+
+.profile-layout { margin-inline: auto; }
+.profile-details > h2 { color: #e9d8a6; font: 400 27px/1.2 Georgia, 'Times New Roman', serif; margin-bottom: 16px; }
+.profile-identity-grid { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) auto; align-items: stretch; gap: 12px; }
+.profile-identity-item { min-width: 0; display: flex; flex-direction: column; justify-content: center; gap: 8px; padding: 16px; border: 1px solid var(--border); border-radius: 9px; background: #001e25; }
+.profile-identity-item > span:not(.avatar-chip) { color: var(--muted); font-size: 12px; }
+.profile-identity-item strong { font-size: 14px; overflow-wrap: anywhere; }
+@media (max-width: 600px) { .profile-identity-grid { grid-template-columns: 1fr; }.profile-identity-item { min-height: 64px; } }

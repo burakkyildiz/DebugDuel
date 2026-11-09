@@ -65,15 +65,16 @@ test("real local signup, confirmation, profile, refresh, logout and password rec
   await expect(page.getByLabel("Username", { exact: true })).toBeVisible();
   await page.getByLabel("Username", { exact: true }).fill(username);
   await expect(page.getByText(email, { exact: true })).toBeVisible();
-  await page.locator("label.avatar-option").filter({ has: page.getByRole("radio", { name: "Blue" }) }).click();
+  await page.locator("label.avatar-option").filter({ has: page.getByRole("radio", { name: "Navy" }) }).click();
+  await page.getByRole("checkbox", { name: /I understand/ }).check();
   await page.getByRole("button", { name: "Save profile" }).click();
-  await expect(page.getByRole("status").filter({ hasText: "Profile updated." })).toBeVisible();
+  await expect(page.locator(".profile-panel").getByText(`@${username}`, { exact: true })).toBeVisible();
   await page.reload();
-  await expect(page.getByLabel("Username", { exact: true })).toHaveValue(username);
-  await expect(page.getByRole("radio", { name: "Blue" })).toBeChecked();
+  await expect(page.locator(".profile-panel").getByText(`@${username}`, { exact: true })).toBeVisible();
+  await expect(page.getByRole("img", { name: "Navy" })).toBeVisible();
   await logout(page);
   await login(page, email, password);
-  await expect(page.getByLabel("Username", { exact: true })).toHaveValue(username);
+  await expect(page.locator(".profile-panel").getByText(`@${username}`, { exact: true })).toBeVisible();
   await logout(page);
   await page.goto("/forgot-password");
   await page.getByLabel("Email address").fill(email);
@@ -88,5 +89,5 @@ test("real local signup, confirmation, profile, refresh, logout and password rec
   await login(page, email, password);
   await expect(page.getByRole("alert").filter({ hasText: "We couldn’t sign you in." })).toBeVisible();
   await login(page, email, replacement);
-  await expect(page.getByLabel("Username", { exact: true })).toHaveValue(username);
+  await expect(page.locator(".profile-panel").getByText(`@${username}`, { exact: true })).toBeVisible();
 });

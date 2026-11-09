@@ -218,13 +218,13 @@ insert into game_test_results values (ok((select not prosecdef and proconfig @> 
 insert into game_test_results values (ok(not has_function_privilege('anon','private.check_answer_bounds()','execute'), 'anon cannot execute check_answer_bounds()'));
 insert into game_test_results values (ok(not has_function_privilege('authenticated','private.check_answer_bounds()','execute'), 'authenticated cannot execute check_answer_bounds()'));
 insert into game_test_results values (ok((select not prosecdef and proconfig @> array['search_path=""'] from pg_proc where oid='private.check_answer_bounds()'::regprocedure), 'check_answer_bounds() invoker with fixed search path'));
-insert into game_test_results values (is((select count(*) from private.questions), 30::bigint, '30 seeded questions'));
+insert into game_test_results values (is((select count(*) from private.questions), 45::bigint, '45 seeded questions'));
 insert into game_test_results values (is((select count(*) from private.questions where pool='duel' and difficulty='easy'), 5::bigint, 'duel easy: five questions'));
 insert into game_test_results values (is((select count(*) from private.questions where pool='duel' and difficulty='medium'), 5::bigint, 'duel medium: five questions'));
 insert into game_test_results values (is((select count(*) from private.questions where pool='duel' and difficulty='hard'), 5::bigint, 'duel hard: five questions'));
-insert into game_test_results values (is((select count(*) from private.questions where pool='practice' and difficulty='easy'), 5::bigint, 'practice easy: five questions'));
-insert into game_test_results values (is((select count(*) from private.questions where pool='practice' and difficulty='medium'), 5::bigint, 'practice medium: five questions'));
-insert into game_test_results values (is((select count(*) from private.questions where pool='practice' and difficulty='hard'), 5::bigint, 'practice hard: five questions'));
+insert into game_test_results values (is((select count(*) from private.questions where pool='practice' and difficulty='easy'), 10::bigint, 'practice easy: ten questions'));
+insert into game_test_results values (is((select count(*) from private.questions where pool='practice' and difficulty='medium'), 10::bigint, 'practice medium: ten questions'));
+insert into game_test_results values (is((select count(*) from private.questions where pool='practice' and difficulty='hard'), 10::bigint, 'practice hard: ten questions'));
 insert into auth.users(id,email,email_confirmed_at) values ('f1000000-0000-4000-8000-000000000001','game-test-0@example.invalid',now()),('f1000000-0000-4000-8000-000000000002','game-test-1@example.invalid',now()),('f1000000-0000-4000-8000-000000000003','game-test-2@example.invalid',now());
 insert into public.profiles(id) values ('f1000000-0000-4000-8000-000000000001'),('f1000000-0000-4000-8000-000000000002'),('f1000000-0000-4000-8000-000000000003');
 insert into public.matches(id,host_user_id,guest_user_id) values ('e1000000-0000-4000-8000-000000000001','f1000000-0000-4000-8000-000000000001','f1000000-0000-4000-8000-000000000002'),('e1000000-0000-4000-8000-000000000002','f1000000-0000-4000-8000-000000000003',null);

@@ -41,7 +41,7 @@ def audit(questions):
     assert len({q['code'] for q in questions}) == len(questions), 'duplicate code across pools'
     assert len({q['corrected_code'] for q in questions}) == len(questions), 'duplicate solutions'
     distribution = collections.Counter((q['pool'], q['difficulty']) for q in questions)
-    assert distribution == {(p, d): 5 for p in ('duel', 'practice') for d in ('easy', 'medium', 'hard')}
+    assert distribution == {(p, d): (5 if p == 'duel' else 10) for p in ('duel', 'practice') for d in ('easy', 'medium', 'hard')}
     cases = 0
     for q in questions:
         label = q['slug']

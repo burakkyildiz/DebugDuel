@@ -139,3 +139,5 @@ Callback onayı geldi: altı kesin localhost URL'si kaydedilip 6/6 panelden doğ
 - Kullanıcı production GitHub girişi ve profilin açıldığını doğruladı.
 
 - 10 Kasım yaklaşık 16.09 TRT: Kullanıcı ayrı test widgetının secretını Cloudflare panelinden yenilediğini doğruladı. Cloudflare iki saatlik geçiş süresi uygulayabilir; geliştirme CAPTCHA kapalı, yeniden etkinleştirmeden önce yeni test secretı kullanıcıca girilmeli.
+
+- Turnstile server doğrulama açığı 9bfdbf5 ile düzeltildi ve production'a alındı; CI 42823022542 başarılı. Canlı sahte token 400 CAPTCHA_FAILED; kullanıcı geçerli widget ile sentetik credential hatasını doğruladı.

@@ -1,5 +1,7 @@
 # Ücretsiz kurulum ve yayın hazırlığı
 
+> **10 Kasım 2026 güncel devir:** Canlı uygulama `9bfdbf52ac5d14970c7879bbfff49b0886e14665`, deployment `dpl_D1NKimeBdSgs9uzZhYNSTKvprBdR`; CI 42823022542 başarılı. Önceki sürüm/sayılar aşağıda tarihsel olabilir. Production Turnstile için Vercel `TURNSTILE_SECRET_KEY` Secret/Production, public site key ve Supabase Auth CAPTCHA kullanılır; sırları okuma veya yazdırma. [Güvenlik ve kapasite incelemesi](SECURITY_CAPACITY_REVIEW_2026-11-10.md) güncel kanıtı, Cloudflare panel uyarısı ve rollback sınırlarını içerir.
+
 ## Güncel üretim — 8 Kasım 2026
 
 Faz9 ücretsiz pilot yayını tamamlandı; [kanıt ve sınırlar](PHASE_9_REPORT.md). [Canlı adres](https://debug-duel-burakkyildiz.vercel.app), güncel bakım kodu `7e05ca2182f02381a0e5f119834c420b0fe5eba4`, deployment `dpl_6m3Zm9yLPN5Hp3N7teQyZAEFckm8`, [başarılı CI](https://github.com/burakkyildiz/DebugDuel/actions/runs/42461139758). Vercel Hobby/Node24/fra1; proje `prj_d67hDYIsOi8QR7swowQObAMJ33AP`. Üretim Supabase `debug-duel-prod` / `nvpqjmwurmeupkbhozrn`,22 migration/30 soru; geliştirme ayrı kalır.

@@ -12,6 +12,8 @@ const key = config.PUBLISHABLE_KEY ?? config.ANON_KEY;
 if (!url || !key || !["127.0.0.1", "localhost"].includes(new URL(url).hostname)) throw new Error("Auth tests require a local Supabase URL.");
 
 const origin = "http://localhost:3001";
+const captchaReal = process.argv.includes("--captcha-real");
+const captchaTest = process.argv.includes("--captcha") || captchaReal;
 try {
   const response = await fetch(origin, { signal: AbortSignal.timeout(1000) });
   if (response) throw new Error("Port 3001 is already in use; stop that server first.");
@@ -24,6 +26,8 @@ const env = {
   GUEST_SESSION_SECRET: randomBytes(32).toString("hex"),
   PLAYWRIGHT_BASE_URL: origin,
   LOCAL_AUTH_E2E: "1",
+  LOCAL_CAPTCHA_E2E: captchaTest ? "1" : "0",
+  NEXT_PUBLIC_TURNSTILE_SITE_KEY: captchaReal ? "1x00000000000000000000AA" : captchaTest ? "test-public-key" : "",
   NEXT_DIST_DIR: ".next-auth-local",
 };
 const generatedFiles = ["next-env.d.ts", "tsconfig.json"];
@@ -48,7 +52,7 @@ try {
   }
   if (!ready) throw new Error("Auth test server did not become ready.");
   for (const path of generatedFiles) afterStartup.set(path, readFileSync(path, "utf8"));
-  const tests = spawn("node_modules/.bin/playwright", ["test", "tests/e2e/auth.local.spec.ts", "--project=desktop", "--workers=1"], { env, stdio: "inherit" });
+  const tests = spawn("node_modules/.bin/playwright", ["test", captchaReal ? "tests/e2e/captcha-real.local.spec.ts" : captchaTest ? "tests/e2e/captcha.local.spec.ts" : "tests/e2e/auth.local.spec.ts", "--project=desktop", "--workers=1"], { env, stdio: "inherit" });
   process.exitCode = await new Promise((resolve, reject) => { tests.once("exit", code => resolve(code ?? 1)); tests.once("error", reject); });
 } finally {
   stop();

@@ -13,5 +13,6 @@ export function contentSecurityPolicy(nonce: string) {
     `connect-src 'self' ${[origin, socket, dev ? "ws://localhost:* ws://127.0.0.1:*" : null].filter(Boolean).join(" ")}`,
     "img-src 'self' data: blob:", "font-src 'self'", "object-src 'none'",
     "base-uri 'self'", "form-action 'self'", "frame-ancestors 'none'",
+    process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ? "frame-src https://challenges.cloudflare.com" : "frame-src 'none'",
   ].join("; ");
 }

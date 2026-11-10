@@ -10,6 +10,7 @@ import { siteOrigin } from "@/lib/env";
 import { answerBody, inviteCookieSchema, inviteTokenSchema, matchEmptyBody, matchIdSchema, matchReceiptSchema, matchStateSchema, readyBody } from "@/features/matches/contracts";
 import { copy } from "@/content/copy.en";
 import { observed } from "@/lib/security/telemetry";
+import { authDependencyFailure } from "@/lib/validation/auth-errors";
 export const INVITE_COOKIE = "dd_pending_invite";
 export const invitePurpose = "debug-duel:pending-invite:v1";
 type Action = "create" | "join" | "invite" | "ready" | "heartbeat" | "sync" | "get" | "answer" | "leave" | "active";
@@ -39,6 +40,8 @@ async function executeMatchRequest(request: Request, action: Action, matchId?: s
     const client = await createClient();
     if (!client) return matchError("ENGINE_UNAVAILABLE");
     const { data, error } = await client.auth.getUser();
+    const dependency = authDependencyFailure(error);
+    if (dependency) return matchError(dependency === "rate_limited" ? "RATE_LIMITED" : "ENGINE_UNAVAILABLE");
     if (error || !data.user?.email_confirmed_at) return matchError("AUTH_REQUIRED");
     let hash: string | undefined;
     let ciphertext: string | undefined;

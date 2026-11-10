@@ -2,6 +2,16 @@
 
 Ana plan ve çıkış koşulları: `DEBUG_DUEL_PROJECT_SPEC.md`, bölüm 22.
 
+## Güncel çalışma — güvenlik ve kapasite, 10 Kasım 2026
+
+Auth hata yönetimi ve Turnstile entegrasyonu hazır; production yayını ve CAPTCHA aktivasyonu test ve CI sonrası yürütülüyor. [İnceleme ve test kanıtları](SECURITY_CAPACITY_REVIEW_2026-11-10.md). Paylaşılan Auth e-posta kotası 30/saat, Realtime Free bağlantı sınırı 200; yük testi canlı kapasite garantisi değildir.
+
+## Güncel kayıt — profil kilidi ve genişletilmiş Practice canlıda, 9 Kasım 2026
+
+GitHub `main` ve [canlı Vercel yayını](https://vercel.com/burakkyildiz/debug-duel/HmRJiMamRvBii2Fh3PwqQWHugevF) `e3fb1af` sürümünde. [CI 42593718311](https://github.com/burakkyildiz/DebugDuel/actions/runs/42593718311) quality ve database işleri başarılı. Production Supabase'te 25 migration ve 30 Practice / 15 düello sorusu doğrulandı. `/api/health` 200 ve `ready: true`. Misafir tarayıcı testinde soru, yenileme, doğru yanıt ve sonucun yenilemede korunması geçti. Oturumsuz profil API isteği 401 döndü. Kullanıcı mevcut hesabında kullanıcı adı ve avatarın kilitli olduğunu ve hesaplı Practice akışının çalıştığını doğruladı.
+
+12.44 TRT’deki son kontrolde Vercel dağıtımı READY durumundaydı. Sağlık uç noktası HTTP 200 ve `ready: true` döndü. Önceki 30 dakikanın Vercel çalışma kayıtlarında error/fatal görülmedi.
+
 ## Güncel kayıt — güvenlik düzeltmeleri canlıda, 8 Kasım 2026
 
 İki bulgu giderildi ve onayla yayınlandı: geçersiz doğrudan join RPC istekleri hesap hız sınırını tüketir; login429/5xx doğru sınıflandırılır. Canlı kod7e05ca2, [CI42461139758](https://github.com/burakkyildiz/DebugDuel/actions/runs/42461139758) tümü başarılı. Yerel92 unit/599 DB/temiz kurulum+seed tekrarı/gerçek Auth E2E/engine yarışları/build başarılı; geliştirme ve üretimde22 migration ve9/9 odaklı rollback testi. Canonical aynı SHA, health ready, public sayfalar200/private history401, runtime taraması temiz. Gerçek hesap/XP verisi korunur. Leaked-password kontrolü Free planda kapalı; ortak Auth IP etkisi ölçülmedi. [Kanıt ve sınırlar](SECURITY_REVIEW_2026-11-08.md).

@@ -34,6 +34,13 @@ describe.each(["signup", "forgot", "resend"])("%s email delivery", action => {
     expect(response.status).toBe(429);
     expect(response.headers.get("retry-after")).toBe("60");
   });
+  it("does not claim the shared email quota resets after 60 seconds", async () => {
+    for (const method of Object.values(provider)) method.mockResolvedValue({ error: { status: 429, code: "over_email_send_rate_limit" } });
+    const response = await request(action);
+    expect(response.status).toBe(429);
+    expect(response.headers.get("retry-after")).toBeNull();
+    expect((await response.json()).error.message).toContain("Email sending");
+  });
   it("keeps existing/missing account responses neutral", async () => {
     for (const method of Object.values(provider)) method.mockResolvedValue({ error: { status: 400, code: action === "signup" ? "user_already_exists" : "user_not_found" } });
     expect(await (await request(action)).json()).toEqual({ confirmation: true });

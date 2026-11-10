@@ -1,19 +1,31 @@
 # Debug Duel — çalışma yönergeleri
 
+## Güncel çalışma — 10 Kasım 2026 güvenlik ve kapasite incelemesi
+
+- Kullanıcı açıkları, eşzamanlı kapasiteyi, kayıt/kurtarma kotalarını inceleyip düzeltmemizi istedi; ücretsiz Cloudflare Turnstile ve test sonrası CI ile yayın adımlarının sürdürülmesini onayladı. Ayrıntılı kanıt ve sınırlamalar `docs/SECURITY_CAPACITY_REVIEW_2026-11-10.md` içinde.
+- Production ortak Auth e-posta kotası 30/saat, aynı kullanıcı tekrar aralığı 60 saniye; Free Realtime 200 bağlantı ve 100 mesaj/saniye. Bunlar kapasite garantisi değildir. Ücretli özellik açma.
+- Geliştirme için ayrı test widget kuruldu. Supabase geliştirmede CAPTCHA geçici etkinleştirildi: eksik/geçersiz token 400/captcha_failed, kullanıcı gerçek widget ile doğrulama sonrası sahte giriş hatası gördü. Testten sonra yalnız geliştirme CAPTCHA enabled=false geri alındı. Test widget secret panel erişilebilirlik çıktısında göründü; tekrar kullanılmadan döndürülmeli. Production widget secretı kullanıcıda ve sohbete alınmamalı.
+- Auth hata yönetimi ve CAPTCHA desteği yerelde hazır, önce CI/yayın durumunu doğrula. `tsconfig.json` ve `next-env.d.ts` mevcut kullanıcı preview değişikliklerini koru, teslim commit'ine alma. Production CAPTCHA uygulama ve site key doğrulanmadan etkinleştirilmez.
+
 ## Devir — 9 Kasım 2026
 
 - Kullanıcı yerel profil ve Practice değişikliklerinin canlıya alınmasını, yerel sunucunun kapatılmasını ve devir kayıtlarının güncellenmesini istedi. Bu bölüm eski faz notlarından önceliklidir; aşağıdaki eski bekleme bilgileri tarihseldir.
-- Production Supabase `nvpqjmwurmeupkbhozrn` üzerinde `20261109085250_lock_profile_identity` ve `20261109091005_expand_practice_questions` migration'ları CLI ile uygulandı. Yayın ve CI durumunu Git ve Vercel üzerinden doğrula; bu not tek başına uygulama yayınının tamamlandığının kanıtı değildir.
-- Practice 30, düello 15 soru; aynı düelloda soru tekrarlanmaz, farklı maçlarda tekrar mümkündür. Kullanıcı adı ve avatar ilk profil kaydından sonra kilitlidir; mevcut profiller mevcut seçimleriyle kilitlenir. Beş avatar rengi ve profil düzeni yerel değişikliklere dahildir.
+- `e3fb1af` GitHub `main` ve Vercel production ana adresinde doğrulandı. `dpl_HmRJiMamRvBii2Fh3PwqQWHugevF` READY (`fra1`), `debug-duel-two.vercel.app` ana adrese HTTP 307 ile yönleniyor, `/api/health` HTTP 200 ve `ready: true`. [CI 42593718311](https://github.com/burakkyildiz/DebugDuel/actions/runs/42593718311) quality ve database işleri, Auth/Practice/düello/yük testleri dahil, başarılı.
+- Yayın sonrası misafir tarayıcı testinde Practice başlatma, 45 saniyelik sürenin yenilemede korunması, doğru yanıt ve sonucun yenilemede görünmesi geçti. Oturumsuz `/profile` tarayıcıyı girişe yönlendirdi, `PATCH /api/me/profile` HTTP 401 döndü. Kullanıcı mevcut hesabında profil kilidini ve hesaplı Practice akışını doğruladı. Vercel'in son 30 dakikalık taramasında error/fatal kaydı yoktu.
+- 12.44 TRT’deki son üretim kontrolünde aynı dağıtım READY durumundaydı, `/api/health` HTTP 200 ve `ready: true` döndü, önceki 30 dakikada error/fatal kaydı görülmedi.
+- Supabase Authentication → Users ekranındaki `Display name`, GitHub OAuth girişinde alınan GitHub profil `Name` alanından gelir. Supabase bu bilgiyi Auth metadata’sında `name` ve `full_name` olarak tutar. Debug Duel profil başlığı ve profil kilidi uygulamanın ayrı `public.profiles.username` ve `avatar_seed` alanlarını kullanır. [Supabase GitHub sağlayıcı kodu](https://github.com/supabase/auth/blob/master/internal/api/provider/github.go#L76-L93)
+- Yerel uygulama sunucuları 3000 ve 3010 kapatıldı. Yerel Supabase/Docker servisleri kapatılmadı. `tsconfig.json` önceden var olan yerel değişiklik olarak korundu.
+- Production Supabase `nvpqjmwurmeupkbhozrn` üzerinde `20261109085250_lock_profile_identity` ve `20261109091005_expand_practice_questions` migration'ları CLI ile uygulandı. Yayın sonrası geçmişte 25 migration ve etkin havuzlarda zorluk başına 10 Practice ve 5 düello sorusu salt okunur olarak doğrulandı.
+- Practice 30, düello 15 soru; aynı düelloda soru tekrarlanmaz, farklı maçlarda tekrar mümkündür. Kullanıcı adı ve avatar ilk profil kaydından sonra kilitlidir; mevcut profiller mevcut seçimleriyle kilitlenir. Beş avatar rengi ve profil düzeni bu yayına dahildir.
 - 9 Kasım kontrolü: 45 soru/114 vaka, lint (yedek dosyasında bir uyarı), typecheck, 121 unit, 605 DB testi ve production build başarılı. `next-env.d.ts` ve `tsconfig.json` önceden var olan yerel preview değişiklikleridir; koru.
 - Gelecek için fikirler: seçilebilir tur sayısı ve Python dışında diller, oyuncular arasında sınırlı emoji tepkileri. Bunlar uygulanmış değildir. Sıfır bütçe geçerli; `debugduel.net` satın alınmadı.
 
-## Güncel çalışma — Practice soru havuzu
+## Yayın öncesi kayıt — Practice soru havuzu
 
 - Kullanıcı Practice havuzunu en az 30 soruya çıkarmak istedi. 15 yeni özgün soru eklendi; Practice 30 (10 kolay/10 orta/10 zor), düello 15 (her zorluktan 5). `20261109091005_expand_practice_questions.sql` yerelde ve geliştirme hvqklcqyjqjwwwcsioch ortamında uygulandı; production henüz uygulanmadı, commit/push yapılmadı.
 - 45 soru/114 davranış vakası, 121 unit, 605 DB, temiz ayrı DB kurulum/seed tekrarı başarılı. Aynı düellonun turlarında soru tekrarlanmaz; farklı düellolarda ve Practice denemelerinde tekrar mümkündür. Önceki profil kilidi ve görsel değişiklikler de yereldedir.
 
-## Güncel çalışma — Tek seferlik profil seçimi
+## Yayın öncesi kayıt — Tek seferlik profil seçimi
 
 - Kullanıcı username ve avatarın ilk profil kaydından sonra değişmemesini istedi. İlk kayıt formunda açık onay gerekir, tamamlanmış profil salt okunur; API 409 PROFILE_LOCKED döndürür. DB yazıcısı satır kilidiyle ilk kaydı atomik yapar ve aynı seçimle tekrarı zararsız kabul eder. Mevcut tamamlanmış hesaplar mevcut değerleriyle kilitlenir.
 - `20261109085250_lock_profile_identity.sql` yerel ve yalnız geliştirme hvqklcqyjqjwwwcsioch ortamında uygulandı; production henüz uygulanmadı. GitHub push/yayın yapılmadı. Yerel 605 DB,121 unit, gerçek Auth E2E ve iki paralel ilk seçimde 1 başarı/1 PROFILE_LOCKED geçti. Kullanıcının önceki beş avatar rengi değişikliği de henüz yerelde; production'a geçiş ayrı talimat bekler.

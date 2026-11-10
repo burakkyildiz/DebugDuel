@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { emailRequestResult } from "@/lib/validation/auth-errors";
+vi.mock("server-only", () => ({}));
 
 const providerSettings = vi.hoisted(() => ({ githubProviderEnabled: vi.fn().mockResolvedValue(true) }));
 vi.mock("@/lib/supabase/provider-settings", () => providerSettings);

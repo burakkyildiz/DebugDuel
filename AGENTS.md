@@ -1,11 +1,16 @@
 # Debug Duel — çalışma yönergeleri
 
+## Aktif düzeltme — Turnstile sunucu doğrulaması
+
+- Cloudflare uyarısı üzerine production uygulama login API'sine tek sahte token/sahte kimlik isteği CAPTCHA_FAILED yerine SIGN_IN_FAILED döndürdü: privileged Auth IP forwarding CAPTCHA middleware'ini atlayabiliyor. Önceki geçerli token + hatalı credential sonucu Siteverify kanıtı değildi; doğrudan public Auth token yokken reddi de uygulama yolunun korunduğunu kanıtlamıyordu. Production uygulama yolu şu an sahte tokenları kabul edebiliyor; doğrudan public Auth CAPTCHA etkindir. E-posta kotası tüketimi riski vardır.
+- Yerelde Cloudflare Siteverify sunucu denetimi (geçersiz/tekrar/kesinti/hostname fail-closed) geliştiriliyor. Production TURNSTILE_SECRET_KEY server-only env gereklidir, kullanıcı Cloudflare production widget secretını Vercel'e kendisi Secret/production olarak girmeli. Mevcut live sürüm değişmeden kalır. Önce test/CI, sonra yeni env ile deployment; invalid tokenın production app API'de CAPTCHA_FAILED dönmesi ve gerçek tokenın normal giriş hatasına ulaşması birlikte doğrulanmalı. Test widget uyarısı ayrıdır; dev CAPTCHA kapalıdır.
+
 ## Güncel çalışma — 10 Kasım 2026 güvenlik ve kapasite incelemesi
 
 - Kullanıcı açıkları, eşzamanlı kapasiteyi, kayıt/kurtarma kotalarını inceleyip düzeltmemizi istedi; ücretsiz Cloudflare Turnstile ve test sonrası CI ile yayın adımlarının sürdürülmesini onayladı. Ayrıntılı kanıt ve sınırlamalar `docs/SECURITY_CAPACITY_REVIEW_2026-11-10.md` içinde.
 - Production ortak Auth e-posta kotası 30/saat, aynı kullanıcı tekrar aralığı 60 saniye; Free Realtime 200 bağlantı ve 100 mesaj/saniye. Bunlar kapasite garantisi değildir. Ücretli özellik açma.
-- Geliştirme için ayrı test widget kuruldu. Supabase geliştirmede CAPTCHA geçici etkinleştirildi: eksik/geçersiz token 400/captcha_failed, kullanıcı gerçek widget ile doğrulama sonrası sahte giriş hatası gördü. Testten sonra yalnız geliştirme CAPTCHA enabled=false geri alındı. Test widget secret panel erişilebilirlik çıktısında göründü; tekrar kullanılmadan döndürülmeli. Production widget secretı kullanıcıda ve sohbete alınmamalı.
-- Auth hata yönetimi ve CAPTCHA desteği yerelde hazır, önce CI/yayın durumunu doğrula. `tsconfig.json` ve `next-env.d.ts` mevcut kullanıcı preview değişikliklerini koru, teslim commit'ine alma. Production CAPTCHA uygulama ve site key doğrulanmadan etkinleştirilmez.
+- Geliştirme için ayrı test widget kuruldu. Supabase geliştirmede CAPTCHA geçici etkinleştirildi: eksik/geçersiz token 400/captcha_failed, kullanıcı gerçek widget ile doğrulama sonrası sahte giriş hatası gördü. Testten sonra yalnız geliştirme CAPTCHA enabled=false geri alındı. Test widget secret panel erişilebilirlik çıktısında göründükten sonra kullanıcı 10 Kasım yaklaşık 16.09 TRT’de Cloudflare panelinden secretı yenilediğini doğruladı. Cloudflare'ın iki saatlik geçiş süresi uygulanıyorsa eski anahtar yaklaşık 18.09 TRT’ye dek geçerli olabilir; bağımsız doğrulama yok. Geliştirme CAPTCHA kapalıdır; yeniden etkinleştirmeden önce kullanıcı yeni test secretını panele kendisi girmelidir. Production widget secretı kullanıcıda ve sohbete alınmamalı.
+- Auth kodu 7a65b72 CI 42813603354 başarılı ve production dpl_HqaHGHwACRuNamvGJqXk8jcXQNMT canlıda. İlk canlı denemede Cloudflare 110200 hostname eksikliğinden geri dönüş yapıldı; kullanıcı production widget hostname ekledi, gerçek widget başarılı dedi, aynı build tekrar yayınlandı. Kullanıcı production Turnstile secretını Supabase paneline kendisi girdi. CLI diff enabled=true/provider=turnstile doğruladı; doğrudan eksik token isteği 400 captcha_failed. Health 200/ready; kullanıcı gerçek Cloudflare doğrulaması ardından sahte credential ile nötr giriş hatasını görerek production token eşleşmesini doğruladı; gerçek e-posta hesabıyla ve yeni kayıt ile ayrıca denenmedi. Son Vercel error/fatal taraması boş. `tsconfig.json` ve `next-env.d.ts` mevcut kullanıcı preview değişikliklerini koru, teslim commit'ine alma. Production CAPTCHA uygulama ve site key doğrulanmadan etkinleştirilmez.
 
 ## Devir — 9 Kasım 2026
 
@@ -225,3 +230,5 @@ This version has breaking changes — APIs, conventions, and file structure may 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
+
+- Kullanıcı production GitHub girişi ve profilin açıldığını doğruladı.

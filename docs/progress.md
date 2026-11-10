@@ -4,7 +4,7 @@ Ana plan ve çıkış koşulları: `DEBUG_DUEL_PROJECT_SPEC.md`, bölüm 22.
 
 ## Güncel çalışma — güvenlik ve kapasite, 10 Kasım 2026
 
-Auth hata yönetimi ve Turnstile entegrasyonu hazır; production yayını ve CAPTCHA aktivasyonu test ve CI sonrası yürütülüyor. [İnceleme ve test kanıtları](SECURITY_CAPACITY_REVIEW_2026-11-10.md). Paylaşılan Auth e-posta kotası 30/saat, Realtime Free bağlantı sınırı 200; yük testi canlı kapasite garantisi değildir.
+Auth hata yönetimi ve Turnstile entegrasyonu 7a65b72 ile canlı; CI 42813603354 başarılı. Production Supabase CAPTCHA etkin; eksik token reddi ve kullanıcı tarafından gerçek widget ile sentetik giriş doğrulandı. İlk hostname eksikliği geri dönüşle giderildi. [İnceleme ve test kanıtları](SECURITY_CAPACITY_REVIEW_2026-11-10.md). Paylaşılan Auth e-posta kotası 30/saat, Realtime Free bağlantı sınırı 200; yük testi canlı kapasite garantisi değildir.
 
 ## Güncel kayıt — profil kilidi ve genişletilmiş Practice canlıda, 9 Kasım 2026
 
@@ -135,3 +135,7 @@ Faz 8 son uzak ölçüm: 20 maç/40 hesap/40 private kanal, üç tur, 20 settlem
 
 
 Callback onayı geldi: altı kesin localhost URL'si kaydedilip 6/6 panelden doğrulandı. Gerçek e-posta/parola giriş kaydı doğrulandı. Kalan tek kullanıcı kontrolü, aynı tarayıcıda parola kurtarma ve yeni parolayla giriş; metadata'da recovery isteği henüz yok. Faz 8 bu son kontrol sonuçlanmadan tam kapatılmaz.
+
+- Kullanıcı production GitHub girişi ve profilin açıldığını doğruladı.
+
+- 10 Kasım yaklaşık 16.09 TRT: Kullanıcı ayrı test widgetının secretını Cloudflare panelinden yenilediğini doğruladı. Cloudflare iki saatlik geçiş süresi uygulayabilir; geliştirme CAPTCHA kapalı, yeniden etkinleştirmeden önce yeni test secretı kullanıcıca girilmeli.

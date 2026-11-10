@@ -1,4 +1,5 @@
 import { beforeEach, expect, it, vi } from "vitest";
+vi.mock("server-only", () => ({}));
 
 const provider = vi.hoisted(() => ({ signInWithPassword: vi.fn(), rpc: vi.fn() }));
 vi.mock("@/lib/supabase/server", () => ({ createClient: async () => ({ auth: provider, rpc: provider.rpc }) }));

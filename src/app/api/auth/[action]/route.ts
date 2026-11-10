@@ -8,6 +8,7 @@ import { copy } from "@/content/copy.en";
 import { z } from "zod";
 import { githubProviderEnabled } from "@/lib/supabase/provider-settings";
 import { authDependencyFailure, emailRequestResult } from "@/lib/validation/auth-errors";
+import { verifyTurnstile } from "@/lib/security/turnstile-server";
 
 function dependencyResponse(error: { status?: number; code?: string } | null) {
   if (error?.code === "captcha_failed") return failure("CAPTCHA_FAILED", 400, copy.auth.captchaFailure);
@@ -46,6 +47,11 @@ export async function POST(request: Request, context: { params: Promise<{ action
   if (process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && ["login", "signup", "resend", "forgot"].includes(action)
       && !(body as { captchaToken?: string }).captchaToken?.trim()) return failure("CAPTCHA_REQUIRED", 400, copy.auth.captchaRequired);
   try {
+    if (process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && process.env.AUTH_IP_FORWARDING_ENABLED === "true" && ["login", "signup", "resend", "forgot"].includes(action)) {
+      const verified = await verifyTurnstile((body as { captchaToken: string }).captchaToken);
+      if (verified === "invalid") return failure("CAPTCHA_FAILED", 400, copy.auth.captchaFailure);
+      if (verified !== "valid") return failure("CAPTCHA_UNAVAILABLE", 503, copy.auth.captchaUnavailable);
+    }
     const supabase = await createClient();
     if (!supabase) return failure("AUTH_UNAVAILABLE", 503, copy.auth.unavailable);
     if (action === "login") {

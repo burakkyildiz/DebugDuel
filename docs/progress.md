@@ -2,6 +2,10 @@
 
 Ana plan ve çıkış koşulları: `DEBUG_DUEL_PROJECT_SPEC.md`, bölüm 22.
 
+## Güncel kayıt — bakım, audit ve tur arası süre, 17 Kasım 2026
+
+Next 16.4.5 ve CI `pnpm audit` adımı `d90eaec` ile; tur arası bekleme 5+3 saniye `38faf41` ile canlı (migration `20261117200000`). Production kullanıcıları kullanıcı onayıyla temizlendi, iki yeni hesapla maç canlıda doğrulandı: tur aralığı 8,0 saniye, tek settlement, XP ledger kuralla uyumlu. Güvenlik incelemesi kritik/yüksek bulgu çıkarmadı; düşük notlar `AGENTS.md` içindedir. Gerçek kullanıcı yükü ve e-posta teslimi için garanti yoktur.
+
 ## Güncel çalışma — güvenlik ve kapasite, 10 Kasım 2026
 
 Auth hata yönetimi ve Turnstile entegrasyonu 7a65b72 ile canlı; CI 42813603354 başarılı. Production Supabase CAPTCHA etkin; eksik token reddi ve kullanıcı tarafından gerçek widget ile sentetik giriş doğrulandı. İlk hostname eksikliği geri dönüşle giderildi. [İnceleme ve test kanıtları](SECURITY_CAPACITY_REVIEW_2026-11-10.md). Paylaşılan Auth e-posta kotası 30/saat, Realtime Free bağlantı sınırı 200; yük testi canlı kapasite garantisi değildir.

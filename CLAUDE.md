@@ -1,5 +1,14 @@
 # Debug Duel — çalışma yönergeleri
 
+## Güncel çalışma — bakım ve tur arası süre, 17 Kasım 2026
+
+- Kullanıcı güvenlik/mimari incelemesi istedi; kritik/yüksek bulgu çıkmadı. Düşük notlar: `profiles` anon SELECT yetkisi leaderboard rate limit'ini Data API üzerinden atlatabilir; e-posta linkleri GET ile tüketilir; `next=/reset-password` OAuth girişi recovery işareti koyar; tek `GUEST_SESSION_SECRET` birden çok amaçta kullanılır. Hiçbiri kod olarak değiştirilmedi; kullanıcı istemeden değiştirme.
+- `next` ve `eslint-config-next` 16.4.5 oldu (iki moderate advisory kapandı, `pnpm audit --prod` temiz). CI quality job'ına `pnpm audit --prod --audit-level=moderate` eklendi. Commit `d90eaec`, CI başarılı.
+- Kullanıcı açık onayıyla production'daki tek hesap ve bağlı kayıtlar (command_receipts, match_invites, hesaba bağlı practice_sessions, profile_write_limits, profiles, auth.users) tek transaction'da silindi; sonra kullanıcı iki yeni hesap oluşturdu. Misafir Practice kayıtlarına dokunulmadı.
+- Tur arası bekleme kullanıcı kararıyla **5 saniye sonuç + 3 saniye geri sayım (toplam 8)**; önceki 15+3 geçersiz. `20261117200000_shorten_round_reading_window.sql` `private.resolve_match_round` içinde 8/53 saniye kullanır, yerelde ve production'da uygulandı, `engine.test.sql` 8 saniye bekler. Kod `38faf41`, CI başarılı. Production maçında aralık 8,0 saniye ve XP formülü (20 + 10×tur + galibiyet 30) ledger ile doğrulandı. Kullanıcı süreyi yeterli buldu; değiştirme.
+- Yerel doğrulama: 605 DB, 169 unit, match (10), engine concurrency, Practice (21 + 1 skip) ve Auth E2E geçti. Yerel `supabase db reset` kullanma; yeni migration için `supabase migration up --local`.
+- Pilot sınırları: Auth e-postası 30/saat ortak kota, Gmail SMTP günlük tavanı, Free Realtime 200 bağlantı. Küçük kapalı pilot için yeterli; büyütmeden önce SMTP sağlayıcısı değiştirilir. `tsconfig.json` yerel preview değişikliği commit dışı kalır.
+
 ## Cloudflare panel uyarısı — 10 Kasım akşamı
 
 - Genel panel iki widget için Siteverify çağrılmıyor uyarısını göstermeye devam ediyor. Kullanıcı production Debug Duel widgetının son 24 saat token validation sayılarını 3 Siteverify request / 1 valid / 2 invalid olarak bildirdi. Canlı kod Siteverify çağırıyor ve tekrar edilen sentetik geçersiz token 400 CAPTCHA_FAILED döndü. Genel bannerın neden sürdüğü bilinmiyor; gecikme veya düzelme süresi doğrulanmadı. Test widget ayrı, geliştirme CAPTCHA kapalı. Herhangi bir widgetı silme veya güvenliği gevşetme.

@@ -2,7 +2,7 @@
 
 Kullanıcı iki yerel hesapla düelloyu denedi, 0–0 beraberlik ekranını gördü ve akışı onayladı. Faz 6 değişikliklerinin GitHub `main` dalına gönderilmesini ve başka bir oturumda **Faz 6’dan devam edilmesini** istedi.
 
-Önce kökteki `AGENTS.md`, ardından [Faz 6 raporu](PHASE_6_REPORT.md) ve [proje şartnamesini](DEBUG_DUEL_PROJECT_SPEC.md) oku. Bu devir dosyasını taşıyan commit Faz 6 teslimidir. Commit kimliğini `git log -1 -- docs/PHASE_6_HANDOFF.md` ile bul. Güncel push ve CI durumunu Git ve GitHub Actions üzerinden kontrol et.
+Önce kökteki `CLAUDE.md`, ardından [Faz 6 raporu](PHASE_6_REPORT.md) ve [proje şartnamesini](DEBUG_DUEL_PROJECT_SPEC.md) oku. Bu devir dosyasını taşıyan commit Faz 6 teslimidir. Commit kimliğini `git log -1 -- docs/PHASE_6_HANDOFF.md` ile bul. Güncel push ve CI durumunu Git ve GitHub Actions üzerinden kontrol et.
 
 ## Tamamlanan ve doğrulanan akış
 

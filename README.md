@@ -2,7 +2,7 @@
 
 **Find the bug. Beat your rival.** İki arkadaşın aynı Python mantık hatasını bulmak için yarıştığı web uygulaması.
 
-Ana kaynak: [proje şartnamesi](docs/DEBUG_DUEL_PROJECT_SPEC.md). Çalışma yönergeleri [AGENTS.md](AGENTS.md), durum kaydı [docs/progress.md](docs/progress.md).
+Ana kaynak: [proje şartnamesi](docs/DEBUG_DUEL_PROJECT_SPEC.md). Çalışma yönergeleri [CLAUDE.md](CLAUDE.md), durum kaydı [docs/progress.md](docs/progress.md).
 
 ## Mevcut durum
 

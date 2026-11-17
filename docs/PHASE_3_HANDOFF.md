@@ -10,7 +10,7 @@ Faz 3 başka bir oturumda sürdürülecek. Bu oturum yalnızca gerekli hafıza/d
 
 ## Önce oku
 
-1. Kökteki `AGENTS.md`.
+1. Kökteki `CLAUDE.md`.
 2. `docs/DEBUG_DUEL_PROJECT_SPEC.md` dosyasının tamamı. Faz 3 için özellikle bölüm 8–10 (şema/yetki/motor sınırı), 17 (soru bankası), 20 (testler), 22 (fazlar), 23 (yerel kurulum).
 3. `docs/progress.md`, `docs/decisions.md`, `docs/test-plan.md` ve `docs/auth-checklist.md`.
 

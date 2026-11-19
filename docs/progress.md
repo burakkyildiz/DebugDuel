@@ -2,6 +2,10 @@
 
 Ana plan ve çıkış koşulları: `DEBUG_DUEL_PROJECT_SPEC.md`, bölüm 22.
 
+## Güncel kayıt — İlk oda okuması yeniden deneme ve davet notu, 19 Kasım 2026
+
+Oda sayfası ilk durum okumasını 3 kez dener; hata bandı yalnız üçü de başarısız olursa görünür. Davet sayfası dilin ev sahibince seçildiğini ve odada görüneceğini söyler. Kod `0d19c78`, CI başarılı, Vercel'de elle promote edildi. Canlıda misafir Java Practice (API) ve hesaplı Java Practice doğrulandı. Açık: gerçek e-posta signup otomatik oturumu, üçüncü hesapla katılım, Cloudflare panel uyarısı, canlıda ilk okuma yeniden denemesi.
+
 ## Güncel kayıt — Oda hata bandı düzeltmesi, 19 Kasım 2026
 
 Oda sayfasında ilk durum okuması başarısız olunca görünen motor hatası bandı artık sonraki başarılı okumada temizleniyor (`bd16cff`, test `27f74ff`, CI başarılı, Vercel'de elle promote edildi, health ready). İlk okumanın başarısızlık nedeni bilinmiyor; yalnız bayat bant giderildi. İki hesaplı canlı oda akışı bu sürümle ayrıca denenmedi.

@@ -2,6 +2,10 @@
 
 Ana plan ve çıkış koşulları: `DEBUG_DUEL_PROJECT_SPEC.md`, bölüm 22.
 
+## Güncel kayıt — Oda hata bandı düzeltmesi, 19 Kasım 2026
+
+Oda sayfasında ilk durum okuması başarısız olunca görünen motor hatası bandı artık sonraki başarılı okumada temizleniyor (`bd16cff`, test `27f74ff`, CI başarılı, Vercel'de elle promote edildi, health ready). İlk okumanın başarısızlık nedeni bilinmiyor; yalnız bayat bant giderildi. İki hesaplı canlı oda akışı bu sürümle ayrıca denenmedi.
+
 ## Güncel kayıt — Java desteği, 19 Kasım 2026
 
 Düello ve Practice artık Python, JavaScript veya Java ile oynanır (`create:java`, iki yeni migration, 45 Java sorusu). Kod `7cbdd4b`, CI başarılı; production DB migrate edildi, sürüm Vercel'de elle promote edildi. Canlıda Java Practice ve health doğrulandı; iki hesaplı canlı Java düellosu yalnız yerel E2E'de denendi.

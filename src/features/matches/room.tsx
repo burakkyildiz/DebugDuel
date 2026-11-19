@@ -78,6 +78,16 @@ export function MatchRoom({ initial }: { initial: MatchState }) {
     } finally { if (silent) backgroundFlight.current = false; else { inFlight.current = false; setBusy(false); } }
   }, [matchId, initial.self.id, initial.host, state.status, apply, refresh]);
   const run = (action: string, body: object = {}) => void command({ action, body, key: crypto.randomUUID() });
+  // A cold serverless start can fail the very first read; retry quietly before showing an error.
+  const firstRead = useCallback(async () => {
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try { await refresh(); return; } catch {
+        if (!mounted.current) return;
+        if (attempt < 2) await new Promise(resolve => window.setTimeout(resolve, 1000 * (attempt + 1)));
+      }
+    }
+    if (mounted.current) { loadFailed.current = true; setError(text.errors.ENGINE_UNAVAILABLE); }
+  }, [refresh]);
   useEffect(() => {
     mounted.current = true;
     const id = window.setTimeout(() => {
@@ -85,9 +95,9 @@ export function MatchRoom({ initial }: { initial: MatchState }) {
       // Establish the local baseline before the first timer tick or state response.
       const local = performance.now();
       setAnchor({ server: Date.parse(initial.serverNow), local }); setClock(local);
-      try { setInviteUrl(sessionStorage.getItem(`dd-invite:${initial.self.id}:${matchId}`) ?? ""); } catch { /* Optional per-tab storage. */ } void refresh().catch(() => { loadFailed.current = true; setError(text.errors.ENGINE_UNAVAILABLE); }); }, 0);
+      try { setInviteUrl(sessionStorage.getItem(`dd-invite:${initial.self.id}:${matchId}`) ?? ""); } catch { /* Optional per-tab storage. */ } void firstRead(); }, 0);
     return () => { mounted.current = false; window.clearTimeout(id); };
-  }, [matchId, initial.self.id, initial.serverNow, refresh]);
+  }, [matchId, initial.self.id, initial.serverNow, firstRead]);
   useEffect(() => {
     if (terminal || left) return;
     const timer = window.setInterval(() => { void command({ action: "heartbeat", body: {} }); }, 5000);

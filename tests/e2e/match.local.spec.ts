@@ -408,3 +408,27 @@ test("an error from a failed state read clears once a later read succeeds", asyn
     await expect(a.page.getByText("Waiting for your rival")).toBeVisible();
   } finally { await a.context.close(); }
 });
+
+test("a single failed first state read is retried without showing an error", async ({ browser }) => {
+  test.setTimeout(60000);
+  const a = await fixture(browser);
+  try {
+    const room = await createRoom(a);
+    await a.page.addInitScript(() => {
+      const w = window as unknown as { __stateCalls: number };
+      w.__stateCalls = 0;
+      const original = window.fetch.bind(window);
+      window.fetch = (input: RequestInfo | URL, init?: RequestInit) => {
+        const href = typeof input === "string" ? input : input instanceof URL ? input.href : input.url;
+        if (/\/api\/matches\/[^/]+\/state$/.test(new URL(href, window.location.href).pathname) && w.__stateCalls++ === 0) {
+          return Promise.resolve(new Response(JSON.stringify({ error: { code: "ENGINE_UNAVAILABLE" } }), { status: 503, headers: { "Content-Type": "application/json" } }));
+        }
+        return original(input, init);
+      };
+    });
+    await a.page.goto(`/match/${room.matchId}`);
+    await expect(a.page.getByText("Waiting for your rival")).toBeVisible({ timeout: 15000 });
+    await expect(a.page.getByRole("alert").filter({ hasText: "game engine is temporarily unavailable" })).toHaveCount(0);
+    expect(await a.page.evaluate(() => (window as unknown as { __stateCalls: number }).__stateCalls)).toBeGreaterThan(1);
+  } finally { await a.context.close(); }
+});

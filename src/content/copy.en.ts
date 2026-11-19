@@ -74,7 +74,7 @@ export const copy = {
     preview: "Single-round preview: 45 seconds, one shared question. No XP or permanent match statistics yet.",
     create: "Create private room", resume: "Return to your room", invite: "Invite a friend", rotate: "Create a new invite", copy: "Copy invite link", copied: "Invite copied.",
     share: "Only share this link with your rival. It expires with the room after 15 minutes.", inviteMissing: "Invite not saved here. Create a new one to share.",
-    join: "Join Match", joinTitle: "Your rival is waiting.", joinBody: "Joining uses your account and reserves the second seat. Opening this page does not join the room.",
+    join: "Join Match", joinTitle: "Your rival is waiting.", joinBody: "Joining uses your account and reserves the second seat. Opening this page does not join the room. Your friend chose the language (Python, JavaScript or Java); you will see it in the room before you ready up.",
     noInvite: "No valid invitation found. Ask your friend for a new link.", profileRequired: "Complete your profile before joining or creating a room.", completeProfile: "Complete profile", returnInvite: "Back to your invitation", returnPlay: "Play with a friend",
     waiting: "Waiting for your rival", emptySeat: "Invite a friend to the second seat.", ready: "Ready", notReady: "Not ready", waitingReady: "Both players must be ready to start.",
     countdown: "Get ready", playing: "Find the bug", submit: "Submit Answer", submitted: "Answer submitted. Waiting for your rival…", select: "Select a line before submitting.",

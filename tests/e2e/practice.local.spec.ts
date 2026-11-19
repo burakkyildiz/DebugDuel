@@ -5,7 +5,7 @@ import { test, expect, type APIRequestContext } from "@playwright/test";
 
 test.skip(process.env.LOCAL_PRACTICE_E2E !== "1", "Run pnpm test:practice:local against real local Supabase.");
 test.use({ trace: "off", screenshot: "off", video: "off" });
-const catalog: { code: string; correct_line: number }[] = JSON.parse(readFileSync("supabase/questions/catalog.json", "utf8"));
+const catalog: { code: string; correct_line: number }[] = ["catalog.json", "catalog.javascript.json"].flatMap(file => JSON.parse(readFileSync(`supabase/questions/${file}`, "utf8")));
 const origin = process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:3002";
 function options(body: unknown = {}, key = randomUUID()) { return { headers: { Origin: origin, "Idempotency-Key": key }, data: body }; }
 async function start(request: APIRequestContext, key = randomUUID()) {
@@ -164,4 +164,41 @@ test("verified account can Practice before onboarding with no XP or statistics c
   expect(forbidden.error?.message).toBe("SESSION_UNAVAILABLE");
   const cookies = await context.cookies();
   expect(cookies.some(c => c.name.startsWith("sb-"))).toBe(true);
+});
+
+test("guest chooses JavaScript, keeps it for the next challenge", async ({ page }) => {
+  await page.goto("/practice");
+  await expect(page.getByRole("radio", { name: "Python" })).toBeChecked();
+  await page.getByRole("radio", { name: "JavaScript" }).check();
+  const created = page.waitForResponse(r => r.url().endsWith("/api/practice/sessions") && r.request().method() === "POST");
+  await page.getByRole("button", { name: "Start Practice", exact: true }).click();
+  const active = await (await created).json();
+  expect(active.question.language).toBe("javascript");
+  await expect(page.locator(".terminal-bar")).toContainText("JavaScript");
+  const line = correctLine(active.question.code);
+  await page.getByLabel(`Line ${line}`, { exact: true }).check();
+  await page.getByRole("button", { name: "Submit Answer", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "You found the bug." })).toBeVisible();
+  await expect(page.getByRole("radio", { name: "JavaScript" })).toBeChecked();
+  const next = page.waitForResponse(r => r.url().endsWith("/api/practice/sessions") && r.request().method() === "POST");
+  await page.getByRole("button", { name: "Next Question", exact: true }).click();
+  expect((await (await next).json()).question.language).toBe("javascript");
+  await page.reload();
+  await expect(page.locator(".terminal-bar")).toContainText("JavaScript");
+});
+
+test("Practice rejects unsupported or smuggled languages and keeps Python as the default", async ({ context }) => {
+  const request = context.request;
+  expect((await request.post("/api/practice/guest", options())).ok()).toBe(true);
+  for (const language of ["ruby", "javascript:x", "JavaScript", "", 7, null]) {
+    const response = await request.post("/api/practice/sessions", options({ language }));
+    expect(response.status(), String(language)).toBe(400);
+  }
+  expect((await request.post("/api/practice/sessions", options({ language: "javascript", userId: randomUUID() }))).status()).toBe(400);
+  expect((await (await request.post("/api/practice/sessions", options({}))).json()).question.language).toBe("python");
+  const js = await (await request.post("/api/practice/sessions", options({ language: "javascript" }))).json();
+  expect(js.question.language).toBe("javascript");
+  expect(correctLine(js.question.code)).toBeGreaterThan(0);
+  // The language cannot be changed on an existing session or smuggled into other commands.
+  expect((await request.post(`/api/practice/sessions/${js.sessionId}/answer`, options({ selectedLine: 1, language: "python" }))).status()).toBe(400);
 });

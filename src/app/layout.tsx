@@ -6,7 +6,7 @@ import { Header, Footer } from "@/components/ui/shell";
 import { copy } from "@/content/copy.en";
 import { connection } from "next/server";
 
-export const metadata: Metadata = { title: { default: "Debug Duel — Find the bug. Beat your rival.", template: "%s · Debug Duel" }, description: "Challenge a friend to a three-round Python bug hunt. Read the code, find the faulty line and make your move." };
+export const metadata: Metadata = { title: { default: "Debug Duel — Find the bug. Beat your rival.", template: "%s · Debug Duel" }, description: "Challenge a friend to a three-round Python or JavaScript bug hunt. Read the code, find the faulty line and make your move." };
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   // CSP nonces belong to this request, including pages without account data.

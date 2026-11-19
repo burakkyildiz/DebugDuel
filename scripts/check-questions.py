@@ -3,11 +3,14 @@ import argparse
 import collections
 import json
 from pathlib import Path
+import shutil
 import subprocess
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 CATALOG = ROOT / 'supabase/questions/catalog.json'
+CATALOGS = {'python': CATALOG, 'javascript': ROOT / 'supabase/questions/catalog.javascript.json'}
+NODE = shutil.which('node')
 SEED = ROOT / 'supabase/seed.sql'
 
 
@@ -34,36 +37,46 @@ def render_seed(questions):
     )
 
 
+def command(language, code, case):
+    if language == 'python':
+        return [sys.executable, '-I', '-c', code + '\n' + case]
+    assert NODE, 'node is required to audit JavaScript questions'
+    prelude = "'use strict'; const assert = require('node:assert');\n"
+    return [NODE, '-e', prelude + code + '\n' + case]
+
+
 def audit(questions):
     assert len(questions) >= 30
+    assert {q['language'] for q in questions} <= set(CATALOGS)
     keys = [(q['slug'], q['version']) for q in questions]
     assert len(keys) == len(set(keys)), 'duplicate slug/version'
     assert len({q['code'] for q in questions}) == len(questions), 'duplicate code across pools'
     assert len({q['corrected_code'] for q in questions}) == len(questions), 'duplicate solutions'
-    distribution = collections.Counter((q['pool'], q['difficulty']) for q in questions)
-    assert distribution == {(p, d): (5 if p == 'duel' else 10) for p in ('duel', 'practice') for d in ('easy', 'medium', 'hard')}
+    distribution = collections.Counter((q['language'], q['pool'], q['difficulty']) for q in questions)
+    languages = {q['language'] for q in questions}
+    assert distribution == {(l, p, d): (5 if p == 'duel' else 10) for l in languages for p in ('duel', 'practice') for d in ('easy', 'medium', 'hard')}
     cases = 0
     for q in questions:
         label = q['slug']
         for field in ('title', 'prompt', 'explanation'):
             assert q[field].strip(), (label, field)
-        assert q['version'] > 0 and q['language'] == 'python'
+        assert q['version'] > 0 and q['language'] in CATALOGS
         original, fixed = q['code'], q['corrected_code']
         assert '\r' not in original + fixed and not original.endswith('\n') and not fixed.endswith('\n'), label
         lines, repaired = original.split('\n'), fixed.split('\n')
         assert len(lines) == len(repaired) == q['line_count'], label
         assert 5 <= len(lines) <= 18, label
         assert [i + 1 for i, pair in enumerate(zip(lines, repaired)) if pair[0] != pair[1]] == [q['correct_line']], label
-        compile(original, label, 'exec')
-        compile(fixed, label, 'exec')
+        if q['language'] == 'python':
+            compile(original, label, 'exec')
+            compile(fixed, label, 'exec')
         assert len(q['tests']) >= 2, label
         # Isolated, bounded child processes execute only checked-in author fixtures.
         # Each test gets fresh globals, so one case cannot contaminate another.
         failures = 0
         for case in q['tests']:
             for code, expected_pass in ((original, False), (fixed, True)):
-                result = subprocess.run([sys.executable, '-I', '-c', code + '\n' + case],
-                                        capture_output=True, text=True, timeout=3)
+                result = subprocess.run(command(q['language'], code, case), capture_output=True, text=True, timeout=5)
                 if expected_pass:
                     assert result.returncode == 0, (label, case, result.stderr)
                 else:
@@ -77,7 +90,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--write-seed', action='store_true')
     args = parser.parse_args()
-    questions = json.loads(CATALOG.read_text())
+    questions = [q for path in CATALOGS.values() for q in json.loads(path.read_text())]
     cases = audit(questions)
     expected = render_seed(questions)
     if args.write_seed:

@@ -4,7 +4,8 @@ import { createClient } from "@/lib/supabase/server";
 import { createPrivilegedClient } from "@/lib/supabase/privileged";
 import { guestSubject, GUEST_COOKIE, subjectHash } from "@/lib/security/guest-token";
 import { failure, json, mutationBody } from "@/lib/security/http";
-import { emptyPracticeBody, practiceAnswerBody, practiceStateSchema, uuid } from "@/features/practice/contracts";
+import { createAction } from "@/lib/game/languages";
+import { createPracticeBody, emptyPracticeBody, practiceAnswerBody, practiceStateSchema, uuid } from "@/features/practice/contracts";
 import { copy } from "@/content/copy.en";
 import { observed } from "@/lib/security/telemetry";
 
@@ -29,10 +30,12 @@ export async function practiceRequest(request: Request, action: Action, sessionI
 async function executePracticeRequest(request: Request, action: Action, sessionId?: string) {
   let selectedLine: number | null = null;
   let key: string | null = null;
+  let rpcAction: string = action;
   if (action !== "get") {
     try {
       const body = await mutationBody(request);
       if (action === "answer") selectedLine = practiceAnswerBody.parse(body).selectedLine;
+      else if (action === "create") rpcAction = createAction(createPracticeBody.parse(body).language);
       else emptyPracticeBody.parse(body);
       key = uuid.parse(request.headers.get("idempotency-key"));
     } catch { return errorResponse("INVALID_REQUEST"); }
@@ -46,7 +49,7 @@ async function executePracticeRequest(request: Request, action: Action, sessionI
     let result;
     if (auth.user) {
       if (!auth.user.email_confirmed_at) return errorResponse("AUTH_REQUIRED");
-      result = await client.rpc("practice_account", { p_action: action, p_session_id: sessionId, p_selected_line: selectedLine ?? undefined, p_key: key ?? undefined });
+      result = await client.rpc("practice_account", { p_action: rpcAction, p_session_id: sessionId, p_selected_line: selectedLine ?? undefined, p_key: key ?? undefined });
     } else {
       const secrets = practiceSecrets();
       const privileged = createPrivilegedClient();
@@ -57,7 +60,7 @@ async function executePracticeRequest(request: Request, action: Action, sessionI
       // conservative bucket; arbitrary client forwarding headers are ignored.
       const ip = process.env.VERCEL === "1" ? request.headers.get("x-vercel-forwarded-for")?.split(",")[0]?.trim() : null;
       const ipHash = subjectHash(`practice-ip:${ip || "unverified-network"}`, secrets.rate);
-      result = await privileged.rpc("practice_guest", { p_action: action, p_guest_hash: subject, p_ip_hash: ipHash, p_session_id: sessionId, p_selected_line: selectedLine ?? undefined, p_key: key ?? undefined });
+      result = await privileged.rpc("practice_guest", { p_action: rpcAction, p_guest_hash: subject, p_ip_hash: ipHash, p_session_id: sessionId, p_selected_line: selectedLine ?? undefined, p_key: key ?? undefined });
     }
     if (result.error) return errorResponse(result.error.message, action);
     const state = practiceStateSchema.safeParse(result.data);

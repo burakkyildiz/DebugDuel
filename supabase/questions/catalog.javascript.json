@@ -1,0 +1,1025 @@
+[
+  {
+    "slug": "js-sum-readings",
+    "version": 1,
+    "pool": "duel",
+    "language": "javascript",
+    "difficulty": "easy",
+    "title": "Sum the readings",
+    "prompt": "Return the sum of all numeric readings; an empty array totals zero.",
+    "code": "function sumReadings(readings) {\n  let total = 0;\n  for (const reading of readings) {\n    total = reading;\n  }\n  return total;\n}",
+    "line_count": 7,
+    "correct_line": 4,
+    "explanation": "The accumulator is overwritten on every iteration. Add each reading to keep the running total.",
+    "corrected_code": "function sumReadings(readings) {\n  let total = 0;\n  for (const reading of readings) {\n    total += reading;\n  }\n  return total;\n}",
+    "tags": [
+      "javascript",
+      "sum"
+    ],
+    "tests": [
+      "assert.strictEqual(sumReadings([2, 3, 4]), 9);",
+      "assert.strictEqual(sumReadings([]), 0);",
+      "assert.strictEqual(sumReadings([-2, 2]), 0);"
+    ]
+  },
+  {
+    "slug": "js-max-value",
+    "version": 1,
+    "pool": "duel",
+    "language": "javascript",
+    "difficulty": "easy",
+    "title": "Largest value",
+    "prompt": "Return the largest number in a nonempty array, including arrays of negative numbers.",
+    "code": "function maxValue(values) {\n  let best = 0;\n  for (const value of values) {\n    if (value > best) best = value;\n  }\n  return best;\n}",
+    "line_count": 7,
+    "correct_line": 2,
+    "explanation": "Starting from 0 hides negative maxima. Start from the first element instead.",
+    "corrected_code": "function maxValue(values) {\n  let best = values[0];\n  for (const value of values) {\n    if (value > best) best = value;\n  }\n  return best;\n}",
+    "tags": [
+      "javascript",
+      "maximum"
+    ],
+    "tests": [
+      "assert.strictEqual(maxValue([3, 9, 2]), 9);",
+      "assert.strictEqual(maxValue([-5, -2, -9]), -2);",
+      "assert.strictEqual(maxValue([-1]), -1);"
+    ]
+  },
+  {
+    "slug": "js-is-odd",
+    "version": 1,
+    "pool": "duel",
+    "language": "javascript",
+    "difficulty": "easy",
+    "title": "Detect odd numbers",
+    "prompt": "Return true when an integer is odd, including negative integers.",
+    "code": "function isOdd(n) {\n  const remainder = n % 2;\n  const odd = remainder === 1;\n  return odd;\n}",
+    "line_count": 5,
+    "correct_line": 3,
+    "explanation": "In JavaScript the remainder keeps the sign of the dividend, so -3 % 2 is -1. Compare against zero instead.",
+    "corrected_code": "function isOdd(n) {\n  const remainder = n % 2;\n  const odd = remainder !== 0;\n  return odd;\n}",
+    "tags": [
+      "javascript",
+      "parity"
+    ],
+    "tests": [
+      "assert.strictEqual(isOdd(3), true);",
+      "assert.strictEqual(isOdd(4), false);",
+      "assert.strictEqual(isOdd(-3), true);"
+    ]
+  },
+  {
+    "slug": "js-last-item",
+    "version": 1,
+    "pool": "duel",
+    "language": "javascript",
+    "difficulty": "easy",
+    "title": "Last element",
+    "prompt": "Return the last element of a nonempty array.",
+    "code": "function lastItem(items) {\n  const count = items.length;\n  const index = count;\n  return items[index];\n}",
+    "line_count": 5,
+    "correct_line": 3,
+    "explanation": "Array indexes start at zero, so the last valid index is length minus one.",
+    "corrected_code": "function lastItem(items) {\n  const count = items.length;\n  const index = count - 1;\n  return items[index];\n}",
+    "tags": [
+      "javascript",
+      "index"
+    ],
+    "tests": [
+      "assert.strictEqual(lastItem([1, 2, 3]), 3);",
+      "assert.strictEqual(lastItem(['x']), 'x');"
+    ]
+  },
+  {
+    "slug": "js-capitalize-word",
+    "version": 1,
+    "pool": "duel",
+    "language": "javascript",
+    "difficulty": "easy",
+    "title": "Capitalize a word",
+    "prompt": "Return the word with only its first letter converted to uppercase.",
+    "code": "function capitalize(word) {\n  const first = word[0].toUpperCase();\n  const rest = word.slice(0);\n  return first + rest;\n}",
+    "line_count": 5,
+    "correct_line": 3,
+    "explanation": "slice(0) copies the whole word, so the first letter is duplicated. Skip it with slice(1).",
+    "corrected_code": "function capitalize(word) {\n  const first = word[0].toUpperCase();\n  const rest = word.slice(1);\n  return first + rest;\n}",
+    "tags": [
+      "javascript",
+      "string"
+    ],
+    "tests": [
+      "assert.strictEqual(capitalize('hello'), 'Hello');",
+      "assert.strictEqual(capitalize('a'), 'A');"
+    ]
+  },
+  {
+    "slug": "js-first-negative",
+    "version": 1,
+    "pool": "duel",
+    "language": "javascript",
+    "difficulty": "medium",
+    "title": "First negative index",
+    "prompt": "Return the index of the first negative number, or -1 when there is none.",
+    "code": "function firstNegativeIndex(values) {\n  for (let i = 1; i < values.length; i++) {\n    if (values[i] < 0) return i;\n  }\n  return -1;\n}",
+    "line_count": 6,
+    "correct_line": 2,
+    "explanation": "The loop starts at index 1 and never inspects the first element.",
+    "corrected_code": "function firstNegativeIndex(values) {\n  for (let i = 0; i < values.length; i++) {\n    if (values[i] < 0) return i;\n  }\n  return -1;\n}",
+    "tags": [
+      "javascript",
+      "loop",
+      "index"
+    ],
+    "tests": [
+      "assert.strictEqual(firstNegativeIndex([-1, 2]), 0);",
+      "assert.strictEqual(firstNegativeIndex([3, -2]), 1);",
+      "assert.strictEqual(firstNegativeIndex([1, 2]), -1);"
+    ]
+  },
+  {
+    "slug": "js-unique-sorted",
+    "version": 1,
+    "pool": "duel",
+    "language": "javascript",
+    "difficulty": "medium",
+    "title": "Unique sorted numbers",
+    "prompt": "Return the distinct numbers in ascending numeric order.",
+    "code": "function uniqueSorted(values) {\n  const unique = [...new Set(values)];\n  unique.sort();\n  return unique;\n}",
+    "line_count": 5,
+    "correct_line": 3,
+    "explanation": "Without a comparator, sort() compares values as strings, so 10 comes before 9. Pass a numeric comparator.",
+    "corrected_code": "function uniqueSorted(values) {\n  const unique = [...new Set(values)];\n  unique.sort((a, b) => a - b);\n  return unique;\n}",
+    "tags": [
+      "javascript",
+      "sort"
+    ],
+    "tests": [
+      "assert.deepStrictEqual(uniqueSorted([10, 9, 10, 1]), [1, 9, 10]);",
+      "assert.deepStrictEqual(uniqueSorted([]), []);"
+    ]
+  },
+  {
+    "slug": "js-remove-at",
+    "version": 1,
+    "pool": "duel",
+    "language": "javascript",
+    "difficulty": "medium",
+    "title": "Remove without mutation",
+    "prompt": "Return a new array without the element at the index and leave the input unchanged.",
+    "code": "function removeAt(values, index) {\n  const copy = values;\n  copy.splice(index, 1);\n  return copy;\n}",
+    "line_count": 5,
+    "correct_line": 2,
+    "explanation": "Assigning an array copies only the reference, so splice changes the caller's array. Copy it first.",
+    "corrected_code": "function removeAt(values, index) {\n  const copy = [...values];\n  copy.splice(index, 1);\n  return copy;\n}",
+    "tags": [
+      "javascript",
+      "mutation"
+    ],
+    "tests": [
+      "const input = [1, 2, 3]; assert.deepStrictEqual(removeAt(input, 1), [1, 3]); assert.deepStrictEqual(input, [1, 2, 3]);",
+      "assert.deepStrictEqual(removeAt([5], 0), []);"
+    ]
+  },
+  {
+    "slug": "js-cart-total",
+    "version": 1,
+    "pool": "duel",
+    "language": "javascript",
+    "difficulty": "medium",
+    "title": "Cart total",
+    "prompt": "Return the total cost of cart items, where each item has price and qty.",
+    "code": "function cartTotal(items) {\n  return items.reduce((sum, item) => {\n    return sum + item.price;\n  }, 0);\n}",
+    "line_count": 5,
+    "correct_line": 3,
+    "explanation": "The quantity is ignored, so every item is counted once. Multiply the price by qty.",
+    "corrected_code": "function cartTotal(items) {\n  return items.reduce((sum, item) => {\n    return sum + item.price * item.qty;\n  }, 0);\n}",
+    "tags": [
+      "javascript",
+      "reduce"
+    ],
+    "tests": [
+      "assert.strictEqual(cartTotal([{ price: 2, qty: 3 }, { price: 5, qty: 1 }]), 11);",
+      "assert.strictEqual(cartTotal([]), 0);"
+    ]
+  },
+  {
+    "slug": "js-has-char",
+    "version": 1,
+    "pool": "duel",
+    "language": "javascript",
+    "difficulty": "medium",
+    "title": "Contains a character",
+    "prompt": "Return true only when the text contains the character.",
+    "code": "function hasChar(text, ch) {\n  if (text.indexOf(ch)) {\n    return true;\n  }\n  return false;\n}",
+    "line_count": 6,
+    "correct_line": 2,
+    "explanation": "indexOf returns 0 for a match at the start (falsy) and -1 for no match (truthy). Compare with -1 explicitly.",
+    "corrected_code": "function hasChar(text, ch) {\n  if (text.indexOf(ch) !== -1) {\n    return true;\n  }\n  return false;\n}",
+    "tags": [
+      "javascript",
+      "truthiness"
+    ],
+    "tests": [
+      "assert.strictEqual(hasChar('abc', 'a'), true);",
+      "assert.strictEqual(hasChar('abc', 'z'), false);",
+      "assert.strictEqual(hasChar('abc', 'c'), true);"
+    ]
+  },
+  {
+    "slug": "js-binary-search",
+    "version": 1,
+    "pool": "duel",
+    "language": "javascript",
+    "difficulty": "hard",
+    "title": "Binary search",
+    "prompt": "Return the index of target in a sorted array, or -1 when it is absent.",
+    "code": "function binarySearch(values, target) {\n  let low = 0;\n  let high = values.length - 1;\n  while (low < high) {\n    const mid = Math.floor((low + high) / 2);\n    if (values[mid] === target) return mid;\n    if (values[mid] < target) low = mid + 1;\n    else high = mid - 1;\n  }\n  return -1;\n}",
+    "line_count": 11,
+    "correct_line": 4,
+    "explanation": "When low equals high one candidate remains. The strict comparison skips it, so the last element can be missed.",
+    "corrected_code": "function binarySearch(values, target) {\n  let low = 0;\n  let high = values.length - 1;\n  while (low <= high) {\n    const mid = Math.floor((low + high) / 2);\n    if (values[mid] === target) return mid;\n    if (values[mid] < target) low = mid + 1;\n    else high = mid - 1;\n  }\n  return -1;\n}",
+    "tags": [
+      "javascript",
+      "search",
+      "boundary"
+    ],
+    "tests": [
+      "assert.strictEqual(binarySearch([1, 3, 5], 5), 2);",
+      "assert.strictEqual(binarySearch([4], 4), 0);",
+      "assert.strictEqual(binarySearch([1, 3, 5], 2), -1);"
+    ]
+  },
+  {
+    "slug": "js-make-getters",
+    "version": 1,
+    "pool": "duel",
+    "language": "javascript",
+    "difficulty": "hard",
+    "title": "Closures in a loop",
+    "prompt": "Return one function per element that later returns that element.",
+    "code": "function makeGetters(values) {\n  const getters = [];\n  for (var i = 0; i < values.length; i++) {\n    getters.push(() => values[i]);\n  }\n  return getters;\n}",
+    "line_count": 7,
+    "correct_line": 3,
+    "explanation": "var is function scoped, so every closure shares one index that ends past the array. let creates a fresh binding per iteration.",
+    "corrected_code": "function makeGetters(values) {\n  const getters = [];\n  for (let i = 0; i < values.length; i++) {\n    getters.push(() => values[i]);\n  }\n  return getters;\n}",
+    "tags": [
+      "javascript",
+      "closure",
+      "scope"
+    ],
+    "tests": [
+      "assert.deepStrictEqual(makeGetters([1, 2, 3]).map((get) => get()), [1, 2, 3]);",
+      "assert.deepStrictEqual(makeGetters([]), []);"
+    ]
+  },
+  {
+    "slug": "js-is-balanced",
+    "version": 1,
+    "pool": "duel",
+    "language": "javascript",
+    "difficulty": "hard",
+    "title": "Balanced parentheses",
+    "prompt": "Return true when every opening parenthesis has a matching closing one.",
+    "code": "function isBalanced(text) {\n  const stack = [];\n  for (const ch of text) {\n    if (ch === '(') stack.push(ch);\n    else if (ch === ')') {\n      if (stack.length === 0) return false;\n      stack.pop();\n    }\n  }\n  return true;\n}",
+    "line_count": 11,
+    "correct_line": 10,
+    "explanation": "Unclosed opening parentheses remain on the stack. The function must report balance only when the stack is empty.",
+    "corrected_code": "function isBalanced(text) {\n  const stack = [];\n  for (const ch of text) {\n    if (ch === '(') stack.push(ch);\n    else if (ch === ')') {\n      if (stack.length === 0) return false;\n      stack.pop();\n    }\n  }\n  return stack.length === 0;\n}",
+    "tags": [
+      "javascript",
+      "stack"
+    ],
+    "tests": [
+      "assert.strictEqual(isBalanced('(())'), true);",
+      "assert.strictEqual(isBalanced('(()'), false);",
+      "assert.strictEqual(isBalanced(')('), false);"
+    ]
+  },
+  {
+    "slug": "js-longest-run",
+    "version": 1,
+    "pool": "duel",
+    "language": "javascript",
+    "difficulty": "hard",
+    "title": "Longest equal run",
+    "prompt": "Return the length of the longest run of equal neighbouring values.",
+    "code": "function longestRun(values) {\n  let best = 0;\n  let run = 0;\n  for (let i = 0; i < values.length; i++) {\n    if (i > 0 && values[i] === values[i - 1]) run++;\n    else run = 0;\n    best = Math.max(best, run);\n  }\n  return best;\n}",
+    "line_count": 10,
+    "correct_line": 6,
+    "explanation": "A new run already contains one element. Resetting to zero undercounts every run by one.",
+    "corrected_code": "function longestRun(values) {\n  let best = 0;\n  let run = 0;\n  for (let i = 0; i < values.length; i++) {\n    if (i > 0 && values[i] === values[i - 1]) run++;\n    else run = 1;\n    best = Math.max(best, run);\n  }\n  return best;\n}",
+    "tags": [
+      "javascript",
+      "run",
+      "reset"
+    ],
+    "tests": [
+      "assert.strictEqual(longestRun([1, 1, 2]), 2);",
+      "assert.strictEqual(longestRun([5]), 1);",
+      "assert.strictEqual(longestRun([]), 0);"
+    ]
+  },
+  {
+    "slug": "js-median",
+    "version": 1,
+    "pool": "duel",
+    "language": "javascript",
+    "difficulty": "hard",
+    "title": "Median",
+    "prompt": "Return the median of a nonempty array of numbers.",
+    "code": "function median(values) {\n  const sorted = [...values].sort((a, b) => a - b);\n  const mid = Math.floor(sorted.length / 2);\n  if (sorted.length % 2 === 0) {\n    return sorted[mid];\n  }\n  return sorted[mid];\n}",
+    "line_count": 8,
+    "correct_line": 5,
+    "explanation": "An even-length array has two middle values. Their average is the median, not just the upper one.",
+    "corrected_code": "function median(values) {\n  const sorted = [...values].sort((a, b) => a - b);\n  const mid = Math.floor(sorted.length / 2);\n  if (sorted.length % 2 === 0) {\n    return (sorted[mid - 1] + sorted[mid]) / 2;\n  }\n  return sorted[mid];\n}",
+    "tags": [
+      "javascript",
+      "statistics"
+    ],
+    "tests": [
+      "assert.strictEqual(median([1, 2, 3, 4]), 2.5);",
+      "assert.strictEqual(median([3, 1, 2]), 2);",
+      "assert.strictEqual(median([5]), 5);"
+    ]
+  },
+  {
+    "slug": "js-positive-sum",
+    "version": 1,
+    "pool": "practice",
+    "language": "javascript",
+    "difficulty": "easy",
+    "title": "Sum positives",
+    "prompt": "Return the sum of strictly positive values.",
+    "code": "function positiveSum(values) {\n  let total = 0;\n  for (const value of values) {\n    if (value < 0) total += value;\n  }\n  return total;\n}",
+    "line_count": 7,
+    "correct_line": 4,
+    "explanation": "The condition selects negative numbers. It should select values greater than zero.",
+    "corrected_code": "function positiveSum(values) {\n  let total = 0;\n  for (const value of values) {\n    if (value > 0) total += value;\n  }\n  return total;\n}",
+    "tags": [
+      "javascript",
+      "filter"
+    ],
+    "tests": [
+      "assert.strictEqual(positiveSum([1, -2, 3]), 4);",
+      "assert.strictEqual(positiveSum([-1, -2]), 0);"
+    ]
+  },
+  {
+    "slug": "js-count-vowels",
+    "version": 1,
+    "pool": "practice",
+    "language": "javascript",
+    "difficulty": "easy",
+    "title": "Count lowercase vowels",
+    "prompt": "Count every lowercase vowel in a string.",
+    "code": "function countVowels(text) {\n  const matches = text.match(/[aeiou]/);\n  const count = matches ? matches.length : 0;\n  return count;\n}",
+    "line_count": 5,
+    "correct_line": 2,
+    "explanation": "Without the global flag, match returns only the first match with its groups. Add g to collect all matches.",
+    "corrected_code": "function countVowels(text) {\n  const matches = text.match(/[aeiou]/g);\n  const count = matches ? matches.length : 0;\n  return count;\n}",
+    "tags": [
+      "javascript",
+      "regex"
+    ],
+    "tests": [
+      "assert.strictEqual(countVowels('banana'), 3);",
+      "assert.strictEqual(countVowels('xyz'), 0);"
+    ]
+  },
+  {
+    "slug": "js-reverse-text",
+    "version": 1,
+    "pool": "practice",
+    "language": "javascript",
+    "difficulty": "easy",
+    "title": "Reverse a string",
+    "prompt": "Return the characters of a string in reverse order.",
+    "code": "function reverseText(text) {\n  const chars = text.split('');\n  chars.reverse();\n  return chars.join(' ');\n}",
+    "line_count": 5,
+    "correct_line": 4,
+    "explanation": "Joining with a space inserts separators between letters. Join with an empty string.",
+    "corrected_code": "function reverseText(text) {\n  const chars = text.split('');\n  chars.reverse();\n  return chars.join('');\n}",
+    "tags": [
+      "javascript",
+      "string"
+    ],
+    "tests": [
+      "assert.strictEqual(reverseText('abc'), 'cba');",
+      "assert.strictEqual(reverseText(''), '');"
+    ]
+  },
+  {
+    "slug": "js-is-palindrome",
+    "version": 1,
+    "pool": "practice",
+    "language": "javascript",
+    "difficulty": "easy",
+    "title": "Palindrome check",
+    "prompt": "Return true when text reads the same forwards and backwards.",
+    "code": "function isPalindrome(text) {\n  const chars = text.split('');\n  const reversed = chars.reverse();\n  return text === reversed;\n}",
+    "line_count": 5,
+    "correct_line": 4,
+    "explanation": "A string is never strictly equal to an array. Join the reversed characters before comparing.",
+    "corrected_code": "function isPalindrome(text) {\n  const chars = text.split('');\n  const reversed = chars.reverse();\n  return text === reversed.join('');\n}",
+    "tags": [
+      "javascript",
+      "string",
+      "equality"
+    ],
+    "tests": [
+      "assert.strictEqual(isPalindrome('abba'), true);",
+      "assert.strictEqual(isPalindrome('abc'), false);"
+    ]
+  },
+  {
+    "slug": "js-average",
+    "version": 1,
+    "pool": "practice",
+    "language": "javascript",
+    "difficulty": "easy",
+    "title": "Average",
+    "prompt": "Return the arithmetic mean of a nonempty array of numbers.",
+    "code": "function average(values) {\n  let total = 0;\n  for (const value of values) {\n    total += value;\n  }\n  return total / (values.length - 1);\n}",
+    "line_count": 7,
+    "correct_line": 6,
+    "explanation": "The divisor is one too small. Divide by the number of values.",
+    "corrected_code": "function average(values) {\n  let total = 0;\n  for (const value of values) {\n    total += value;\n  }\n  return total / values.length;\n}",
+    "tags": [
+      "javascript",
+      "average"
+    ],
+    "tests": [
+      "assert.strictEqual(average([2, 4]), 3);",
+      "assert.strictEqual(average([5]), 5);"
+    ]
+  },
+  {
+    "slug": "js-clamp-value",
+    "version": 1,
+    "pool": "practice",
+    "language": "javascript",
+    "difficulty": "easy",
+    "title": "Clamp a number",
+    "prompt": "Limit a value to the inclusive range from min to max.",
+    "code": "function clamp(value, min, max) {\n  if (value < min) return max;\n  if (value > max) return max;\n  return value;\n}",
+    "line_count": 5,
+    "correct_line": 2,
+    "explanation": "A value below the range should snap to the lower bound, not the upper one.",
+    "corrected_code": "function clamp(value, min, max) {\n  if (value < min) return min;\n  if (value > max) return max;\n  return value;\n}",
+    "tags": [
+      "javascript",
+      "range"
+    ],
+    "tests": [
+      "assert.strictEqual(clamp(-5, 0, 10), 0);",
+      "assert.strictEqual(clamp(15, 0, 10), 10);",
+      "assert.strictEqual(clamp(5, 0, 10), 5);"
+    ]
+  },
+  {
+    "slug": "js-repeat-text",
+    "version": 1,
+    "pool": "practice",
+    "language": "javascript",
+    "difficulty": "easy",
+    "title": "Repeat text",
+    "prompt": "Return the text repeated exactly times times.",
+    "code": "function repeatText(text, times) {\n  let result = '';\n  for (let i = 0; i <= times; i++) {\n    result += text;\n  }\n  return result;\n}",
+    "line_count": 7,
+    "correct_line": 3,
+    "explanation": "With <= the loop runs one extra time. Stop before i reaches times.",
+    "corrected_code": "function repeatText(text, times) {\n  let result = '';\n  for (let i = 0; i < times; i++) {\n    result += text;\n  }\n  return result;\n}",
+    "tags": [
+      "javascript",
+      "loop",
+      "off-by-one"
+    ],
+    "tests": [
+      "assert.strictEqual(repeatText('ab', 2), 'abab');",
+      "assert.strictEqual(repeatText('x', 0), '');"
+    ]
+  },
+  {
+    "slug": "js-double-all",
+    "version": 1,
+    "pool": "practice",
+    "language": "javascript",
+    "difficulty": "easy",
+    "title": "Double every number",
+    "prompt": "Return a new array with every number multiplied by two.",
+    "code": "function doubleAll(values) {\n  return values.map((value) => {\n    value * 2;\n  });\n}",
+    "line_count": 5,
+    "correct_line": 3,
+    "explanation": "A braced arrow function needs an explicit return. Without it, map produces undefined values.",
+    "corrected_code": "function doubleAll(values) {\n  return values.map((value) => {\n    return value * 2;\n  });\n}",
+    "tags": [
+      "javascript",
+      "map"
+    ],
+    "tests": [
+      "assert.deepStrictEqual(doubleAll([1, 2]), [2, 4]);",
+      "assert.deepStrictEqual(doubleAll([]), []);"
+    ]
+  },
+  {
+    "slug": "js-min-value",
+    "version": 1,
+    "pool": "practice",
+    "language": "javascript",
+    "difficulty": "easy",
+    "title": "Smallest value",
+    "prompt": "Return the smallest number in a nonempty array.",
+    "code": "function minValue(values) {\n  let best = Infinity;\n  for (const value of values) {\n    if (value > best) best = value;\n  }\n  return best;\n}",
+    "line_count": 7,
+    "correct_line": 4,
+    "explanation": "The comparison is reversed, so the loop never replaces Infinity. Use less than.",
+    "corrected_code": "function minValue(values) {\n  let best = Infinity;\n  for (const value of values) {\n    if (value < best) best = value;\n  }\n  return best;\n}",
+    "tags": [
+      "javascript",
+      "minimum"
+    ],
+    "tests": [
+      "assert.strictEqual(minValue([4, 2, 8]), 2);",
+      "assert.strictEqual(minValue([7]), 7);"
+    ]
+  },
+  {
+    "slug": "js-count-even",
+    "version": 1,
+    "pool": "practice",
+    "language": "javascript",
+    "difficulty": "easy",
+    "title": "Count even numbers",
+    "prompt": "Return how many values in the array are even.",
+    "code": "function countEven(values) {\n  let count = 0;\n  for (const value of values) {\n    if (value % 2 === 0) count = 1;\n  }\n  return count;\n}",
+    "line_count": 7,
+    "correct_line": 4,
+    "explanation": "Assigning 1 means the result can never exceed one. Increment the counter instead.",
+    "corrected_code": "function countEven(values) {\n  let count = 0;\n  for (const value of values) {\n    if (value % 2 === 0) count += 1;\n  }\n  return count;\n}",
+    "tags": [
+      "javascript",
+      "counter"
+    ],
+    "tests": [
+      "assert.strictEqual(countEven([2, 4, 5, 6]), 3);",
+      "assert.strictEqual(countEven([1, 3]), 0);"
+    ]
+  },
+  {
+    "slug": "js-second-largest",
+    "version": 1,
+    "pool": "practice",
+    "language": "javascript",
+    "difficulty": "medium",
+    "title": "Second largest number",
+    "prompt": "Return the second largest number in an array of at least two numbers.",
+    "code": "function secondLargest(values) {\n  const sorted = [...values];\n  sorted.sort();\n  return sorted[sorted.length - 2];\n}",
+    "line_count": 5,
+    "correct_line": 3,
+    "explanation": "The default sort is lexicographic, so 100 sorts before 9. Provide a numeric comparator.",
+    "corrected_code": "function secondLargest(values) {\n  const sorted = [...values];\n  sorted.sort((a, b) => a - b);\n  return sorted[sorted.length - 2];\n}",
+    "tags": [
+      "javascript",
+      "sort"
+    ],
+    "tests": [
+      "assert.strictEqual(secondLargest([10, 9, 100]), 10);",
+      "assert.strictEqual(secondLargest([1, 2]), 1);"
+    ]
+  },
+  {
+    "slug": "js-chunk-array",
+    "version": 1,
+    "pool": "practice",
+    "language": "javascript",
+    "difficulty": "medium",
+    "title": "Split into chunks",
+    "prompt": "Split an array into consecutive chunks of the given size.",
+    "code": "function chunk(values, size) {\n  const result = [];\n  for (let i = 0; i < values.length; i += size) {\n    result.push(values.slice(i, size));\n  }\n  return result;\n}",
+    "line_count": 7,
+    "correct_line": 4,
+    "explanation": "slice takes an end index, not a length. After the first chunk the end must move forward with i.",
+    "corrected_code": "function chunk(values, size) {\n  const result = [];\n  for (let i = 0; i < values.length; i += size) {\n    result.push(values.slice(i, i + size));\n  }\n  return result;\n}",
+    "tags": [
+      "javascript",
+      "slice"
+    ],
+    "tests": [
+      "assert.deepStrictEqual(chunk([1, 2, 3, 4], 2), [[1, 2], [3, 4]]);",
+      "assert.deepStrictEqual(chunk([1, 2, 3], 2), [[1, 2], [3]]);"
+    ]
+  },
+  {
+    "slug": "js-sum-digits",
+    "version": 1,
+    "pool": "practice",
+    "language": "javascript",
+    "difficulty": "medium",
+    "title": "Sum of digits",
+    "prompt": "Return the sum of the decimal digits of a nonnegative integer.",
+    "code": "function sumDigits(n) {\n  let total = 0;\n  while (n > 0) {\n    total += n % 10;\n    n = n / 10;\n  }\n  return total;\n}",
+    "line_count": 8,
+    "correct_line": 5,
+    "explanation": "Division in JavaScript is not integer division. Floor the quotient or the number keeps a fraction.",
+    "corrected_code": "function sumDigits(n) {\n  let total = 0;\n  while (n > 0) {\n    total += n % 10;\n    n = Math.floor(n / 10);\n  }\n  return total;\n}",
+    "tags": [
+      "javascript",
+      "division"
+    ],
+    "tests": [
+      "assert.strictEqual(sumDigits(123), 6);",
+      "assert.strictEqual(sumDigits(0), 0);",
+      "assert.strictEqual(sumDigits(9), 9);"
+    ]
+  },
+  {
+    "slug": "js-with-defaults",
+    "version": 1,
+    "pool": "practice",
+    "language": "javascript",
+    "difficulty": "medium",
+    "title": "Apply default options",
+    "prompt": "Return options merged over defaults so caller values win.",
+    "code": "function withDefaults(options, defaults) {\n  const base = { ...defaults };\n  const merged = { ...options, ...base };\n  return merged;\n}",
+    "line_count": 5,
+    "correct_line": 3,
+    "explanation": "Later spread entries overwrite earlier ones. The caller's options must come last.",
+    "corrected_code": "function withDefaults(options, defaults) {\n  const base = { ...defaults };\n  const merged = { ...base, ...options };\n  return merged;\n}",
+    "tags": [
+      "javascript",
+      "object",
+      "spread"
+    ],
+    "tests": [
+      "assert.deepStrictEqual(withDefaults({ a: 1 }, { a: 2, b: 3 }), { a: 1, b: 3 });",
+      "assert.deepStrictEqual(withDefaults({}, { a: 2 }), { a: 2 });"
+    ]
+  },
+  {
+    "slug": "js-word-count",
+    "version": 1,
+    "pool": "practice",
+    "language": "javascript",
+    "difficulty": "medium",
+    "title": "Count words",
+    "prompt": "Count words separated by any amount of whitespace.",
+    "code": "function wordCount(text) {\n  const trimmed = text.trim();\n  if (trimmed === '') return 0;\n  return trimmed.split(' ').length;\n}",
+    "line_count": 5,
+    "correct_line": 4,
+    "explanation": "Splitting on one space creates empty entries for repeated spaces. Split on a whitespace pattern.",
+    "corrected_code": "function wordCount(text) {\n  const trimmed = text.trim();\n  if (trimmed === '') return 0;\n  return trimmed.split(/\\s+/).length;\n}",
+    "tags": [
+      "javascript",
+      "regex",
+      "string"
+    ],
+    "tests": [
+      "assert.strictEqual(wordCount('a  b'), 2);",
+      "assert.strictEqual(wordCount(''), 0);",
+      "assert.strictEqual(wordCount('one two three'), 3);"
+    ]
+  },
+  {
+    "slug": "js-is-sorted",
+    "version": 1,
+    "pool": "practice",
+    "language": "javascript",
+    "difficulty": "medium",
+    "title": "Ascending order check",
+    "prompt": "Return true when numbers are in nondecreasing order.",
+    "code": "function isSorted(values) {\n  for (let i = 1; i < values.length; i++) {\n    if (values[i] > values[i - 1]) return false;\n  }\n  return true;\n}",
+    "line_count": 6,
+    "correct_line": 3,
+    "explanation": "The comparison rejects ascending pairs. A violation is a value smaller than its predecessor.",
+    "corrected_code": "function isSorted(values) {\n  for (let i = 1; i < values.length; i++) {\n    if (values[i] < values[i - 1]) return false;\n  }\n  return true;\n}",
+    "tags": [
+      "javascript",
+      "comparison"
+    ],
+    "tests": [
+      "assert.strictEqual(isSorted([1, 2, 3]), true);",
+      "assert.strictEqual(isSorted([3, 1]), false);",
+      "assert.strictEqual(isSorted([]), true);"
+    ]
+  },
+  {
+    "slug": "js-rotate-left",
+    "version": 1,
+    "pool": "practice",
+    "language": "javascript",
+    "difficulty": "medium",
+    "title": "Rotate left",
+    "prompt": "Rotate an array left by k positions without losing elements.",
+    "code": "function rotateLeft(values, k) {\n  const n = values.length;\n  const shift = k % n;\n  return values.slice(shift).concat(values.slice(0, shift - 1));\n}",
+    "line_count": 5,
+    "correct_line": 4,
+    "explanation": "The tail concatenation stops one element early, so an element disappears.",
+    "corrected_code": "function rotateLeft(values, k) {\n  const n = values.length;\n  const shift = k % n;\n  return values.slice(shift).concat(values.slice(0, shift));\n}",
+    "tags": [
+      "javascript",
+      "slice"
+    ],
+    "tests": [
+      "assert.deepStrictEqual(rotateLeft([1, 2, 3, 4], 1), [2, 3, 4, 1]);",
+      "assert.deepStrictEqual(rotateLeft([1, 2, 3, 4], 2), [3, 4, 1, 2]);"
+    ]
+  },
+  {
+    "slug": "js-has-key",
+    "version": 1,
+    "pool": "practice",
+    "language": "javascript",
+    "difficulty": "medium",
+    "title": "Own key check",
+    "prompt": "Return true when an object has the key, even when its value is falsy.",
+    "code": "function hasKey(obj, key) {\n  if (obj[key]) {\n    return true;\n  }\n  return false;\n}",
+    "line_count": 6,
+    "correct_line": 2,
+    "explanation": "Checking the value fails for 0, empty strings and false. Test for the key itself.",
+    "corrected_code": "function hasKey(obj, key) {\n  if (Object.prototype.hasOwnProperty.call(obj, key)) {\n    return true;\n  }\n  return false;\n}",
+    "tags": [
+      "javascript",
+      "object",
+      "truthiness"
+    ],
+    "tests": [
+      "assert.strictEqual(hasKey({ a: 0 }, 'a'), true);",
+      "assert.strictEqual(hasKey({}, 'a'), false);"
+    ]
+  },
+  {
+    "slug": "js-inclusive-range",
+    "version": 1,
+    "pool": "practice",
+    "language": "javascript",
+    "difficulty": "medium",
+    "title": "Inclusive range",
+    "prompt": "Return every integer from start to end, including both ends.",
+    "code": "function range(start, end) {\n  const result = [];\n  for (let i = start; i < end; i++) {\n    result.push(i);\n  }\n  return result;\n}",
+    "line_count": 7,
+    "correct_line": 3,
+    "explanation": "The strict comparison leaves out the final number. Use <= to include it.",
+    "corrected_code": "function range(start, end) {\n  const result = [];\n  for (let i = start; i <= end; i++) {\n    result.push(i);\n  }\n  return result;\n}",
+    "tags": [
+      "javascript",
+      "loop",
+      "off-by-one"
+    ],
+    "tests": [
+      "assert.deepStrictEqual(range(1, 3), [1, 2, 3]);",
+      "assert.deepStrictEqual(range(2, 2), [2]);"
+    ]
+  },
+  {
+    "slug": "js-capitalize-words",
+    "version": 1,
+    "pool": "practice",
+    "language": "javascript",
+    "difficulty": "medium",
+    "title": "Capitalize each word",
+    "prompt": "Capitalize the first letter of every space separated word.",
+    "code": "function capitalizeWords(text) {\n  return text\n    .split(' ')\n    .map((word) => word[0].toUpperCase() + word.slice(1))\n    .join('');\n}",
+    "line_count": 6,
+    "correct_line": 5,
+    "explanation": "Joining with an empty string removes the spaces between words.",
+    "corrected_code": "function capitalizeWords(text) {\n  return text\n    .split(' ')\n    .map((word) => word[0].toUpperCase() + word.slice(1))\n    .join(' ');\n}",
+    "tags": [
+      "javascript",
+      "string",
+      "array"
+    ],
+    "tests": [
+      "assert.strictEqual(capitalizeWords('a bc'), 'A Bc');",
+      "assert.strictEqual(capitalizeWords('one'), 'One');"
+    ]
+  },
+  {
+    "slug": "js-fibonacci",
+    "version": 1,
+    "pool": "practice",
+    "language": "javascript",
+    "difficulty": "hard",
+    "title": "Fibonacci number",
+    "prompt": "Return the nth Fibonacci number where fibonacci(0) is 0 and fibonacci(1) is 1.",
+    "code": "function fibonacci(n) {\n  if (n <= 1) return n;\n  let previous = 0;\n  let current = 1;\n  for (let i = 2; i <= n; i++) {\n    const next = previous + current;\n    previous = current;\n    current = previous;\n  }\n  return current;\n}",
+    "line_count": 11,
+    "correct_line": 8,
+    "explanation": "After previous is replaced, current is assigned that same value. The new term next is lost.",
+    "corrected_code": "function fibonacci(n) {\n  if (n <= 1) return n;\n  let previous = 0;\n  let current = 1;\n  for (let i = 2; i <= n; i++) {\n    const next = previous + current;\n    previous = current;\n    current = next;\n  }\n  return current;\n}",
+    "tags": [
+      "javascript",
+      "iteration",
+      "state"
+    ],
+    "tests": [
+      "assert.strictEqual(fibonacci(5), 5);",
+      "assert.strictEqual(fibonacci(10), 55);",
+      "assert.strictEqual(fibonacci(1), 1);"
+    ]
+  },
+  {
+    "slug": "js-merge-sorted",
+    "version": 1,
+    "pool": "practice",
+    "language": "javascript",
+    "difficulty": "hard",
+    "title": "Merge sorted arrays",
+    "prompt": "Merge two ascending arrays into one ascending array.",
+    "code": "function mergeSorted(left, right) {\n  const result = [];\n  let i = 0;\n  let j = 0;\n  while (i < left.length && j < right.length) {\n    if (left[i] <= right[j]) result.push(left[i++]);\n    else result.push(right[j++]);\n  }\n  return result.concat(left.slice(i));\n}",
+    "line_count": 10,
+    "correct_line": 9,
+    "explanation": "When one side is exhausted the other may still have elements. Append both remainders.",
+    "corrected_code": "function mergeSorted(left, right) {\n  const result = [];\n  let i = 0;\n  let j = 0;\n  while (i < left.length && j < right.length) {\n    if (left[i] <= right[j]) result.push(left[i++]);\n    else result.push(right[j++]);\n  }\n  return result.concat(left.slice(i), right.slice(j));\n}",
+    "tags": [
+      "javascript",
+      "merge",
+      "two-pointers"
+    ],
+    "tests": [
+      "assert.deepStrictEqual(mergeSorted([1, 4], [2, 3, 5]), [1, 2, 3, 4, 5]);",
+      "assert.deepStrictEqual(mergeSorted([], [1]), [1]);"
+    ]
+  },
+  {
+    "slug": "js-first-unique",
+    "version": 1,
+    "pool": "practice",
+    "language": "javascript",
+    "difficulty": "hard",
+    "title": "First unique character",
+    "prompt": "Return the first character that appears exactly once, or null.",
+    "code": "function firstUnique(text) {\n  const counts = {};\n  for (const ch of text) {\n    counts[ch] = (counts[ch] || 0) + 1;\n  }\n  for (const ch of text) {\n    if (counts[ch] > 1) return ch;\n  }\n  return null;\n}",
+    "line_count": 10,
+    "correct_line": 7,
+    "explanation": "The second loop returns the first repeated character. It must return the first one counted once.",
+    "corrected_code": "function firstUnique(text) {\n  const counts = {};\n  for (const ch of text) {\n    counts[ch] = (counts[ch] || 0) + 1;\n  }\n  for (const ch of text) {\n    if (counts[ch] === 1) return ch;\n  }\n  return null;\n}",
+    "tags": [
+      "javascript",
+      "counting"
+    ],
+    "tests": [
+      "assert.strictEqual(firstUnique('aabc'), 'b');",
+      "assert.strictEqual(firstUnique('aabb'), null);"
+    ]
+  },
+  {
+    "slug": "js-two-sum",
+    "version": 1,
+    "pool": "practice",
+    "language": "javascript",
+    "difficulty": "hard",
+    "title": "Two sum",
+    "prompt": "Return the indexes of two different elements that add up to target, or null.",
+    "code": "function twoSum(values, target) {\n  const seen = new Map();\n  for (let i = 0; i < values.length; i++) {\n    const need = target - values[i];\n    if (seen.has(need)) return [seen.get(need), i];\n    seen.set(need, i);\n  }\n  return null;\n}",
+    "line_count": 9,
+    "correct_line": 6,
+    "explanation": "The map must remember the values already visited, not the values still needed.",
+    "corrected_code": "function twoSum(values, target) {\n  const seen = new Map();\n  for (let i = 0; i < values.length; i++) {\n    const need = target - values[i];\n    if (seen.has(need)) return [seen.get(need), i];\n    seen.set(values[i], i);\n  }\n  return null;\n}",
+    "tags": [
+      "javascript",
+      "map",
+      "lookup"
+    ],
+    "tests": [
+      "assert.deepStrictEqual(twoSum([2, 7, 11], 9), [0, 1]);",
+      "assert.strictEqual(twoSum([1, 2], 10), null);"
+    ]
+  },
+  {
+    "slug": "js-group-by-length",
+    "version": 1,
+    "pool": "practice",
+    "language": "javascript",
+    "difficulty": "hard",
+    "title": "Group words by length",
+    "prompt": "Group words into arrays keyed by their length.",
+    "code": "function groupByLength(words) {\n  const groups = {};\n  for (const word of words) {\n    const key = word.length;\n    if (!groups[key]) groups[key] = [];\n    groups[key] = word;\n  }\n  return groups;\n}",
+    "line_count": 9,
+    "correct_line": 6,
+    "explanation": "The group array is replaced by a single word on every iteration. Push the word into the group instead.",
+    "corrected_code": "function groupByLength(words) {\n  const groups = {};\n  for (const word of words) {\n    const key = word.length;\n    if (!groups[key]) groups[key] = [];\n    groups[key].push(word);\n  }\n  return groups;\n}",
+    "tags": [
+      "javascript",
+      "object",
+      "grouping"
+    ],
+    "tests": [
+      "assert.deepStrictEqual(groupByLength(['a', 'b', 'cc']), { 1: ['a', 'b'], 2: ['cc'] });",
+      "assert.deepStrictEqual(groupByLength([]), {});"
+    ]
+  },
+  {
+    "slug": "js-sum-async",
+    "version": 1,
+    "pool": "practice",
+    "language": "javascript",
+    "difficulty": "hard",
+    "title": "Sum async values",
+    "prompt": "Await every asynchronous load and return the total.",
+    "code": "async function sumAsync(values, load) {\n  let total = 0;\n  for (const value of values) {\n    total += load(value);\n  }\n  return total;\n}",
+    "line_count": 7,
+    "correct_line": 4,
+    "explanation": "load returns a promise. Without await the promise is added to the number instead of its result.",
+    "corrected_code": "async function sumAsync(values, load) {\n  let total = 0;\n  for (const value of values) {\n    total += await load(value);\n  }\n  return total;\n}",
+    "tags": [
+      "javascript",
+      "async",
+      "promise"
+    ],
+    "tests": [
+      "(async () => { assert.strictEqual(await sumAsync([1, 2], async (value) => value * 10), 30); })();",
+      "(async () => { assert.strictEqual(await sumAsync([], async (value) => value), 0); })();"
+    ]
+  },
+  {
+    "slug": "js-create-counter",
+    "version": 1,
+    "pool": "practice",
+    "language": "javascript",
+    "difficulty": "hard",
+    "title": "Counter closure",
+    "prompt": "Return a counter whose value() reads the count without changing it.",
+    "code": "function createCounter() {\n  let count = 0;\n  return {\n    increment() {\n      count++;\n    },\n    value() {\n      return count++;\n    },\n  };\n}",
+    "line_count": 11,
+    "correct_line": 8,
+    "explanation": "Reading the value also increments it, so every read changes the result. A getter must be free of side effects.",
+    "corrected_code": "function createCounter() {\n  let count = 0;\n  return {\n    increment() {\n      count++;\n    },\n    value() {\n      return count;\n    },\n  };\n}",
+    "tags": [
+      "javascript",
+      "closure",
+      "side-effect"
+    ],
+    "tests": [
+      "const c = createCounter(); c.increment(); assert.strictEqual(c.value(), 1); assert.strictEqual(c.value(), 1);",
+      "const d = createCounter(); assert.strictEqual(d.value(), 0);"
+    ]
+  },
+  {
+    "slug": "js-dedupe-first",
+    "version": 1,
+    "pool": "practice",
+    "language": "javascript",
+    "difficulty": "hard",
+    "title": "Remove duplicates",
+    "prompt": "Remove repeated values but keep the first occurrence of each value in order.",
+    "code": "function dedupe(values) {\n  return values.filter(\n    (value, index) => values.indexOf(value) === values.lastIndexOf(value)\n  );\n}",
+    "line_count": 5,
+    "correct_line": 3,
+    "explanation": "The predicate drops every value that appears more than once. Keep an element only at its first index.",
+    "corrected_code": "function dedupe(values) {\n  return values.filter(\n    (value, index) => values.indexOf(value) === index\n  );\n}",
+    "tags": [
+      "javascript",
+      "filter"
+    ],
+    "tests": [
+      "assert.deepStrictEqual(dedupe([1, 2, 1, 3]), [1, 2, 3]);",
+      "assert.deepStrictEqual(dedupe([4, 4]), [4]);"
+    ]
+  },
+  {
+    "slug": "js-to-numbers",
+    "version": 1,
+    "pool": "practice",
+    "language": "javascript",
+    "difficulty": "hard",
+    "title": "Parse integers",
+    "prompt": "Convert numeric strings to base 10 integers and drop invalid ones.",
+    "code": "function toNumbers(items) {\n  const numbers = items.map(parseInt);\n  return numbers.filter(\n    (value) => !Number.isNaN(value)\n  );\n}",
+    "line_count": 6,
+    "correct_line": 2,
+    "explanation": "map passes the index as the second argument, which parseInt treats as the radix. Wrap the call and pass 10.",
+    "corrected_code": "function toNumbers(items) {\n  const numbers = items.map((item) => parseInt(item, 10));\n  return numbers.filter(\n    (value) => !Number.isNaN(value)\n  );\n}",
+    "tags": [
+      "javascript",
+      "parse",
+      "callback"
+    ],
+    "tests": [
+      "assert.deepStrictEqual(toNumbers(['1', '2', '3']), [1, 2, 3]);",
+      "assert.deepStrictEqual(toNumbers(['7', 'x']), [7]);"
+    ]
+  },
+  {
+    "slug": "js-sort-by-age",
+    "version": 1,
+    "pool": "practice",
+    "language": "javascript",
+    "difficulty": "hard",
+    "title": "Sort people by age",
+    "prompt": "Return a new array of people sorted by ascending age.",
+    "code": "function sortByAge(people) {\n  const copy = [...people];\n  copy.sort((a, b) => a.age > b.age);\n  return copy;\n}",
+    "line_count": 5,
+    "correct_line": 3,
+    "explanation": "A comparator must return a negative, zero or positive number. A boolean never signals that a should come first.",
+    "corrected_code": "function sortByAge(people) {\n  const copy = [...people];\n  copy.sort((a, b) => a.age - b.age);\n  return copy;\n}",
+    "tags": [
+      "javascript",
+      "sort",
+      "comparator"
+    ],
+    "tests": [
+      "assert.deepStrictEqual(sortByAge([{ age: 3 }, { age: 1 }, { age: 2 }]).map((p) => p.age), [1, 2, 3]);",
+      "assert.deepStrictEqual(sortByAge([{ age: 9 }, { age: 4 }, { age: 7 }, { age: 1 }]).map((p) => p.age), [1, 4, 7, 9]);"
+    ]
+  }
+]

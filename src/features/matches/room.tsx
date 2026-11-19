@@ -5,6 +5,7 @@ import { Trophy, Flag, Minus } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { copy } from "@/content/copy.en";
 import { CodeLines } from "@/components/game/code-lines";
+import { defaultLanguage, languageNames } from "@/lib/game/languages";
 import { createClient } from "@/lib/supabase/browser";
 import { matchStateSchema, type MatchState } from "./contracts";
 const text = copy.match;
@@ -153,7 +154,7 @@ export function MatchRoom({ initial }: { initial: MatchState }) {
     {error && <div className="form-error" role="alert"><p>{error}</p><button type="button" className="button button-secondary" disabled={busy} onClick={() => { if (failed.current) void command(failed.current); else void refresh().catch(() => setError(text.errors.ENGINE_UNAVAILABLE)); }}>{text.retry}</button></div>}
     {terminal && <section className={`match-outcome match-outcome-${outcome}`} aria-labelledby="match-outcome-heading">
       <div className="match-outcome-main"><span className="match-outcome-icon"><ResultIcon aria-hidden="true" size={32} /></span><div><p className="eyebrow">{text.matchFinished}</p><h2 id="match-outcome-heading" tabIndex={-1} ref={resultHeading}>{finalResult}</h2>{decided && <p className="match-outcome-winner">@{state.players.find(player => player.id === state.winnerId)?.username} {text.winsMatch}</p>}{reason && <p>{reason}</p>}</div></div>
-      <div className="match-outcome-footer"><div className="match-final-score" aria-label={text.finalScore}>{state.players.map((player, index) => <span className="match-final-score-entry" key={player.id}>{index > 0 && <span aria-hidden="true" className="match-score-divider">:</span>}<span><strong>{player.score}</strong><small>@{player.username}</small></span></span>)}</div><MatchEntry replay userId={state.self.id} /></div>
+      <div className="match-outcome-footer"><div className="match-final-score" aria-label={text.finalScore}>{state.players.map((player, index) => <span className="match-final-score-entry" key={player.id}>{index > 0 && <span aria-hidden="true" className="match-score-divider">:</span>}<span><strong>{player.score}</strong><small>@{player.username}</small></span></span>)}</div><MatchEntry replay userId={state.self.id} initialLanguage={state.language ?? defaultLanguage} /></div>
       {state.progress && <div className="match-progress">
         <p>{text.xpEarned} <strong>+{state.progress.xpEarned}</strong></p>
         <p>{text.totalXpAfterMatch} <strong>{state.progress.totalXp}</strong></p>
@@ -170,7 +171,7 @@ export function MatchRoom({ initial }: { initial: MatchState }) {
         {!terminal && <p>{state.status === "waiting" ? player.ready ? text.ready : text.notReady : online ? text.connectedPlayer : text.reconnecting}</p>}
       </>}</div>;
     })}</div>
-    {state.status === "waiting" && <section className="profile-panel"><p>{text.waitingReady}</p><p className="muted">{text.roundRule}</p>
+    {state.status === "waiting" && <section className="profile-panel">{state.language && <p className="language-badge">{copy.languages.room}: {languageNames[state.language]}</p>}<p>{text.waitingReady}</p><p className="muted">{text.roundRule}</p>
       {state.host && !guest && <div className="match-invite"><h2>{text.invite}</h2><p className="muted">{text.share}</p>{inviteUrl ? <><input aria-label={text.invite} readOnly value={inviteUrl} /><button type="button" className="button button-secondary" onClick={() => { void navigator.clipboard.writeText(inviteUrl).then(() => setCopied(true)).catch(() => setError(text.errors.ENGINE_UNAVAILABLE)); }}>{text.copy}</button>{copied && <p role="status">{text.copied}</p>}</> : <p>{text.inviteMissing}</p>}<button type="button" className="button button-secondary" disabled={busy} onClick={() => run("invite")}>{text.rotate}</button></div>}
       <div className="practice-actions"><button className="button button-primary" type="button" disabled={busy} onClick={() => run("ready", { ready: !own?.ready })}>{own?.ready ? text.notReady : text.ready}</button></div>
     </section>}
@@ -178,15 +179,15 @@ export function MatchRoom({ initial }: { initial: MatchState }) {
     <div className="sr-only" role="status">{state.status === "playing" && seconds <= 10 ? copy.practice.lastSeconds : ""}</div>
     {between && <section className={`practice-result ${state.round.winnerId ? ownRoundWinner ? "result-correct" : "result-incorrect" : "result-timeout"}`}><div><div role="status"><h2>{roundResult}</h2>{roundReason && <p>{roundReason}</p>}</div><p>{text.nextRound}: {seconds} {text.seconds}</p></div></section>}
     {state.question && <section className="practice-question"><div className="practice-status"><div>
-      {state.question.difficulty && <p className="eyebrow">Python · {text.difficulties[state.question.difficulty]}</p>}
+      {state.question.difficulty && <p className="eyebrow">{languageNames[state.question.language]} · {text.difficulties[state.question.difficulty]}</p>}
       <h2>{state.question.title}</h2></div>{!terminal && !between && <strong className="practice-timer">{seconds}s</strong>}
-    </div><p>{state.question.prompt}</p><div className="game-terminal"><CodeLines code={state.question.code} selected={selected} disabled={busy || terminal || state.status !== "playing" || own?.hasSubmitted || seconds === 0} onSelect={setSelected} correctLine={state.solution?.correctLine} /></div>
+    </div><p>{state.question.prompt}</p><div className="game-terminal"><CodeLines language={state.question.language} code={state.question.code} selected={selected} disabled={busy || terminal || state.status !== "playing" || own?.hasSubmitted || seconds === 0} onSelect={setSelected} correctLine={state.solution?.correctLine} /></div>
       {!terminal && !between && <div className="practice-actions"><p>{own?.hasSubmitted ? text.submitted : selected ? `${text.answer}: ${selected}` : text.select}</p><button type="button" className="button button-primary" disabled={busy || own?.hasSubmitted || selected === null || state.status !== "playing" || seconds === 0} onClick={() => run("answers", { roundId: state.round.id, selectedLine: selected })}>{text.submit}</button></div>}
     </section>}
 
     {terminal && state.solution && <details key={state.round.id} className="practice-explanation"><summary>{text.explain}</summary><div className="practice-explanation-body"><p>{state.solution.explanation}</p></div></details>}
     {terminal && full && state.rounds && <section className="profile-panel match-summary"><h2>{text.matchSummary}</h2><table><thead><tr><th scope="col">{text.round}</th>{state.players.map(player => <th key={player.id} scope="col">@{player.username}</th>)}</tr></thead><tbody>{state.rounds.map(round => <tr key={round.id}><th scope="row">{round.number}{round.question === null && <small> · {text.notPlayed}</small>}</th>{state.players.map(player => <td key={player.id}>{round.solution?.answers.find(answer => answer.userId === player.id)?.points ?? 0}</td>)}</tr>)}</tbody></table></section>}
-    {terminal && previous.length > 0 && <section className="match-history"><h2>{text.previousRounds}</h2>{previous.map(round => <details className="practice-explanation" key={round.id}><summary>{text.reviewRound} {round.number}: {round.question!.title}</summary><div className="practice-explanation-body"><p>{text.yourAnswer}: {round.selectedLine ?? text.noAnswer}</p><CodeLines code={round.question!.code} correctLine={round.solution!.correctLine} /><p>{round.solution!.explanation}</p></div></details>)}</section>}
+    {terminal && previous.length > 0 && <section className="match-history"><h2>{text.previousRounds}</h2>{previous.map(round => <details className="practice-explanation" key={round.id}><summary>{text.reviewRound} {round.number}: {round.question!.title}</summary><div className="practice-explanation-body"><p>{text.yourAnswer}: {round.selectedLine ?? text.noAnswer}</p><CodeLines language={round.question!.language} code={round.question!.code} correctLine={round.solution!.correctLine} /><p>{round.solution!.explanation}</p></div></details>)}</section>}
     {!terminal && <button type="button" className="button button-secondary match-leave" disabled={busy} onClick={() => { if (window.confirm(text.confirmLeave)) run("leave"); }}>{text.leave}</button>}
   </div>;
 }

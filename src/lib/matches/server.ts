@@ -7,7 +7,8 @@ import { failure, json, mutationBody } from "@/lib/security/http";
 import { seal, unseal } from "@/lib/security/sealed";
 import { createPrivilegedClient } from "@/lib/supabase/privileged";
 import { siteOrigin } from "@/lib/env";
-import { answerBody, inviteCookieSchema, inviteTokenSchema, matchEmptyBody, matchIdSchema, matchReceiptSchema, matchStateSchema, readyBody } from "@/features/matches/contracts";
+import { createAction } from "@/lib/game/languages";
+import { answerBody, createMatchBody, inviteCookieSchema, inviteTokenSchema, matchEmptyBody, matchIdSchema, matchReceiptSchema, matchStateSchema, readyBody } from "@/features/matches/contracts";
 import { copy } from "@/content/copy.en";
 import { observed } from "@/lib/security/telemetry";
 import { authDependencyFailure } from "@/lib/validation/auth-errors";
@@ -28,10 +29,12 @@ export async function matchRequest(request: Request, action: Action, matchId?: s
 async function executeMatchRequest(request: Request, action: Action, matchId?: string) {
   let key: string | undefined;
   let body: unknown = {};
+  let rpcAction: string = action;
   if (!['get', 'active'].includes(action)) {
     try {
       body = await mutationBody(request);
-      (action === "ready" ? readyBody : action === "answer" ? answerBody : matchEmptyBody).parse(body);
+      const parsed = (action === "ready" ? readyBody : action === "answer" ? answerBody : action === "create" ? createMatchBody : matchEmptyBody).parse(body);
+      if (action === "create") rpcAction = createAction((parsed as { language?: Parameters<typeof createAction>[0] }).language);
       if (!["heartbeat", "sync"].includes(action)) key = z.uuid().parse(request.headers.get("idempotency-key"));
     } catch { return matchError("INVALID_REQUEST"); }
   }
@@ -70,7 +73,7 @@ async function executeMatchRequest(request: Request, action: Action, matchId?: s
     }
     const ready = action === "ready" ? readyBody.parse(body).ready : undefined;
     const answer = action === "answer" ? answerBody.parse(body) : undefined;
-    const result = await client.rpc("match_command", { p_action: action, p_match: matchId, p_key: key, p_ready: ready, p_round: answer?.roundId, p_line: answer?.selectedLine, p_hash: hash, p_cipher: ciphertext });
+    const result = await client.rpc("match_command", { p_action: rpcAction, p_match: matchId, p_key: key, p_ready: ready, p_round: answer?.roundId, p_line: answer?.selectedLine, p_hash: hash, p_cipher: ciphertext });
     if (result.error) return matchError(result.error.message);
     if (result.data && typeof result.data === "object" && !Array.isArray(result.data) && typeof result.data.commandError === "string") return matchError(result.data.commandError);
     if (["create", "join", "invite", "ready", "leave"].includes(action)) {

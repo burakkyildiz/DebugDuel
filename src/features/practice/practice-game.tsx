@@ -5,14 +5,17 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowRight, Clock3, Crosshair, CircleCheck, CircleX } from "lucide-react";
 import { copy } from "@/content/copy.en";
 import { CodeLines } from "@/components/game/code-lines";
+import { LanguagePicker } from "@/components/game/language-picker";
+import { defaultLanguage, languageNames, type GameLanguage } from "@/lib/game/languages";
 import { practiceStateSchema, uuid, type PracticeState } from "./contracts";
 
-type Command = { action: "create" | "get" | "answer"; sessionId?: string; selectedLine?: number; key?: string };
+type Command = { action: "create" | "get" | "answer"; sessionId?: string; selectedLine?: number; key?: string; language?: GameLanguage };
 const text = copy.practice;
 
 export function PracticeGame() {
   const [state, setState] = useState<PracticeState | null>(null);
   const [selected, setSelected] = useState<number | null>(null);
+  const [language, setLanguage] = useState<GameLanguage>(defaultLanguage);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [clock, setClock] = useState(0);
@@ -39,7 +42,7 @@ export function PracticeGame() {
       const before = performance.now();
       const path = command.action === "create" ? "/api/practice/sessions" : `/api/practice/sessions/${command.sessionId}${command.action === "answer" ? "/answer" : ""}`;
       const response = await fetch(path, command.action === "get" ? { cache: "no-store", signal: AbortSignal.timeout(15000) } : {
-        method: "POST", headers, signal: AbortSignal.timeout(15000), body: JSON.stringify(command.action === "answer" ? { selectedLine: command.selectedLine } : {}),
+        method: "POST", headers, signal: AbortSignal.timeout(15000), body: JSON.stringify(command.action === "answer" ? { selectedLine: command.selectedLine } : command.action === "create" ? { language: command.language ?? defaultLanguage } : {}),
       });
       const payload = await response.json();
       if (!response.ok) {
@@ -53,6 +56,7 @@ export function PracticeGame() {
       anchor.current = { server: Date.parse(result.serverNow), local: (before + received) / 2 };
       setClock(received);
       setState(result);
+      setLanguage(result.question.language);
       setSelected(result.selectedLine);
       pending.current = null;
       const url = new URL(window.location.href);
@@ -103,10 +107,11 @@ export function PracticeGame() {
     return () => window.clearTimeout(timer);
   }, [retryAt]);
 
-  const start = () => void execute({ action: "create", key: crypto.randomUUID() });
+  const start = () => void execute({ action: "create", key: crypto.randomUUID(), language });
   const locked = busy || !!error || state?.status !== "active" || seconds === 0;
   return <div className="practice-play">
     <p className="practice-note">{text.noProgress}</p>
+    {(!state || state.status === "resolved") && <LanguagePicker value={language} onChange={setLanguage} disabled={busy} />}
     {error && <div className="form-error" role="alert"><p>{error}</p>{!retryAt && <div className="practice-actions">
       <button type="button" className="button button-secondary" disabled={busy} onClick={() => pending.current && void execute(pending.current)}>{text.retry}</button>
       <button type="button" className="button button-secondary" disabled={busy} onClick={start}>{text.next}</button>
@@ -117,8 +122,8 @@ export function PracticeGame() {
       </div>
       <div className="sr-only" role="status">{state.status === "active" && seconds <= 10 ? text.lastSeconds : ""}</div>
       <section className="practice-question" aria-labelledby="challenge-title"><h2 id="challenge-title">{state.question.title}</h2><p>{state.question.prompt}</p>
-        <div className="game-terminal"><div className="terminal-bar"><span>{text.challenge}</span><span>{text.languageLabel}</span></div>
-          <CodeLines code={state.question.code} selected={selected} disabled={locked} onSelect={setSelected} correctLine={state.solution?.correctLine} />
+        <div className="game-terminal"><div className="terminal-bar"><span>{text.challenge}</span><span>{languageNames[state.question.language]}</span></div>
+          <CodeLines language={state.question.language} code={state.question.code} selected={selected} disabled={locked} onSelect={setSelected} correctLine={state.solution?.correctLine} />
         </div>
         {state.status === "active" && <><p className="practice-help">{text.keyboard}</p><div className="practice-actions"><span className="muted">{selected ? `${text.selected}: ${selected}` : text.noSelection}</span><button className="button button-primary" type="button" disabled={locked || selected === null} onClick={() => void execute({ action: "answer", sessionId: state.sessionId, selectedLine: selected!, key: crypto.randomUUID() })}>{busy ? copy.common.pending : seconds === 0 ? text.waiting : text.submit}</button></div></>}
       </section>

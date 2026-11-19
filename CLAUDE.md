@@ -1,5 +1,12 @@
 # Debug Duel — çalışma yönergeleri
 
+## Güncel çalışma — Java desteği, 19 Kasım 2026
+
+- Kullanıcı "tek tek ilerleyelim" çizgisinde JavaScript'ten sonra Java'yı istedi; Java canlıda. Üçüncü dil (Go, C# vb.) kullanıcı istemeden eklenmez. Mimari JavaScript ile aynı: `create:java` niteliği, DB izinli liste `('python','javascript','java')`, kod aynalaması `src/lib/game/languages.ts`.
+- Migration'lar `20261119120000_allow_java` (kısıtları genişletir; `match_command`/`practice_command` mevcut tanımlarından izinli liste değişmesiyle yeniden oluşturulur, sahip/ACL aynı) ve `20261119120100_add_java_questions`. Yerelde ve production'da uygulandı (production `nvpqjmwurmeupkbhozrn`, CLI ile); dry-run up to date. Sorular `supabase/questions/catalog.java.json`: 15 düello + 30 Practice, toplam 135 soru/335 vaka; Java soruları statik metot parçalarıdır (sınıf sarmalayıcı yok), `scripts/check-questions.py` hepsini tek derlemede `java -ea Main.java` ile çalıştırır (JDK 11+ gerekir; CI ubuntu-latest'te var).
+- Kod `7cbdd4b`, CI #28 başarılı; Vercel'de elle promote edildi, canlıda Java Practice (cevap/açıklama) ve health doğrulandı. Dil seçici açılır panel (listbox) olarak `b28393f` ile canlı. İki hesaplı Java düellosu canlıda denenmedi (yerel E2E'de geçti).
+- Yerel testte misafir Practice başlatma IP sınırı (20/saat, tek kova) tek koşuda 19'a dayanır; yeni misafir testi eklerken bütçeyi koru. Production CLI bağlantısı yerelde `supabase link` ile kurulu (`supabase/.temp`, Git dışı). GitHub API kimliksiz sınırı dolabilir; CI için actions sayfasına bak.
+
 ## Güncel çalışma — JavaScript desteği, 19 Kasım 2026
 
 - Kullanıcı çok dilli oyun istedi ve "tek tek ilerleyelim" dedi: önce JavaScript eklendi; Java vb. sonraki kararı kullanıcıya ait, kendiliğinden ekleme. Düello ve Practice odayı/oturumu kuran oyuncunun dilinde çalışır; dil seçici arayüzdedir.

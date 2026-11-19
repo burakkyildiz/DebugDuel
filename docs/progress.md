@@ -2,6 +2,10 @@
 
 Ana plan ve çıkış koşulları: `DEBUG_DUEL_PROJECT_SPEC.md`, bölüm 22.
 
+## Güncel kayıt — Java desteği, 19 Kasım 2026
+
+Düello ve Practice artık Python, JavaScript veya Java ile oynanır (`create:java`, iki yeni migration, 45 Java sorusu). Kod `7cbdd4b`, CI başarılı; production DB migrate edildi, sürüm Vercel'de elle promote edildi. Canlıda Java Practice ve health doğrulandı; iki hesaplı canlı Java düellosu yalnız yerel E2E'de denendi.
+
 ## Güncel kayıt — JavaScript desteği, 19 Kasım 2026
 
 Düello ve Practice artık Python veya JavaScript ile oynanır (`create:<language>` niteliği, üç yeni migration, 45 JS sorusu). Kod `295f61d`, CI başarılı; production DB migrate edildi ve sürüm Vercel'de elle promote edildi (Next 16.4.5 dahil). Canlıda dil seçici ve JavaScript misafir Practice doğrulandı. İki hesaplı canlı JavaScript düellosu kullanıcı denemesini bekler.

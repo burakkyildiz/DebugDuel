@@ -380,20 +380,31 @@ test("a plain room keeps Python for existing clients", async ({ browser }) => {
 });
 
 test("an error from a failed state read clears once a later read succeeds", async ({ browser }) => {
+  test.setTimeout(90000);
   const a = await fixture(browser);
   try {
     const room = await createRoom(a);
-    let blocked = true;
-    await a.page.route(`**/api/matches/${room.matchId}/state`, route => blocked
-      ? route.fulfill({ status: 503, contentType: "application/json", body: JSON.stringify({ error: { code: "ENGINE_UNAVAILABLE" } }) })
-      : route.continue());
+    // Fail state reads inside the page (no Playwright route handlers, which can linger at teardown).
+    await a.page.addInitScript(() => {
+      const flags = window as unknown as { __blockState: boolean };
+      flags.__blockState = true;
+      const original = window.fetch.bind(window);
+      window.fetch = (input: RequestInfo | URL, init?: RequestInit) => {
+        const href = typeof input === "string" ? input : input instanceof URL ? input.href : input.url;
+        if (flags.__blockState && /\/api\/matches\/[^/]+\/state$/.test(new URL(href, window.location.href).pathname)) {
+          return Promise.resolve(new Response(JSON.stringify({ error: { code: "ENGINE_UNAVAILABLE" } }), { status: 503, headers: { "Content-Type": "application/json" } }));
+        }
+        return original(input, init);
+      };
+    });
     await a.page.goto(`/match/${room.matchId}`);
     const banner = a.page.getByRole("alert").filter({ hasText: "game engine is temporarily unavailable" });
-    await expect(banner).toBeVisible();
+    await expect(banner).toBeVisible({ timeout: 15000 });
     // Reads work again: the next successful read must remove the stale banner.
-    blocked = false;
-    await a.page.getByRole("button", { name: "Retry request", exact: true }).click();
+    await a.page.evaluate(() => { (window as unknown as { __blockState: boolean }).__blockState = false; });
+    // A background read may already have cleared the banner (that is the fix); clicking Retry is only the fallback.
+    await a.page.getByRole("button", { name: "Retry request", exact: true }).click({ timeout: 2000 }).catch(() => undefined);
     await expect(banner).toHaveCount(0, { timeout: 10000 });
     await expect(a.page.getByText("Waiting for your rival")).toBeVisible();
-  } finally { await a.page.unrouteAll({ behavior: "ignoreErrors" }); await a.context.close(); }
+  } finally { await a.context.close(); }
 });

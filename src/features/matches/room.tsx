@@ -26,6 +26,8 @@ export function MatchRoom({ initial }: { initial: MatchState }) {
   const inFlight = useRef(false);
   const backgroundFlight = useRef(false);
   const failed = useRef<Command | null>(null);
+  // A failed load-time read shows an error; any later successful read must clear it again.
+  const loadFailed = useRef(false);
   const mounted = useRef(false);
   const resultHeading = useRef<HTMLHeadingElement>(null);
   const matchId = initial.matchId;
@@ -50,6 +52,7 @@ export function MatchRoom({ initial }: { initial: MatchState }) {
     const data = await response.json();
     if (!response.ok) throw new Error(data.error?.message ?? text.errors.ENGINE_UNAVAILABLE);
     apply(data, before);
+    if (loadFailed.current) { loadFailed.current = false; setError(""); }
   }, [matchId, apply]);
   const command = useCallback(async (request: Command) => {
     const silent = ["heartbeat", "sync"].includes(request.action);
@@ -82,7 +85,7 @@ export function MatchRoom({ initial }: { initial: MatchState }) {
       // Establish the local baseline before the first timer tick or state response.
       const local = performance.now();
       setAnchor({ server: Date.parse(initial.serverNow), local }); setClock(local);
-      try { setInviteUrl(sessionStorage.getItem(`dd-invite:${initial.self.id}:${matchId}`) ?? ""); } catch { /* Optional per-tab storage. */ } void refresh().catch(() => setError(text.errors.ENGINE_UNAVAILABLE)); }, 0);
+      try { setInviteUrl(sessionStorage.getItem(`dd-invite:${initial.self.id}:${matchId}`) ?? ""); } catch { /* Optional per-tab storage. */ } void refresh().catch(() => { loadFailed.current = true; setError(text.errors.ENGINE_UNAVAILABLE); }); }, 0);
     return () => { mounted.current = false; window.clearTimeout(id); };
   }, [matchId, initial.self.id, initial.serverNow, refresh]);
   useEffect(() => {
@@ -151,7 +154,7 @@ export function MatchRoom({ initial }: { initial: MatchState }) {
       {full && state.status !== "waiting" && <p className="eyebrow">{text.round} {state.round.number}/3</p>}
       <h1>{state.status === "waiting" ? text.waiting : terminal ? full ? text.matchFinished : text.finished : between ? text.between : state.status === "countdown" ? text.countdown : text.playing}</h1>
     </div><span role="status" className="muted">{connection === "live" ? text.connected : connection === "connecting" ? text.reconnecting : text.polling}</span></div>
-    {error && <div className="form-error" role="alert"><p>{error}</p><button type="button" className="button button-secondary" disabled={busy} onClick={() => { if (failed.current) void command(failed.current); else void refresh().catch(() => setError(text.errors.ENGINE_UNAVAILABLE)); }}>{text.retry}</button></div>}
+    {error && <div className="form-error" role="alert"><p>{error}</p><button type="button" className="button button-secondary" disabled={busy} onClick={() => { if (failed.current) void command(failed.current); else void refresh().catch(() => { loadFailed.current = true; setError(text.errors.ENGINE_UNAVAILABLE); }); }}>{text.retry}</button></div>}
     {terminal && <section className={`match-outcome match-outcome-${outcome}`} aria-labelledby="match-outcome-heading">
       <div className="match-outcome-main"><span className="match-outcome-icon"><ResultIcon aria-hidden="true" size={32} /></span><div><p className="eyebrow">{text.matchFinished}</p><h2 id="match-outcome-heading" tabIndex={-1} ref={resultHeading}>{finalResult}</h2>{decided && <p className="match-outcome-winner">@{state.players.find(player => player.id === state.winnerId)?.username} {text.winsMatch}</p>}{reason && <p>{reason}</p>}</div></div>
       <div className="match-outcome-footer"><div className="match-final-score" aria-label={text.finalScore}>{state.players.map((player, index) => <span className="match-final-score-entry" key={player.id}>{index > 0 && <span aria-hidden="true" className="match-score-divider">:</span>}<span><strong>{player.score}</strong><small>@{player.username}</small></span></span>)}</div><MatchEntry replay userId={state.self.id} initialLanguage={state.language ?? defaultLanguage} /></div>

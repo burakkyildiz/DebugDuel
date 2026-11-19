@@ -378,3 +378,22 @@ test("a plain room keeps Python for existing clients", async ({ browser }) => {
     expect((await state(a.context, room.matchId)).language).toBe("python");
   } finally { await a.context.close(); }
 });
+
+test("an error from a failed state read clears once a later read succeeds", async ({ browser }) => {
+  const a = await fixture(browser);
+  try {
+    const room = await createRoom(a);
+    let blocked = true;
+    await a.page.route(`**/api/matches/${room.matchId}/state`, route => blocked
+      ? route.fulfill({ status: 503, contentType: "application/json", body: JSON.stringify({ error: { code: "ENGINE_UNAVAILABLE" } }) })
+      : route.continue());
+    await a.page.goto(`/match/${room.matchId}`);
+    const banner = a.page.getByRole("alert").filter({ hasText: "game engine is temporarily unavailable" });
+    await expect(banner).toBeVisible();
+    // Reads work again: the next successful read must remove the stale banner.
+    blocked = false;
+    await a.page.getByRole("button", { name: "Retry request", exact: true }).click();
+    await expect(banner).toHaveCount(0, { timeout: 10000 });
+    await expect(a.page.getByText("Waiting for your rival")).toBeVisible();
+  } finally { await a.page.unrouteAll({ behavior: "ignoreErrors" }); await a.context.close(); }
+});

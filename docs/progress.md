@@ -2,6 +2,10 @@
 
 Ana plan ve çıkış koşulları: `DEBUG_DUEL_PROJECT_SPEC.md`, bölüm 22.
 
+## Güncel kayıt — JavaScript desteği, 19 Kasım 2026
+
+Düello ve Practice artık Python veya JavaScript ile oynanır (`create:<language>` niteliği, üç yeni migration, 45 JS sorusu). Kod `295f61d`, CI başarılı; production DB migrate edildi ve sürüm Vercel'de elle promote edildi (Next 16.4.5 dahil). Canlıda dil seçici ve JavaScript misafir Practice doğrulandı. İki hesaplı canlı JavaScript düellosu kullanıcı denemesini bekler.
+
 ## Güncel kayıt — bakım, audit ve tur arası süre, 17 Kasım 2026
 
 Next 16.4.5 ve CI `pnpm audit` adımı `d90eaec` ile; tur arası bekleme 5+3 saniye `38faf41` ile canlı (migration `20261117200000`). Production kullanıcıları kullanıcı onayıyla temizlendi, iki yeni hesapla maç canlıda doğrulandı: tur aralığı 8,0 saniye, tek settlement, XP ledger kuralla uyumlu. Güvenlik incelemesi kritik/yüksek bulgu çıkarmadı; düşük notlar `AGENTS.md` içindedir. Gerçek kullanıcı yükü ve e-posta teslimi için garanti yoktur.

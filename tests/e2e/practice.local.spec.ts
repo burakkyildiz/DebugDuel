@@ -168,8 +168,14 @@ test("verified account can Practice before onboarding with no XP or statistics c
 
 test("guest chooses JavaScript, keeps it for the next challenge", async ({ page }) => {
   await page.goto("/practice");
-  await expect(page.getByRole("radio", { name: "Python" })).toBeChecked();
-  await page.getByRole("radio", { name: "JavaScript" }).check();
+  const picker = page.getByRole("button", { name: /Language/ });
+  await expect(picker).toContainText("Python");
+  await expect(page.getByRole("option")).toHaveCount(0);
+  await picker.click();
+  await expect(page.getByRole("option")).toHaveCount(2);
+  await page.getByRole("option", { name: "JavaScript" }).click();
+  await expect(page.getByRole("option")).toHaveCount(0);
+  await expect(picker).toContainText("JavaScript");
   const created = page.waitForResponse(r => r.url().endsWith("/api/practice/sessions") && r.request().method() === "POST");
   await page.getByRole("button", { name: "Start Practice", exact: true }).click();
   const active = await (await created).json();
@@ -179,7 +185,7 @@ test("guest chooses JavaScript, keeps it for the next challenge", async ({ page 
   await page.getByLabel(`Line ${line}`, { exact: true }).check();
   await page.getByRole("button", { name: "Submit Answer", exact: true }).click();
   await expect(page.getByRole("heading", { name: "You found the bug." })).toBeVisible();
-  await expect(page.getByRole("radio", { name: "JavaScript" })).toBeChecked();
+  await expect(page.getByRole("button", { name: /Language/ })).toContainText("JavaScript");
   const next = page.waitForResponse(r => r.url().endsWith("/api/practice/sessions") && r.request().method() === "POST");
   await page.getByRole("button", { name: "Next Question", exact: true }).click();
   expect((await (await next).json()).question.language).toBe("javascript");

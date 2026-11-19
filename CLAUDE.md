@@ -1,5 +1,13 @@
 # Debug Duel — çalışma yönergeleri
 
+## Güncel çalışma — JavaScript desteği, 19 Kasım 2026
+
+- Kullanıcı çok dilli oyun istedi ve "tek tek ilerleyelim" dedi: önce JavaScript eklendi; Java vb. sonraki kararı kullanıcıya ait, kendiliğinden ekleme. Düello ve Practice odayı/oturumu kuran oyuncunun dilinde çalışır; dil seçici arayüzdedir.
+- Mimari: dil `create:<language>` eylem niteliğiyle taşınır (`create` = Python), mevcut fonksiyon imzaları/sahipleri/ACL'ler değişmedi. İzinli diller DB'de `('python','javascript')` (`matches_language_check`, `questions_language_check`); `private.practice_sessions.language` sütunu; kod tarafı aynalaması `src/lib/game/languages.ts`. Yeni dil eklemek: katalog + migration + bu liste + CI soru denetimi.
+- Migration'lar `20261119100000_multi_language_engine`, `20261119100100_add_javascript_questions`, `20261119100200_match_state_language`; yerelde ve production'da uygulandı (önce migration, sonra uygulama; geriye uyumlu). Sorular `supabase/questions/catalog.javascript.json`: 15 düello + 30 Practice (5/5/5 ve 10/10/10), toplam 90 soru/218 vaka (`scripts/check-questions.py` Node ile JS'yi de çalıştırır).
+- Kod `295f61d` (CI başarılı: 626 DB, 182 unit, match 12, Practice 25). **Vercel'de otomatik domain ataması kapalı; her sürüm elle "Promote" edilmelidir.** 10 Kasım'dan beri promote edilmeyen sürümler (Next 16.4.5, JS arayüzü) 19 Kasım'da `295f61d` promote edilerek canlıya alındı; canlı `/practice` dil seçici ve JavaScript misafir oturumu (cevap/açıklama) doğrulandı, health ready. İki hesaplı canlı JavaScript düellosu 19 Kasım'da oynandı (3 tur JS, 138+142+139, +80 XP formüle uygun). Dil seçici açılır panel (listbox) yapıldı; yeni build'in de elle promote edilmesi gerekir. Daveti açan sayfa dili göstermez (olası iyileştirme).
+- `AGENTS.md` yalnız Next.js uyarı bloğudur ve `next dev` tarafından yeniden oluşturulur; bilerek repoda bırakıldı. `tsconfig.json` yerel değişikliği commit dışıdır; `next-env.d.ts` yerel preview ile değişirse geri al.
+
 ## Güncel çalışma — bakım ve tur arası süre, 17 Kasım 2026
 
 - Kullanıcı güvenlik/mimari incelemesi istedi; kritik/yüksek bulgu çıkmadı. Düşük notlar: `profiles` anon SELECT yetkisi leaderboard rate limit'ini Data API üzerinden atlatabilir; e-posta linkleri GET ile tüketilir; `next=/reset-password` OAuth girişi recovery işareti koyar; tek `GUEST_SESSION_SECRET` birden çok amaçta kullanılır. Hiçbiri kod olarak değiştirilmedi; kullanıcı istemeden değiştirme.

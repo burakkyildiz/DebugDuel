@@ -6,6 +6,7 @@ import { defaultLanguage, type GameLanguage } from "@/lib/game/languages";
 const syntax: Record<GameLanguage, { comment: string; keywords: string }> = {
   python: { comment: "#", keywords: "def|return|if|else|elif|for|while|in|not|and|or|True|False|None|from|import" },
   javascript: { comment: "//", keywords: "function|return|if|else|for|while|of|in|const|let|var|new|async|await|true|false|null|undefined|typeof|throw|break|continue" },
+  java: { comment: "//", keywords: "static|return|if|else|for|while|switch|case|default|break|continue|new|try|catch|throw|true|false|null|int|long|double|boolean|char|void|final|class|public|private" },
 };
 
 function highlight(line: string, language: GameLanguage) {

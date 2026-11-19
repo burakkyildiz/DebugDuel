@@ -6,11 +6,13 @@ from pathlib import Path
 import shutil
 import subprocess
 import sys
+import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
 CATALOG = ROOT / 'supabase/questions/catalog.json'
-CATALOGS = {'python': CATALOG, 'javascript': ROOT / 'supabase/questions/catalog.javascript.json'}
+CATALOGS = {'python': CATALOG, 'javascript': ROOT / 'supabase/questions/catalog.javascript.json', 'java': ROOT / 'supabase/questions/catalog.java.json'}
 NODE = shutil.which('node')
+JAVA = shutil.which('java')
 SEED = ROOT / 'supabase/seed.sql'
 
 
@@ -37,6 +39,29 @@ def render_seed(questions):
     )
 
 
+def run_java(questions):
+    """Compile every Java question and variant in one source file; returns {(slug, variant): pass/fail string}."""
+    assert JAVA, 'java (JDK 11+) is required to audit Java questions'
+    classes, calls = [], []
+    for index, q in enumerate(questions):
+        for variant, code in (('o', q['code']), ('f', q['corrected_code'])):
+            name = f'Q{index}{variant}'
+            checks = ''.join(f'    try {{ {case} r.append(\'1\'); }} catch (Throwable t) {{ r.append(\'0\'); }}\n' for case in q['tests'])
+            indented = '\n'.join('  ' + line for line in code.split('\n'))
+            classes.append(f'  static class {name} {{\n{indented}\n    static String run() {{\n    StringBuilder r = new StringBuilder();\n{checks}    return r.toString();\n    }}\n  }}')
+            calls.append(f'    System.out.println("{index} {variant} " + {name}.run());')
+    source = 'import java.util.*;\npublic class Main {\n' + '\n'.join(classes) + '\n  public static void main(String[] args) {\n' + '\n'.join(calls) + '\n  }\n}\n'
+    with tempfile.TemporaryDirectory() as directory:
+        (Path(directory) / 'Main.java').write_text(source)
+        result = subprocess.run([JAVA, '-ea', 'Main.java'], cwd=directory, capture_output=True, text=True, timeout=180)
+    assert result.returncode == 0, result.stderr[-3000:]
+    outcome = {}
+    for line in result.stdout.splitlines():
+        index, variant, bits = line.split(' ')
+        outcome[(questions[int(index)]['slug'], variant)] = bits
+    return outcome
+
+
 def command(language, code, case):
     if language == 'python':
         return [sys.executable, '-I', '-c', code + '\n' + case]
@@ -56,6 +81,7 @@ def audit(questions):
     languages = {q['language'] for q in questions}
     assert distribution == {(l, p, d): (5 if p == 'duel' else 10) for l in languages for p in ('duel', 'practice') for d in ('easy', 'medium', 'hard')}
     cases = 0
+    java_results = run_java([q for q in questions if q['language'] == 'java']) if any(q['language'] == 'java' for q in questions) else {}
     for q in questions:
         label = q['slug']
         for field in ('title', 'prompt', 'explanation'):
@@ -74,6 +100,12 @@ def audit(questions):
         # Isolated, bounded child processes execute only checked-in author fixtures.
         # Each test gets fresh globals, so one case cannot contaminate another.
         failures = 0
+        if q['language'] == 'java':
+            original_bits, fixed_bits = java_results[(label, 'o')], java_results[(label, 'f')]
+            assert fixed_bits == '1' * len(q['tests']), (label, 'corrected code fails its tests', fixed_bits)
+            assert '0' in original_bits, (label, 'bug is not exposed by tests')
+            cases += len(q['tests'])
+            continue
         for case in q['tests']:
             for code, expected_pass in ((original, False), (fixed, True)):
                 result = subprocess.run(command(q['language'], code, case), capture_output=True, text=True, timeout=5)

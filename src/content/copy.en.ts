@@ -23,9 +23,9 @@ export const copy = {
     ],
     bottomTitle: "Trust your instincts.\nCheck the next line.", bottomBody: "The smallest bug can make the best duel.",
   },
-  languages: { label: "Language", choose: "Choose your language", python: "Python", javascript: "JavaScript", room: "Room language" },
+  languages: { label: "Language", choose: "Choose your language", python: "Python", javascript: "JavaScript", java: "Java", room: "Room language" },
   common: { back: "Back to home", continue: "Continue", pending: "Please wait…", retry: "Try again", empty: "Nothing here yet.", unavailable: "Temporarily unavailable", skip: "Skip to content" },
-  footer: { line: "Small bugs. Big rivalries.", note: "Built for curious minds. Python and JavaScript.", copyright: "© Debug Duel" },
+  footer: { line: "Small bugs. Big rivalries.", note: "Built for curious minds. Python, JavaScript and Java.", copyright: "© Debug Duel" },
   auth: {
     captchaRequired: "Complete the verification before continuing.",
     captchaFailure: "Verification failed or expired. Please verify again.",
@@ -40,7 +40,7 @@ export const copy = {
   leaderboard: { eyebrow: "THE LONG GAME", title: "Every bug counts.", body: "Experience earned in private duels. A record of showing up, getting sharper and finding the line.", emptyTitle: "The first rivalry is still to come.", emptyBody: "Players appear here after completing their first duel. Your next challenge could be the start.", error: "We couldn’t load the leaderboard. Please try again later.", xp: "XP leaderboard", note: "Sorted by XP, then wins and account creation date. XP measures experience.", columns: ["Position", "Player", "XP", "W / L / D"] },
   practice: {
     eyebrow: "JUST YOU AND THE BUG", title: "A little practice goes a long way.",
-    body: "Read a short Python or JavaScript snippet, select the faulty line and put your instincts to the test.",
+    body: "Read a short Python, JavaScript or Java snippet, select the faulty line and put your instincts to the test.",
     start: "Start Practice", next: "Next Question", submit: "Submit Answer", selected: "Selected line", noSelection: "Select a line before submitting.",
     challenge: "Your challenge", codeLabel: "Choose the faulty line", lineLabel: "Line", solution: "The fix", correctLine: "Correct line",
     verdictCorrect: "Correct answer", verdictIncorrect: "Incorrect answer", verdictTimeout: "Time is up", yourAnswer: "Your line", showExplanation: "Why? See explanation",

@@ -7,7 +7,7 @@ test.skip(process.env.LOCAL_MATCH_E2E !== "1", "Run pnpm test:match:local agains
 test.use({ trace: "off", screenshot: "off", video: "off" });
 const origin = process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:3005";
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const catalog: { code: string; correct_line: number }[] = ["catalog.json", "catalog.javascript.json"].flatMap(file => JSON.parse(readFileSync(`supabase/questions/${file}`, "utf8")));
+const catalog: { code: string; correct_line: number }[] = ["catalog.json", "catalog.javascript.json", "catalog.java.json"].flatMap(file => JSON.parse(readFileSync(`supabase/questions/${file}`, "utf8")));
 const headers = (key = randomUUID()) => ({ Origin: origin, "Idempotency-Key": key });
 const post = (request: APIRequestContext, path: string, body: object = {}, key = randomUUID()) => request.post(path, { headers: headers(key), data: body });
 function publicClient() { return createClient(url, process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!, { auth: { persistSession: false, autoRefreshToken: false } }); }
@@ -335,38 +335,38 @@ test("short offline refresh preserves an answer; a later closed rival forfeits a
   } finally { await a.context.close(); await b.context.close(); }
 });
 
-test("a JavaScript room serves JavaScript to both players and rejects unsupported languages", async ({ browser }) => {
+for (const [language, label] of [["javascript", "JavaScript"], ["java", "Java"]] as const) test(`a ${label} room serves ${label} to both players and rejects unsupported languages`, async ({ browser }) => {
   test.setTimeout(90000);
   const a = await fixture(browser); const b = await fixture(browser);
   try {
-    for (const language of ["ruby", "javascript:x", 5, null]) expect((await post(a.context.request, "/api/matches", { language })).status(), String(language)).toBe(400);
-    expect((await post(a.context.request, "/api/matches", { language: "javascript", host: b.id })).status()).toBe(400);
-    const created = await post(a.context.request, "/api/matches", { language: "javascript" });
+    for (const bad of ["ruby", "javascript:x", "java:x", 5, null]) expect((await post(a.context.request, "/api/matches", { language: bad })).status(), String(bad)).toBe(400);
+    expect((await post(a.context.request, "/api/matches", { language, host: b.id })).status()).toBe(400);
+    const created = await post(a.context.request, "/api/matches", { language });
     expect(created.status()).toBe(200);
     const room = await created.json();
-    expect((await state(a.context, room.matchId)).language).toBe("javascript");
+    expect((await state(a.context, room.matchId)).language).toBe(language);
     await joinRoom(b, room.inviteUrl);
-    expect((await state(b.context, room.matchId)).language).toBe("javascript");
+    expect((await state(b.context, room.matchId)).language).toBe(language);
     await b.page.goto(`/match/${room.matchId}`);
-    await expect(b.page.getByText("Room language: JavaScript")).toBeVisible();
+    await expect(b.page.getByText(`Room language: ${label}`)).toBeVisible();
     expect((await post(a.context.request, `/api/matches/${room.matchId}/ready`, { ready: true })).status()).toBe(200);
     expect((await post(b.context.request, `/api/matches/${room.matchId}/ready`, { ready: true })).status()).toBe(200);
     await expect.poll(async () => (await state(a.context, room.matchId)).status, { timeout: 15000 }).toBe("playing");
     const active = await state(b.context, room.matchId);
-    expect(active.question.language).toBe("javascript");
+    expect(active.question.language).toBe(language);
     const line = catalog.find(q => q.code === active.question.code)!.correct_line;
     await b.page.reload();
-    await expect(b.page.getByText("JavaScript · Easy")).toBeVisible();
+    await expect(b.page.getByText(`${label} · Easy`)).toBeVisible();
     const answered = await post(b.context.request, `/api/matches/${room.matchId}/answers`, { roundId: active.round.id, selectedLine: line });
     expect(answered.status()).toBe(200);
     const closed = await state(a.context, room.matchId);
     expect(closed.status).toBe("between_rounds");
     expect(closed.solution.correctLine).toBe(line);
-    expect(closed.rounds[0].question.language).toBe("javascript");
+    expect(closed.rounds[0].question.language).toBe(language);
     // Later rounds keep the room language.
     await expect.poll(async () => (await state(a.context, room.matchId)).status, { timeout: 20000 }).toBe("playing");
     const second = await state(a.context, room.matchId);
-    expect(second.question.language).toBe("javascript");
+    expect(second.question.language).toBe(language);
     expect(second.question.difficulty).toBe("medium");
   } finally { await a.context.close(); await b.context.close(); }
 });

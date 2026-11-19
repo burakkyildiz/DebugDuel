@@ -5,7 +5,7 @@ import { test, expect, type APIRequestContext } from "@playwright/test";
 
 test.skip(process.env.LOCAL_PRACTICE_E2E !== "1", "Run pnpm test:practice:local against real local Supabase.");
 test.use({ trace: "off", screenshot: "off", video: "off" });
-const catalog: { code: string; correct_line: number }[] = ["catalog.json", "catalog.javascript.json"].flatMap(file => JSON.parse(readFileSync(`supabase/questions/${file}`, "utf8")));
+const catalog: { code: string; correct_line: number }[] = ["catalog.json", "catalog.javascript.json", "catalog.java.json"].flatMap(file => JSON.parse(readFileSync(`supabase/questions/${file}`, "utf8")));
 const origin = process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:3002";
 function options(body: unknown = {}, key = randomUUID()) { return { headers: { Origin: origin, "Idempotency-Key": key }, data: body }; }
 async function start(request: APIRequestContext, key = randomUUID()) {
@@ -166,31 +166,34 @@ test("verified account can Practice before onboarding with no XP or statistics c
   expect(cookies.some(c => c.name.startsWith("sb-"))).toBe(true);
 });
 
-test("guest chooses JavaScript, keeps it for the next challenge", async ({ page }) => {
+for (const [language, label] of [["javascript", "JavaScript"], ["java", "Java"]] as const) test(`guest chooses ${label}, keeps it for the next challenge`, async ({ page }, testInfo) => {
+  // Guests share a 20 creations/hour budget in local runs, so the second language is checked once on desktop.
+  test.skip(language === "java" && testInfo.project.name === "mobile", "Desktop covers the Java choice; mobile layout is covered by the JavaScript run.");
   await page.goto("/practice");
   const picker = page.getByRole("button", { name: /Language/ });
   await expect(picker).toContainText("Python");
   await expect(page.getByRole("option")).toHaveCount(0);
   await picker.click();
-  await expect(page.getByRole("option")).toHaveCount(2);
-  await page.getByRole("option", { name: "JavaScript" }).click();
+  await expect(page.getByRole("option")).toHaveCount(3);
+  await page.getByRole("option", { name: label, exact: true }).click();
   await expect(page.getByRole("option")).toHaveCount(0);
-  await expect(picker).toContainText("JavaScript");
+  await expect(picker).toContainText(label);
   const created = page.waitForResponse(r => r.url().endsWith("/api/practice/sessions") && r.request().method() === "POST");
   await page.getByRole("button", { name: "Start Practice", exact: true }).click();
   const active = await (await created).json();
-  expect(active.question.language).toBe("javascript");
-  await expect(page.locator(".terminal-bar")).toContainText("JavaScript");
+  expect(active.question.language).toBe(language);
+  await expect(page.locator(".terminal-bar")).toContainText(label);
   const line = correctLine(active.question.code);
   await page.getByLabel(`Line ${line}`, { exact: true }).check();
   await page.getByRole("button", { name: "Submit Answer", exact: true }).click();
   await expect(page.getByRole("heading", { name: "You found the bug." })).toBeVisible();
-  await expect(page.getByRole("button", { name: /Language/ })).toContainText("JavaScript");
+  await expect(page.getByRole("button", { name: /Language/ })).toContainText(label);
+  if (language === "java" || testInfo.project.name === "mobile") return;
   const next = page.waitForResponse(r => r.url().endsWith("/api/practice/sessions") && r.request().method() === "POST");
   await page.getByRole("button", { name: "Next Question", exact: true }).click();
-  expect((await (await next).json()).question.language).toBe("javascript");
+  expect((await (await next).json()).question.language).toBe(language);
   await page.reload();
-  await expect(page.locator(".terminal-bar")).toContainText("JavaScript");
+  await expect(page.locator(".terminal-bar")).toContainText(label);
 });
 
 test("Practice rejects unsupported or smuggled languages and keeps Python as the default", async ({ context }) => {

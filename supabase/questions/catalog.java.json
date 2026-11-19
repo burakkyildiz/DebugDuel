@@ -1,0 +1,1038 @@
+[
+  {
+    "slug": "java-sum-readings",
+    "version": 1,
+    "pool": "duel",
+    "language": "java",
+    "difficulty": "easy",
+    "title": "Sum the readings",
+    "prompt": "Return the sum of all readings; an empty array totals zero.",
+    "code": "static int sumReadings(int[] readings) {\n  int total = 0;\n  for (int reading : readings) {\n    total = reading;\n  }\n  return total;\n}",
+    "line_count": 7,
+    "correct_line": 4,
+    "explanation": "The accumulator is overwritten on every pass. Add each reading to keep the running total.",
+    "corrected_code": "static int sumReadings(int[] readings) {\n  int total = 0;\n  for (int reading : readings) {\n    total += reading;\n  }\n  return total;\n}",
+    "tags": [
+      "java",
+      "sum"
+    ],
+    "tests": [
+      "assert sumReadings(new int[]{2, 3, 4}) == 9;",
+      "assert sumReadings(new int[]{}) == 0;",
+      "assert sumReadings(new int[]{-2, 2}) == 0;"
+    ]
+  },
+  {
+    "slug": "java-largest-value",
+    "version": 1,
+    "pool": "duel",
+    "language": "java",
+    "difficulty": "easy",
+    "title": "Largest value",
+    "prompt": "Return the largest value in a non-empty array, including when every value is negative.",
+    "code": "static int largest(int[] values) {\n  int best = 0;\n  for (int value : values) {\n    if (value > best) best = value;\n  }\n  return best;\n}",
+    "line_count": 7,
+    "correct_line": 2,
+    "explanation": "Starting at zero beats every negative value. Start from the first element instead.",
+    "corrected_code": "static int largest(int[] values) {\n  int best = values[0];\n  for (int value : values) {\n    if (value > best) best = value;\n  }\n  return best;\n}",
+    "tags": [
+      "java",
+      "max"
+    ],
+    "tests": [
+      "assert largest(new int[]{-3, -1, -7}) == -1;",
+      "assert largest(new int[]{4, 9, 2}) == 9;"
+    ]
+  },
+  {
+    "slug": "java-count-vowels",
+    "version": 1,
+    "pool": "duel",
+    "language": "java",
+    "difficulty": "easy",
+    "title": "Count the vowels",
+    "prompt": "Count the vowels in the text, ignoring case.",
+    "code": "static int countVowels(String text) {\n  int count = 0;\n  for (char c : text.toLowerCase().toCharArray()) {\n    if (\"aeiou\".indexOf(c) > 0) count++;\n  }\n  return count;\n}",
+    "line_count": 7,
+    "correct_line": 4,
+    "explanation": "indexOf returns 0 for the first vowel, so the check must accept zero. Use >= 0.",
+    "corrected_code": "static int countVowels(String text) {\n  int count = 0;\n  for (char c : text.toLowerCase().toCharArray()) {\n    if (\"aeiou\".indexOf(c) >= 0) count++;\n  }\n  return count;\n}",
+    "tags": [
+      "java",
+      "strings"
+    ],
+    "tests": [
+      "assert countVowels(\"apple\") == 2;",
+      "assert countVowels(\"sky\") == 0;",
+      "assert countVowels(\"AEIOU\") == 5;"
+    ]
+  },
+  {
+    "slug": "java-average",
+    "version": 1,
+    "pool": "duel",
+    "language": "java",
+    "difficulty": "easy",
+    "title": "Average of scores",
+    "prompt": "Return the exact average of the scores as a double.",
+    "code": "static double average(int[] values) {\n  int sum = 0;\n  for (int value : values) sum += value;\n  return sum / values.length;\n}",
+    "line_count": 5,
+    "correct_line": 4,
+    "explanation": "Dividing two ints truncates the fraction. Convert one operand to double first.",
+    "corrected_code": "static double average(int[] values) {\n  int sum = 0;\n  for (int value : values) sum += value;\n  return (double) sum / values.length;\n}",
+    "tags": [
+      "java",
+      "math"
+    ],
+    "tests": [
+      "assert average(new int[]{1, 2}) == 1.5;",
+      "assert average(new int[]{3, 3, 3}) == 3.0;"
+    ]
+  },
+  {
+    "slug": "java-reverse-text",
+    "version": 1,
+    "pool": "duel",
+    "language": "java",
+    "difficulty": "easy",
+    "title": "Reverse the text",
+    "prompt": "Return the characters of the text in reverse order.",
+    "code": "static String reverse(String text) {\n  StringBuilder out = new StringBuilder();\n  for (int i = text.length() - 1; i > 0; i--) {\n    out.append(text.charAt(i));\n  }\n  return out.toString();\n}",
+    "line_count": 7,
+    "correct_line": 3,
+    "explanation": "The loop stops before index 0, dropping the first character. Include index 0.",
+    "corrected_code": "static String reverse(String text) {\n  StringBuilder out = new StringBuilder();\n  for (int i = text.length() - 1; i >= 0; i--) {\n    out.append(text.charAt(i));\n  }\n  return out.toString();\n}",
+    "tags": [
+      "java",
+      "strings"
+    ],
+    "tests": [
+      "assert reverse(\"abc\").equals(\"cba\");",
+      "assert reverse(\"\").equals(\"\");",
+      "assert reverse(\"x\").equals(\"x\");"
+    ]
+  },
+  {
+    "slug": "java-is-palindrome",
+    "version": 1,
+    "pool": "duel",
+    "language": "java",
+    "difficulty": "medium",
+    "title": "Palindrome check",
+    "prompt": "Return true when the text reads the same backwards, ignoring case and punctuation.",
+    "code": "static boolean isPalindrome(String text) {\n  String cleaned = text.toLowerCase().replaceAll(\"[^a-z0-9]\", \"\");\n  String reversed = new StringBuilder(cleaned).reverse().toString();\n  return cleaned == reversed;\n}",
+    "line_count": 5,
+    "correct_line": 4,
+    "explanation": "== compares object identity, and the reversed string is a new object. Compare the contents with equals.",
+    "corrected_code": "static boolean isPalindrome(String text) {\n  String cleaned = text.toLowerCase().replaceAll(\"[^a-z0-9]\", \"\");\n  String reversed = new StringBuilder(cleaned).reverse().toString();\n  return cleaned.equals(reversed);\n}",
+    "tags": [
+      "java",
+      "strings",
+      "equality"
+    ],
+    "tests": [
+      "assert isPalindrome(\"Never odd or even\");",
+      "assert !isPalindrome(\"hello\");",
+      "assert isPalindrome(\"\");"
+    ]
+  },
+  {
+    "slug": "java-binary-search",
+    "version": 1,
+    "pool": "duel",
+    "language": "java",
+    "difficulty": "medium",
+    "title": "Binary search",
+    "prompt": "Return the index of the target in a sorted array, or -1 when it is missing.",
+    "code": "static int indexOf(int[] sorted, int target) {\n  int low = 0, high = sorted.length - 1;\n  while (low < high) {\n    int mid = (low + high) / 2;\n    if (sorted[mid] == target) return mid;\n    if (sorted[mid] < target) low = mid + 1; else high = mid - 1;\n  }\n  return -1;\n}",
+    "line_count": 9,
+    "correct_line": 3,
+    "explanation": "The loop quits while one candidate is still unchecked. Keep searching while low <= high.",
+    "corrected_code": "static int indexOf(int[] sorted, int target) {\n  int low = 0, high = sorted.length - 1;\n  while (low <= high) {\n    int mid = (low + high) / 2;\n    if (sorted[mid] == target) return mid;\n    if (sorted[mid] < target) low = mid + 1; else high = mid - 1;\n  }\n  return -1;\n}",
+    "tags": [
+      "java",
+      "search"
+    ],
+    "tests": [
+      "assert indexOf(new int[]{1, 3, 5}, 5) == 2;",
+      "assert indexOf(new int[]{1, 3, 5}, 1) == 0;",
+      "assert indexOf(new int[]{1, 3, 5}, 4) == -1;",
+      "assert indexOf(new int[]{7}, 7) == 0;"
+    ]
+  },
+  {
+    "slug": "java-unique-values",
+    "version": 1,
+    "pool": "duel",
+    "language": "java",
+    "difficulty": "medium",
+    "title": "Unique values in order",
+    "prompt": "Return the values with duplicates removed, keeping the first occurrence order.",
+    "code": "static List<Integer> unique(int[] values) {\n  Set<Integer> seen = new HashSet<>();\n  List<Integer> result = new ArrayList<>();\n  for (int value : values) {\n    if (!seen.add(value)) result.add(value);\n  }\n  return result;\n}",
+    "line_count": 8,
+    "correct_line": 5,
+    "explanation": "Set.add returns true only for a new value. Keep the value when add succeeds, not when it fails.",
+    "corrected_code": "static List<Integer> unique(int[] values) {\n  Set<Integer> seen = new HashSet<>();\n  List<Integer> result = new ArrayList<>();\n  for (int value : values) {\n    if (seen.add(value)) result.add(value);\n  }\n  return result;\n}",
+    "tags": [
+      "java",
+      "collections"
+    ],
+    "tests": [
+      "assert unique(new int[]{1, 2, 1, 3, 2}).equals(List.of(1, 2, 3));",
+      "assert unique(new int[]{}).isEmpty();",
+      "assert unique(new int[]{5, 5}).equals(List.of(5));"
+    ]
+  },
+  {
+    "slug": "java-word-count",
+    "version": 1,
+    "pool": "duel",
+    "language": "java",
+    "difficulty": "medium",
+    "title": "Count the words",
+    "prompt": "Count the words in a sentence separated by any amount of whitespace.",
+    "code": "static int wordCount(String text) {\n  String trimmed = text.trim();\n  if (trimmed.isEmpty()) return 0;\n  return trimmed.split(\" \").length;\n}",
+    "line_count": 5,
+    "correct_line": 4,
+    "explanation": "Splitting on a single space turns repeated spaces into empty words. Split on one or more whitespace characters.",
+    "corrected_code": "static int wordCount(String text) {\n  String trimmed = text.trim();\n  if (trimmed.isEmpty()) return 0;\n  return trimmed.split(\"\\\\s+\").length;\n}",
+    "tags": [
+      "java",
+      "strings",
+      "regex"
+    ],
+    "tests": [
+      "assert wordCount(\"hello   world\") == 2;",
+      "assert wordCount(\"  one \") == 1;",
+      "assert wordCount(\"\") == 0;"
+    ]
+  },
+  {
+    "slug": "java-all-equal",
+    "version": 1,
+    "pool": "duel",
+    "language": "java",
+    "difficulty": "medium",
+    "title": "All scores equal",
+    "prompt": "Return true when every score in the list is the same value.",
+    "code": "static boolean allEqual(List<Integer> scores) {\n  if (scores.isEmpty()) return true;\n  Integer first = scores.get(0);\n  for (Integer score : scores) {\n    if (score != first) return false;\n  }\n  return true;\n}",
+    "line_count": 8,
+    "correct_line": 5,
+    "explanation": "For boxed Integers, != compares references and only looks right for small cached values. Compare with equals.",
+    "corrected_code": "static boolean allEqual(List<Integer> scores) {\n  if (scores.isEmpty()) return true;\n  Integer first = scores.get(0);\n  for (Integer score : scores) {\n    if (!score.equals(first)) return false;\n  }\n  return true;\n}",
+    "tags": [
+      "java",
+      "boxing",
+      "equality"
+    ],
+    "tests": [
+      "assert allEqual(List.of(1000, 1000, 1000));",
+      "assert !allEqual(List.of(5, 5, 6));",
+      "assert allEqual(List.of());"
+    ]
+  },
+  {
+    "slug": "java-remove-negatives",
+    "version": 1,
+    "pool": "duel",
+    "language": "java",
+    "difficulty": "hard",
+    "title": "Remove the negatives",
+    "prompt": "Return a copy of the list without its negative numbers.",
+    "code": "static List<Integer> removeNegatives(List<Integer> values) {\n  List<Integer> copy = new ArrayList<>(values);\n  for (Integer value : copy) {\n    if (value < 0) copy.remove(value);\n  }\n  return copy;\n}",
+    "line_count": 7,
+    "correct_line": 3,
+    "explanation": "Removing from the list you are iterating throws ConcurrentModificationException. Iterate the original and edit the copy.",
+    "corrected_code": "static List<Integer> removeNegatives(List<Integer> values) {\n  List<Integer> copy = new ArrayList<>(values);\n  for (Integer value : values) {\n    if (value < 0) copy.remove(value);\n  }\n  return copy;\n}",
+    "tags": [
+      "java",
+      "collections",
+      "iteration"
+    ],
+    "tests": [
+      "assert removeNegatives(List.of(1, -2, 3, -4)).equals(List.of(1, 3));",
+      "assert removeNegatives(List.of(-1)).isEmpty();",
+      "assert removeNegatives(List.of(2, 3)).equals(List.of(2, 3));"
+    ]
+  },
+  {
+    "slug": "java-caesar-shift",
+    "version": 1,
+    "pool": "duel",
+    "language": "java",
+    "difficulty": "hard",
+    "title": "Caesar shift",
+    "prompt": "Shift lowercase letters by the given amount, wrapping around the alphabet; the shift may be negative.",
+    "code": "static String caesar(String text, int shift) {\n  StringBuilder out = new StringBuilder();\n  for (char c : text.toCharArray()) {\n    if (Character.isLowerCase(c)) {\n      out.append((char) ('a' + (c - 'a' + shift) % 26));\n    } else out.append(c);\n  }\n  return out.toString();\n}",
+    "line_count": 9,
+    "correct_line": 5,
+    "explanation": "The % operator keeps the sign of the dividend, so a negative shift goes below zero. Use Math.floorMod to wrap.",
+    "corrected_code": "static String caesar(String text, int shift) {\n  StringBuilder out = new StringBuilder();\n  for (char c : text.toCharArray()) {\n    if (Character.isLowerCase(c)) {\n      out.append((char) ('a' + Math.floorMod(c - 'a' + shift, 26)));\n    } else out.append(c);\n  }\n  return out.toString();\n}",
+    "tags": [
+      "java",
+      "math",
+      "modulo"
+    ],
+    "tests": [
+      "assert caesar(\"abc\", -1).equals(\"zab\");",
+      "assert caesar(\"xyz\", 3).equals(\"abc\");",
+      "assert caesar(\"a-b\", 1).equals(\"b-c\");"
+    ]
+  },
+  {
+    "slug": "java-count-words-map",
+    "version": 1,
+    "pool": "duel",
+    "language": "java",
+    "difficulty": "hard",
+    "title": "Count occurrences",
+    "prompt": "Return how many times the target appears in the list of words.",
+    "code": "static int countWords(List<String> words, String target) {\n  Map<String, Integer> counts = new HashMap<>();\n  for (String word : words) {\n    counts.put(word, counts.get(word) + 1);\n  }\n  return counts.getOrDefault(target, 0);\n}",
+    "line_count": 7,
+    "correct_line": 4,
+    "explanation": "get returns null for a word that has not been counted yet, and unboxing it throws NullPointerException. Default to zero.",
+    "corrected_code": "static int countWords(List<String> words, String target) {\n  Map<String, Integer> counts = new HashMap<>();\n  for (String word : words) {\n    counts.put(word, counts.getOrDefault(word, 0) + 1);\n  }\n  return counts.getOrDefault(target, 0);\n}",
+    "tags": [
+      "java",
+      "maps",
+      "null"
+    ],
+    "tests": [
+      "assert countWords(List.of(\"a\", \"b\", \"a\"), \"a\") == 2;",
+      "assert countWords(List.of(\"a\"), \"z\") == 0;"
+    ]
+  },
+  {
+    "slug": "java-shout",
+    "version": 1,
+    "pool": "duel",
+    "language": "java",
+    "difficulty": "hard",
+    "title": "Shout it",
+    "prompt": "Trim the text, convert it to upper case and add an exclamation mark.",
+    "code": "static String shout(String text) {\n  String result = text.trim();\n  result.toUpperCase();\n  return result + \"!\";\n}",
+    "line_count": 5,
+    "correct_line": 3,
+    "explanation": "Strings are immutable, so toUpperCase returns a new string that this line throws away. Assign the result.",
+    "corrected_code": "static String shout(String text) {\n  String result = text.trim();\n  result = result.toUpperCase();\n  return result + \"!\";\n}",
+    "tags": [
+      "java",
+      "strings",
+      "immutability"
+    ],
+    "tests": [
+      "assert shout(\" hi \").equals(\"HI!\");",
+      "assert shout(\"ok\").equals(\"OK!\");"
+    ]
+  },
+  {
+    "slug": "java-total-bytes",
+    "version": 1,
+    "pool": "duel",
+    "language": "java",
+    "difficulty": "hard",
+    "title": "Total bytes",
+    "prompt": "Return the total number of bytes for the file sizes, which can exceed the int range.",
+    "code": "static long totalBytes(int[] sizes) {\n  int total = 0;\n  for (int size : sizes) {\n    total += size;\n  }\n  return total;\n}",
+    "line_count": 7,
+    "correct_line": 2,
+    "explanation": "An int accumulator overflows silently before it is widened to long on return. Accumulate in a long.",
+    "corrected_code": "static long totalBytes(int[] sizes) {\n  long total = 0;\n  for (int size : sizes) {\n    total += size;\n  }\n  return total;\n}",
+    "tags": [
+      "java",
+      "overflow"
+    ],
+    "tests": [
+      "assert totalBytes(new int[]{2_000_000_000, 2_000_000_000}) == 4_000_000_000L;",
+      "assert totalBytes(new int[]{1, 2}) == 3L;"
+    ]
+  },
+  {
+    "slug": "java-smallest-value",
+    "version": 1,
+    "pool": "practice",
+    "language": "java",
+    "difficulty": "easy",
+    "title": "Smallest value",
+    "prompt": "Return the smallest value in a non-empty array.",
+    "code": "static int smallest(int[] values) {\n  int best = 0;\n  for (int value : values) {\n    if (value < best) best = value;\n  }\n  return best;\n}",
+    "line_count": 7,
+    "correct_line": 2,
+    "explanation": "Starting at zero hides every positive value. Start from the first element.",
+    "corrected_code": "static int smallest(int[] values) {\n  int best = values[0];\n  for (int value : values) {\n    if (value < best) best = value;\n  }\n  return best;\n}",
+    "tags": [
+      "java",
+      "min"
+    ],
+    "tests": [
+      "assert smallest(new int[]{5, 3, 9}) == 3;",
+      "assert smallest(new int[]{-2, 4}) == -2;"
+    ]
+  },
+  {
+    "slug": "java-count-even",
+    "version": 1,
+    "pool": "practice",
+    "language": "java",
+    "difficulty": "easy",
+    "title": "Count even numbers",
+    "prompt": "Count how many numbers in the array are even.",
+    "code": "static int countEven(int[] values) {\n  int count = 0;\n  for (int value : values) {\n    if (value % 2 == 1) count++;\n  }\n  return count;\n}",
+    "line_count": 7,
+    "correct_line": 4,
+    "explanation": "The test counts odd numbers. An even number leaves a remainder of 0.",
+    "corrected_code": "static int countEven(int[] values) {\n  int count = 0;\n  for (int value : values) {\n    if (value % 2 == 0) count++;\n  }\n  return count;\n}",
+    "tags": [
+      "java",
+      "math"
+    ],
+    "tests": [
+      "assert countEven(new int[]{1, 2, 3, 4, 6}) == 3;",
+      "assert countEven(new int[]{1, 3}) == 0;"
+    ]
+  },
+  {
+    "slug": "java-clamp-value",
+    "version": 1,
+    "pool": "practice",
+    "language": "java",
+    "difficulty": "easy",
+    "title": "Clamp a value",
+    "prompt": "Limit the value to the range from low to high.",
+    "code": "static int clamp(int value, int low, int high) {\n  if (value < low) return low;\n  if (value > high) return low;\n  return value;\n}",
+    "line_count": 5,
+    "correct_line": 3,
+    "explanation": "Values above the range should be capped at the upper bound, not the lower one.",
+    "corrected_code": "static int clamp(int value, int low, int high) {\n  if (value < low) return low;\n  if (value > high) return high;\n  return value;\n}",
+    "tags": [
+      "java",
+      "range"
+    ],
+    "tests": [
+      "assert clamp(15, 0, 10) == 10;",
+      "assert clamp(-5, 0, 10) == 0;",
+      "assert clamp(5, 0, 10) == 5;"
+    ]
+  },
+  {
+    "slug": "java-factorial",
+    "version": 1,
+    "pool": "practice",
+    "language": "java",
+    "difficulty": "easy",
+    "title": "Factorial",
+    "prompt": "Return n! for n of zero or more.",
+    "code": "static long factorial(int n) {\n  long result = 1;\n  for (int i = 1; i < n; i++) {\n    result *= i;\n  }\n  return result;\n}",
+    "line_count": 7,
+    "correct_line": 3,
+    "explanation": "The loop never multiplies by n itself. Include n in the range.",
+    "corrected_code": "static long factorial(int n) {\n  long result = 1;\n  for (int i = 1; i <= n; i++) {\n    result *= i;\n  }\n  return result;\n}",
+    "tags": [
+      "java",
+      "loops"
+    ],
+    "tests": [
+      "assert factorial(5) == 120L;",
+      "assert factorial(0) == 1L;",
+      "assert factorial(1) == 1L;"
+    ]
+  },
+  {
+    "slug": "java-last-letter",
+    "version": 1,
+    "pool": "practice",
+    "language": "java",
+    "difficulty": "easy",
+    "title": "Last letter",
+    "prompt": "Return the last non-space character of the text, or ? when the text is blank.",
+    "code": "static char lastLetter(String text) {\n  String trimmed = text.trim();\n  if (trimmed.isEmpty()) return '?';\n  return trimmed.charAt(trimmed.length());\n}",
+    "line_count": 5,
+    "correct_line": 4,
+    "explanation": "Valid indexes end at length - 1, so charAt(length) is out of bounds.",
+    "corrected_code": "static char lastLetter(String text) {\n  String trimmed = text.trim();\n  if (trimmed.isEmpty()) return '?';\n  return trimmed.charAt(trimmed.length() - 1);\n}",
+    "tags": [
+      "java",
+      "strings",
+      "index"
+    ],
+    "tests": [
+      "assert lastLetter(\" cat \") == 't';",
+      "assert lastLetter(\"   \") == '?';"
+    ]
+  },
+  {
+    "slug": "java-to-fahrenheit",
+    "version": 1,
+    "pool": "practice",
+    "language": "java",
+    "difficulty": "easy",
+    "title": "Celsius to Fahrenheit",
+    "prompt": "Convert a temperature from Celsius to Fahrenheit.",
+    "code": "static double toFahrenheit(double celsius) {\n  double ratio = 9 / 5;\n  double scaled = celsius * ratio;\n  return scaled + 32;\n}",
+    "line_count": 5,
+    "correct_line": 2,
+    "explanation": "9 / 5 is integer division and equals 1. Use a floating-point ratio.",
+    "corrected_code": "static double toFahrenheit(double celsius) {\n  double ratio = 9.0 / 5;\n  double scaled = celsius * ratio;\n  return scaled + 32;\n}",
+    "tags": [
+      "java",
+      "math"
+    ],
+    "tests": [
+      "assert toFahrenheit(100) == 212.0;",
+      "assert toFahrenheit(0) == 32.0;"
+    ]
+  },
+  {
+    "slug": "java-count-char",
+    "version": 1,
+    "pool": "practice",
+    "language": "java",
+    "difficulty": "easy",
+    "title": "Count a character",
+    "prompt": "Count how many times the character appears in the text.",
+    "code": "static int countChar(String text, char target) {\n  int count = 0;\n  for (int i = 0; i < text.length(); i++) {\n    if (text.charAt(i) != target) count++;\n  }\n  return count;\n}",
+    "line_count": 7,
+    "correct_line": 4,
+    "explanation": "The condition counts every other character. Count the characters that equal the target.",
+    "corrected_code": "static int countChar(String text, char target) {\n  int count = 0;\n  for (int i = 0; i < text.length(); i++) {\n    if (text.charAt(i) == target) count++;\n  }\n  return count;\n}",
+    "tags": [
+      "java",
+      "strings"
+    ],
+    "tests": [
+      "assert countChar(\"banana\", 'a') == 3;",
+      "assert countChar(\"banana\", 'z') == 0;"
+    ]
+  },
+  {
+    "slug": "java-is-sorted",
+    "version": 1,
+    "pool": "practice",
+    "language": "java",
+    "difficulty": "easy",
+    "title": "Is it sorted?",
+    "prompt": "Return true when the array is in ascending order.",
+    "code": "static boolean isSorted(int[] values) {\n  for (int i = 1; i <= values.length; i++) {\n    if (values[i - 1] > values[i]) return false;\n  }\n  return true;\n}",
+    "line_count": 6,
+    "correct_line": 2,
+    "explanation": "The last pass reads values[length], past the end of the array. Stop before the length.",
+    "corrected_code": "static boolean isSorted(int[] values) {\n  for (int i = 1; i < values.length; i++) {\n    if (values[i - 1] > values[i]) return false;\n  }\n  return true;\n}",
+    "tags": [
+      "java",
+      "arrays",
+      "bounds"
+    ],
+    "tests": [
+      "assert isSorted(new int[]{1, 2, 3});",
+      "assert !isSorted(new int[]{2, 1});",
+      "assert isSorted(new int[]{});"
+    ]
+  },
+  {
+    "slug": "java-sum-of-squares",
+    "version": 1,
+    "pool": "practice",
+    "language": "java",
+    "difficulty": "easy",
+    "title": "Sum of squares",
+    "prompt": "Return the sum of the squares of the values.",
+    "code": "static int sumOfSquares(int[] values) {\n  int total = 0;\n  for (int value : values) {\n    total += value * 2;\n  }\n  return total;\n}",
+    "line_count": 7,
+    "correct_line": 4,
+    "explanation": "Multiplying by 2 doubles the value instead of squaring it. Multiply the value by itself.",
+    "corrected_code": "static int sumOfSquares(int[] values) {\n  int total = 0;\n  for (int value : values) {\n    total += value * value;\n  }\n  return total;\n}",
+    "tags": [
+      "java",
+      "math"
+    ],
+    "tests": [
+      "assert sumOfSquares(new int[]{1, 2, 3}) == 14;",
+      "assert sumOfSquares(new int[]{}) == 0;"
+    ]
+  },
+  {
+    "slug": "java-leap-year",
+    "version": 1,
+    "pool": "practice",
+    "language": "java",
+    "difficulty": "easy",
+    "title": "Leap year",
+    "prompt": "Return true for leap years: divisible by 4, except centuries that are not divisible by 400.",
+    "code": "static boolean isLeapYear(int year) {\n  if (year % 400 == 0) return true;\n  if (year % 100 == 0) return false;\n  return year % 4 != 0;\n}",
+    "line_count": 5,
+    "correct_line": 4,
+    "explanation": "A year divisible by 4 is a leap year, but this returns true for the years that are not.",
+    "corrected_code": "static boolean isLeapYear(int year) {\n  if (year % 400 == 0) return true;\n  if (year % 100 == 0) return false;\n  return year % 4 == 0;\n}",
+    "tags": [
+      "java",
+      "dates"
+    ],
+    "tests": [
+      "assert isLeapYear(2024);",
+      "assert !isLeapYear(1900);",
+      "assert isLeapYear(2000);",
+      "assert !isLeapYear(2023);"
+    ]
+  },
+  {
+    "slug": "java-fibonacci",
+    "version": 1,
+    "pool": "practice",
+    "language": "java",
+    "difficulty": "medium",
+    "title": "Fibonacci number",
+    "prompt": "Return the n-th Fibonacci number, where fibonacci(0) is 0 and fibonacci(1) is 1.",
+    "code": "static int fibonacci(int n) {\n  int previous = 0, current = 1;\n  for (int i = 0; i < n; i++) {\n    int next = previous + current;\n    previous = current;\n    current = next;\n  }\n  return current;\n}",
+    "line_count": 9,
+    "correct_line": 8,
+    "explanation": "After n steps the value we want is in previous; current is already one step ahead.",
+    "corrected_code": "static int fibonacci(int n) {\n  int previous = 0, current = 1;\n  for (int i = 0; i < n; i++) {\n    int next = previous + current;\n    previous = current;\n    current = next;\n  }\n  return previous;\n}",
+    "tags": [
+      "java",
+      "loops"
+    ],
+    "tests": [
+      "assert fibonacci(0) == 0;",
+      "assert fibonacci(1) == 1;",
+      "assert fibonacci(7) == 13;"
+    ]
+  },
+  {
+    "slug": "java-contains-ignore-case",
+    "version": 1,
+    "pool": "practice",
+    "language": "java",
+    "difficulty": "medium",
+    "title": "Contains, ignoring case",
+    "prompt": "Return true when the text contains the part, ignoring letter case.",
+    "code": "static boolean containsIgnoreCase(String text, String part) {\n  if (part.isEmpty()) return true;\n  String haystack = text.toLowerCase();\n  String needle = part;\n  return haystack.contains(needle);\n}",
+    "line_count": 6,
+    "correct_line": 4,
+    "explanation": "Only the text is lowered, so a search term with capitals never matches. Lower the term too.",
+    "corrected_code": "static boolean containsIgnoreCase(String text, String part) {\n  if (part.isEmpty()) return true;\n  String haystack = text.toLowerCase();\n  String needle = part.toLowerCase();\n  return haystack.contains(needle);\n}",
+    "tags": [
+      "java",
+      "strings"
+    ],
+    "tests": [
+      "assert containsIgnoreCase(\"Hello World\", \"WORLD\");",
+      "assert !containsIgnoreCase(\"Hello\", \"xyz\");",
+      "assert containsIgnoreCase(\"abc\", \"\");"
+    ]
+  },
+  {
+    "slug": "java-remove-value",
+    "version": 1,
+    "pool": "practice",
+    "language": "java",
+    "difficulty": "medium",
+    "title": "Remove a value",
+    "prompt": "Return a copy of the list without the first occurrence of the target value.",
+    "code": "static List<Integer> removeValue(List<Integer> values, int target) {\n  List<Integer> copy = new ArrayList<>(values);\n  copy.remove(target);\n  return copy;\n}",
+    "line_count": 5,
+    "correct_line": 3,
+    "explanation": "With an int argument, remove(int) deletes by index. Box the value to remove by content.",
+    "corrected_code": "static List<Integer> removeValue(List<Integer> values, int target) {\n  List<Integer> copy = new ArrayList<>(values);\n  copy.remove(Integer.valueOf(target));\n  return copy;\n}",
+    "tags": [
+      "java",
+      "collections",
+      "overloads"
+    ],
+    "tests": [
+      "assert removeValue(List.of(10, 20, 30), 30).equals(List.of(10, 20));",
+      "assert removeValue(List.of(1, 2, 1), 1).equals(List.of(2, 1));"
+    ]
+  },
+  {
+    "slug": "java-rotate-left",
+    "version": 1,
+    "pool": "practice",
+    "language": "java",
+    "difficulty": "medium",
+    "title": "Rotate left",
+    "prompt": "Return a new array with the values rotated left by k positions.",
+    "code": "static int[] rotateLeft(int[] values, int k) {\n  int n = values.length;\n  int[] result = new int[n];\n  for (int i = 0; i < n; i++) {\n    result[(i + k) % n] = values[i];\n  }\n  return result;\n}",
+    "line_count": 8,
+    "correct_line": 5,
+    "explanation": "Writing to (i + k) rotates the values right. Read from (i + k) to rotate left.",
+    "corrected_code": "static int[] rotateLeft(int[] values, int k) {\n  int n = values.length;\n  int[] result = new int[n];\n  for (int i = 0; i < n; i++) {\n    result[i] = values[(i + k) % n];\n  }\n  return result;\n}",
+    "tags": [
+      "java",
+      "arrays"
+    ],
+    "tests": [
+      "assert Arrays.equals(rotateLeft(new int[]{1, 2, 3, 4}, 1), new int[]{2, 3, 4, 1});",
+      "assert Arrays.equals(rotateLeft(new int[]{1, 2, 3}, 3), new int[]{1, 2, 3});"
+    ]
+  },
+  {
+    "slug": "java-balanced-parens",
+    "version": 1,
+    "pool": "practice",
+    "language": "java",
+    "difficulty": "medium",
+    "title": "Balanced parentheses",
+    "prompt": "Return true when every parenthesis is closed in the right order.",
+    "code": "static boolean balanced(String text) {\n  int depth = 0;\n  for (char c : text.toCharArray()) {\n    if (c == '(') depth++;\n    if (c == ')') depth--;\n  }\n  return depth == 0;\n}",
+    "line_count": 8,
+    "correct_line": 5,
+    "explanation": "A closing parenthesis before any opening one must fail immediately, even if the counts match at the end.",
+    "corrected_code": "static boolean balanced(String text) {\n  int depth = 0;\n  for (char c : text.toCharArray()) {\n    if (c == '(') depth++;\n    if (c == ')' && --depth < 0) return false;\n  }\n  return depth == 0;\n}",
+    "tags": [
+      "java",
+      "stack"
+    ],
+    "tests": [
+      "assert balanced(\"(a(b)c)\");",
+      "assert !balanced(\")(\");",
+      "assert !balanced(\"(()\");",
+      "assert balanced(\"\");"
+    ]
+  },
+  {
+    "slug": "java-apply-discount",
+    "version": 1,
+    "pool": "practice",
+    "language": "java",
+    "difficulty": "medium",
+    "title": "Apply a discount",
+    "prompt": "Reduce the price by the percentage and round to two decimals.",
+    "code": "static double applyDiscount(double price, int percent) {\n  if (percent <= 0) return price;\n  double factor = 1 - percent / 100;\n  double result = price * factor;\n  return Math.round(result * 100) / 100.0;\n}",
+    "line_count": 6,
+    "correct_line": 3,
+    "explanation": "percent / 100 is integer division and becomes 0, so no discount is applied. Divide by 100.0.",
+    "corrected_code": "static double applyDiscount(double price, int percent) {\n  if (percent <= 0) return price;\n  double factor = 1 - percent / 100.0;\n  double result = price * factor;\n  return Math.round(result * 100) / 100.0;\n}",
+    "tags": [
+      "java",
+      "math"
+    ],
+    "tests": [
+      "assert applyDiscount(50.0, 20) == 40.0;",
+      "assert applyDiscount(80.0, 25) == 60.0;",
+      "assert applyDiscount(10.0, 0) == 10.0;"
+    ]
+  },
+  {
+    "slug": "java-value-after-equals",
+    "version": 1,
+    "pool": "practice",
+    "language": "java",
+    "difficulty": "medium",
+    "title": "Value after the equals sign",
+    "prompt": "Return the text after the first = sign, or an empty string when there is none.",
+    "code": "static String valueAfterEquals(String line) {\n  int at = line.indexOf('=');\n  if (at < 0) return \"\";\n  return line.substring(at);\n}",
+    "line_count": 5,
+    "correct_line": 4,
+    "explanation": "substring(at) still includes the = sign. Start one character later.",
+    "corrected_code": "static String valueAfterEquals(String line) {\n  int at = line.indexOf('=');\n  if (at < 0) return \"\";\n  return line.substring(at + 1);\n}",
+    "tags": [
+      "java",
+      "strings",
+      "parsing"
+    ],
+    "tests": [
+      "assert valueAfterEquals(\"key=value\").equals(\"value\");",
+      "assert valueAfterEquals(\"novalue\").equals(\"\");",
+      "assert valueAfterEquals(\"a=b=c\").equals(\"b=c\");"
+    ]
+  },
+  {
+    "slug": "java-count-pairs",
+    "version": 1,
+    "pool": "practice",
+    "language": "java",
+    "difficulty": "medium",
+    "title": "Count pairs",
+    "prompt": "Count the pairs of different positions whose values add up to the target.",
+    "code": "static int countPairs(int[] values, int target) {\n  int pairs = 0;\n  for (int i = 0; i < values.length; i++) {\n    for (int j = i; j < values.length; j++) {\n      if (values[i] + values[j] == target) pairs++;\n    }\n  }\n  return pairs;\n}",
+    "line_count": 9,
+    "correct_line": 4,
+    "explanation": "Starting j at i pairs each value with itself. A pair needs two different positions.",
+    "corrected_code": "static int countPairs(int[] values, int target) {\n  int pairs = 0;\n  for (int i = 0; i < values.length; i++) {\n    for (int j = i + 1; j < values.length; j++) {\n      if (values[i] + values[j] == target) pairs++;\n    }\n  }\n  return pairs;\n}",
+    "tags": [
+      "java",
+      "loops"
+    ],
+    "tests": [
+      "assert countPairs(new int[]{1, 2, 3}, 4) == 1;",
+      "assert countPairs(new int[]{2}, 4) == 0;",
+      "assert countPairs(new int[]{1, 3, 1, 3}, 4) == 4;"
+    ]
+  },
+  {
+    "slug": "java-capitalize-words",
+    "version": 1,
+    "pool": "practice",
+    "language": "java",
+    "difficulty": "medium",
+    "title": "Capitalize words",
+    "prompt": "Capitalize the first letter of every word.",
+    "code": "static String capitalize(String text) {\n  StringBuilder out = new StringBuilder();\n  boolean start = true;\n  for (char c : text.toCharArray()) {\n    out.append(start ? Character.toUpperCase(c) : c);\n    start = c != ' ';\n  }\n  return out.toString();\n}",
+    "line_count": 9,
+    "correct_line": 6,
+    "explanation": "The flag is inverted: only the character after a space should start a new word.",
+    "corrected_code": "static String capitalize(String text) {\n  StringBuilder out = new StringBuilder();\n  boolean start = true;\n  for (char c : text.toCharArray()) {\n    out.append(start ? Character.toUpperCase(c) : c);\n    start = c == ' ';\n  }\n  return out.toString();\n}",
+    "tags": [
+      "java",
+      "strings"
+    ],
+    "tests": [
+      "assert capitalize(\"hello big world\").equals(\"Hello Big World\");",
+      "assert capitalize(\"a\").equals(\"A\");",
+      "assert capitalize(\"\").equals(\"\");"
+    ]
+  },
+  {
+    "slug": "java-total-length",
+    "version": 1,
+    "pool": "practice",
+    "language": "java",
+    "difficulty": "medium",
+    "title": "Total length",
+    "prompt": "Add up the lengths of the items; null entries count as zero.",
+    "code": "static int totalLength(List<String> items) {\n  int total = 0;\n  for (String item : items) {\n    total += item.length();\n  }\n  return total;\n}",
+    "line_count": 7,
+    "correct_line": 4,
+    "explanation": "Calling length on a null entry throws NullPointerException. Skip null items.",
+    "corrected_code": "static int totalLength(List<String> items) {\n  int total = 0;\n  for (String item : items) {\n    if (item != null) total += item.length();\n  }\n  return total;\n}",
+    "tags": [
+      "java",
+      "null"
+    ],
+    "tests": [
+      "assert totalLength(Arrays.asList(\"ab\", null, \"cde\")) == 5;",
+      "assert totalLength(List.of()) == 0;"
+    ]
+  },
+  {
+    "slug": "java-sort-ascending",
+    "version": 1,
+    "pool": "practice",
+    "language": "java",
+    "difficulty": "hard",
+    "title": "Sort ascending",
+    "prompt": "Return the values sorted in ascending order, for any int values.",
+    "code": "static int[] sortAscending(int[] values) {\n  Integer[] boxed = Arrays.stream(values).boxed().toArray(Integer[]::new);\n  Arrays.sort(boxed, (a, b) -> a - b);\n  return Arrays.stream(boxed).mapToInt(Integer::intValue).toArray();\n}",
+    "line_count": 5,
+    "correct_line": 3,
+    "explanation": "Subtracting two ints can overflow and flip the sign. Use Integer.compare for the comparison.",
+    "corrected_code": "static int[] sortAscending(int[] values) {\n  Integer[] boxed = Arrays.stream(values).boxed().toArray(Integer[]::new);\n  Arrays.sort(boxed, (a, b) -> Integer.compare(a, b));\n  return Arrays.stream(boxed).mapToInt(Integer::intValue).toArray();\n}",
+    "tags": [
+      "java",
+      "sorting",
+      "overflow"
+    ],
+    "tests": [
+      "assert Arrays.equals(sortAscending(new int[]{Integer.MAX_VALUE, -5, 3}), new int[]{-5, 3, Integer.MAX_VALUE});",
+      "assert Arrays.equals(sortAscending(new int[]{3, 1, 2}), new int[]{1, 2, 3});"
+    ]
+  },
+  {
+    "slug": "java-chunk-list",
+    "version": 1,
+    "pool": "practice",
+    "language": "java",
+    "difficulty": "hard",
+    "title": "Split into chunks",
+    "prompt": "Split the list into consecutive chunks of the given size; the last chunk may be shorter.",
+    "code": "static List<List<Integer>> chunks(List<Integer> values, int size) {\n  List<List<Integer>> result = new ArrayList<>();\n  for (int i = 0; i < values.size(); i += size) {\n    result.add(values.subList(i, i + size));\n  }\n  return result;\n}",
+    "line_count": 7,
+    "correct_line": 4,
+    "explanation": "The final chunk ends past the list size, which throws. Clamp the end index to the size.",
+    "corrected_code": "static List<List<Integer>> chunks(List<Integer> values, int size) {\n  List<List<Integer>> result = new ArrayList<>();\n  for (int i = 0; i < values.size(); i += size) {\n    result.add(values.subList(i, Math.min(i + size, values.size())));\n  }\n  return result;\n}",
+    "tags": [
+      "java",
+      "collections",
+      "bounds"
+    ],
+    "tests": [
+      "assert chunks(List.of(1, 2, 3, 4, 5), 2).equals(List.of(List.of(1, 2), List.of(3, 4), List.of(5)));",
+      "assert chunks(List.of(1, 2), 2).equals(List.of(List.of(1, 2)));"
+    ]
+  },
+  {
+    "slug": "java-tier-bonus",
+    "version": 1,
+    "pool": "practice",
+    "language": "java",
+    "difficulty": "hard",
+    "title": "Tier bonus",
+    "prompt": "Return 50 points for gold, 20 for silver, 5 for bronze and 0 for anything else.",
+    "code": "static int bonus(String tier) {\n  int points = 0;\n  switch (tier) {\n    case \"gold\": points += 50; break;\n    case \"silver\": points += 20;\n    case \"bronze\": points += 5; break;\n  }\n  return points;\n}",
+    "line_count": 9,
+    "correct_line": 5,
+    "explanation": "Without break, silver falls through into the bronze case and receives both bonuses.",
+    "corrected_code": "static int bonus(String tier) {\n  int points = 0;\n  switch (tier) {\n    case \"gold\": points += 50; break;\n    case \"silver\": points += 20; break;\n    case \"bronze\": points += 5; break;\n  }\n  return points;\n}",
+    "tags": [
+      "java",
+      "switch"
+    ],
+    "tests": [
+      "assert bonus(\"silver\") == 20;",
+      "assert bonus(\"gold\") == 50;",
+      "assert bonus(\"bronze\") == 5;",
+      "assert bonus(\"none\") == 0;"
+    ]
+  },
+  {
+    "slug": "java-same-total",
+    "version": 1,
+    "pool": "practice",
+    "language": "java",
+    "difficulty": "hard",
+    "title": "Same total",
+    "prompt": "Return true when the prices add up to the expected total.",
+    "code": "static boolean sameTotal(double[] prices, double expected) {\n  double total = 0;\n  for (double price : prices) total += price;\n  return total == expected;\n}",
+    "line_count": 5,
+    "correct_line": 4,
+    "explanation": "Floating-point sums such as 0.1 + 0.2 are not exactly 0.3. Compare with a small tolerance.",
+    "corrected_code": "static boolean sameTotal(double[] prices, double expected) {\n  double total = 0;\n  for (double price : prices) total += price;\n  return Math.abs(total - expected) < 1e-9;\n}",
+    "tags": [
+      "java",
+      "floating-point"
+    ],
+    "tests": [
+      "assert sameTotal(new double[]{0.1, 0.2}, 0.3);",
+      "assert !sameTotal(new double[]{1.0, 2.0}, 4.0);"
+    ]
+  },
+  {
+    "slug": "java-initials",
+    "version": 1,
+    "pool": "practice",
+    "language": "java",
+    "difficulty": "hard",
+    "title": "Initials",
+    "prompt": "Return the upper-case initials of the first and last name followed by a dot, such as AL.",
+    "code": "static String initials(String first, String last) {\n  char a = Character.toUpperCase(first.charAt(0));\n  char b = Character.toUpperCase(last.charAt(0));\n  return a + b + \".\";\n}",
+    "line_count": 5,
+    "correct_line": 4,
+    "explanation": "Adding two chars is numeric addition, so a + b produces a number. Start the expression with a string.",
+    "corrected_code": "static String initials(String first, String last) {\n  char a = Character.toUpperCase(first.charAt(0));\n  char b = Character.toUpperCase(last.charAt(0));\n  return \"\" + a + b + \".\";\n}",
+    "tags": [
+      "java",
+      "chars",
+      "strings"
+    ],
+    "tests": [
+      "assert initials(\"ada\", \"lovelace\").equals(\"AL.\");",
+      "assert initials(\"Bo\", \"Li\").equals(\"BL.\");"
+    ]
+  },
+  {
+    "slug": "java-major-version",
+    "version": 1,
+    "pool": "practice",
+    "language": "java",
+    "difficulty": "hard",
+    "title": "Major version",
+    "prompt": "Return the major number of a version string such as 3.4.1.",
+    "code": "static int majorVersion(String version) {\n  String[] parts = version.split(\".\");\n  if (parts.length == 0) return 0;\n  return Integer.parseInt(parts[0]);\n}",
+    "line_count": 5,
+    "correct_line": 2,
+    "explanation": "split takes a regular expression where . matches any character. Escape the dot to split on it literally.",
+    "corrected_code": "static int majorVersion(String version) {\n  String[] parts = version.split(\"\\\\.\");\n  if (parts.length == 0) return 0;\n  return Integer.parseInt(parts[0]);\n}",
+    "tags": [
+      "java",
+      "regex",
+      "parsing"
+    ],
+    "tests": [
+      "assert majorVersion(\"3.4.1\") == 3;",
+      "assert majorVersion(\"12.0\") == 12;"
+    ]
+  },
+  {
+    "slug": "java-bucket-index",
+    "version": 1,
+    "pool": "practice",
+    "language": "java",
+    "difficulty": "hard",
+    "title": "Bucket index",
+    "prompt": "Map a key to a bucket index from 0 up to buckets - 1; it must never be negative.",
+    "code": "static int bucket(Object key, int buckets) {\n  int hash = key.hashCode();\n  int index = Math.abs(hash) % buckets;\n  return index;\n}",
+    "line_count": 5,
+    "correct_line": 3,
+    "explanation": "Math.abs(Integer.MIN_VALUE) is still negative. floorMod always returns a value in range.",
+    "corrected_code": "static int bucket(Object key, int buckets) {\n  int hash = key.hashCode();\n  int index = Math.floorMod(hash, buckets);\n  return index;\n}",
+    "tags": [
+      "java",
+      "hashing",
+      "overflow"
+    ],
+    "tests": [
+      "assert bucket(\"polygenelubricants\", 10) >= 0;",
+      "assert bucket(\"abc\", 7) >= 0 && bucket(\"abc\", 7) < 7;"
+    ]
+  },
+  {
+    "slug": "java-drop-evens",
+    "version": 1,
+    "pool": "practice",
+    "language": "java",
+    "difficulty": "hard",
+    "title": "Drop the evens",
+    "prompt": "Return a copy of the list without its even numbers.",
+    "code": "static List<Integer> dropEvens(List<Integer> values) {\n  List<Integer> result = new ArrayList<>(values);\n  for (int i = 0; i < result.size(); i++) {\n    if (result.get(i) % 2 == 0) result.remove(i);\n  }\n  return result;\n}",
+    "line_count": 7,
+    "correct_line": 3,
+    "explanation": "Removing an element shifts the rest left, so a forward loop skips the next one. Walk backwards.",
+    "corrected_code": "static List<Integer> dropEvens(List<Integer> values) {\n  List<Integer> result = new ArrayList<>(values);\n  for (int i = result.size() - 1; i >= 0; i--) {\n    if (result.get(i) % 2 == 0) result.remove(i);\n  }\n  return result;\n}",
+    "tags": [
+      "java",
+      "collections",
+      "iteration"
+    ],
+    "tests": [
+      "assert dropEvens(List.of(2, 4, 6, 1)).equals(List.of(1));",
+      "assert dropEvens(List.of(1, 3)).equals(List.of(1, 3));"
+    ]
+  },
+  {
+    "slug": "java-score-of",
+    "version": 1,
+    "pool": "practice",
+    "language": "java",
+    "difficulty": "hard",
+    "title": "Score of a player",
+    "prompt": "Return the player score, or 0 when the player is missing or the score is not positive.",
+    "code": "static int scoreOf(Map<String, Integer> scores, String player) {\n  if (player == null) return 0;\n  Integer score = scores.get(player);\n  return score > 0 ? score : 0;\n}",
+    "line_count": 5,
+    "correct_line": 4,
+    "explanation": "get returns null for a missing player, and unboxing it in the comparison throws. Check for null first.",
+    "corrected_code": "static int scoreOf(Map<String, Integer> scores, String player) {\n  if (player == null) return 0;\n  Integer score = scores.get(player);\n  return score != null && score > 0 ? score : 0;\n}",
+    "tags": [
+      "java",
+      "maps",
+      "null"
+    ],
+    "tests": [
+      "assert scoreOf(Map.of(\"a\", 5), \"b\") == 0;",
+      "assert scoreOf(Map.of(\"a\", 5), \"a\") == 5;",
+      "assert scoreOf(Map.of(\"a\", -1), \"a\") == 0;"
+    ]
+  },
+  {
+    "slug": "java-longest-word",
+    "version": 1,
+    "pool": "practice",
+    "language": "java",
+    "difficulty": "hard",
+    "title": "Longest word",
+    "prompt": "Return the longest word; when several share the length, return the first one.",
+    "code": "static String longest(List<String> words) {\n  String best = \"\";\n  for (String word : words) {\n    if (word.length() >= best.length()) best = word;\n  }\n  return best;\n}",
+    "line_count": 7,
+    "correct_line": 4,
+    "explanation": "With >= a later word of equal length replaces the earlier one. Use a strict comparison to keep the first.",
+    "corrected_code": "static String longest(List<String> words) {\n  String best = \"\";\n  for (String word : words) {\n    if (word.length() > best.length()) best = word;\n  }\n  return best;\n}",
+    "tags": [
+      "java",
+      "strings",
+      "ties"
+    ],
+    "tests": [
+      "assert longest(List.of(\"ab\", \"cd\", \"e\")).equals(\"ab\");",
+      "assert longest(List.of(\"a\", \"abc\", \"xyz\")).equals(\"abc\");"
+    ]
+  }
+]

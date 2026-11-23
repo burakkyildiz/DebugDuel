@@ -2,6 +2,10 @@
 
 Ana plan ve çıkış koşulları: `DEBUG_DUEL_PROJECT_SPEC.md`, bölüm 22.
 
+## Güncel kayıt — Kayıt sayfasında GitHub seçeneği, 23 Kasım 2026
+
+`/signup` sayfası GitHub düğmesini en üstte, e-posta formunu "or sign up with email" altında gösterir; amaç e-posta kotasını (30/saat) azaltmaktır. Kod `c8549ef`, CI başarılı, Vercel'de elle promote edildi, canlıda doğrulandı. Açık: SMTP sağlayıcısı değişimi (alan adı gerekir), canlıda GitHub ile yeni hesap denemesi.
+
 ## Güncel kayıt — İlk oda okuması yeniden deneme ve davet notu, 19 Kasım 2026
 
 Oda sayfası ilk durum okumasını 3 kez dener; hata bandı yalnız üçü de başarısız olursa görünür. Davet sayfası dilin ev sahibince seçildiğini ve odada görüneceğini söyler. Kod `0d19c78`, CI başarılı, Vercel'de elle promote edildi. Canlıda misafir Java Practice (API) ve hesaplı Java Practice doğrulandı. Açık: gerçek e-posta signup otomatik oturumu, üçüncü hesapla katılım, Cloudflare panel uyarısı, canlıda ilk okuma yeniden denemesi.

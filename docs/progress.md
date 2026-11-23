@@ -4,7 +4,7 @@ Ana plan ve çıkış koşulları: `DEBUG_DUEL_PROJECT_SPEC.md`, bölüm 22.
 
 ## Güncel kayıt — Kayıt sayfasında GitHub seçeneği, 23 Kasım 2026
 
-`/signup` sayfası GitHub düğmesini en üstte, e-posta formunu "or sign up with email" altında gösterir; amaç e-posta kotasını (30/saat) azaltmaktır. Kod `c8549ef`, CI başarılı, Vercel'de elle promote edildi, canlıda doğrulandı. Açık: SMTP sağlayıcısı değişimi (alan adı gerekir), canlıda GitHub ile yeni hesap denemesi.
+`/signup` sayfası GitHub düğmesini en üstte, e-posta formunu "or sign up with email" altında gösterir; amaç e-posta kotasını (30/saat) azaltmaktır. Kod `c8549ef`, CI başarılı, Vercel'de elle promote edildi, canlıda doğrulandı. `/login` sayfasına da "New here? Create account" bağlantısı eklendi (`7777670`, canlıda). Açık: SMTP sağlayıcısı değişimi (alan adı gerekir), canlıda GitHub ile yeni hesap denemesi.
 
 ## Güncel kayıt — İlk oda okuması yeniden deneme ve davet notu, 19 Kasım 2026
 
